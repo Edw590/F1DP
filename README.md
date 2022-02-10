@@ -5,6 +5,10 @@ Hi everyone. I've decided to attempt to port all patches made to the Windows ver
 
 Why Go and not Python or C or something? I prefer Go over Python (I like compilers complaining over types and other things aside from Go being easy to compile to an EXE), and C is too much hassle for such a simple thing.
 
+## Download
+
+Download any version you'd like (preferably the most recent one) here: https://github.com/DADi590/Fallout1DOSPatcher/releases.
+
 ## Contributing
 
 Anyone is free to contribute to the repository with new patch ports, new patches entirely, port fixes, whatever that is useful.
