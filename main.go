@@ -7,9 +7,9 @@ import (
 )
 
 func showInitialScreen() {
-	fmt.Println("------------------------------------")
-	fmt.Println("Fallout 1 DOS EXE patcher by DADi590")
-	fmt.Println("------------------------------------")
+	fmt.Println("----------------------------------------------")
+	fmt.Println("Fallout 1 DOS EXE patcher v20220210 by DADi590")
+	fmt.Println("----------------------------------------------")
 	fmt.Println()
 	fmt.Println("-----Credits-----")
 	fmt.Println()
