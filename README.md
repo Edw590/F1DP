@@ -18,11 +18,11 @@ Anyone is free to contribute to the repository with new patch ports, new patches
 ## There are bugs I don't know how to fix
 
 Currently there are bugs on the ported code.
-- One very noticeable is that when you create a new game, go on the dead body and click D when exchanging items, an error dialog appears --> with no error written. I've no idea why that happens. I'm pointing to a readable place in memory, so wtf.
-- Other errors include when clicking D with fewer items to exchange with the body, all disappears. But only from the screen. It's all on the dead body's inventory if you go back and exchange items again.
-- Or the current and total weight not showing on the inventory.
+- One very noticeable is that when you create a new game, go on the dead body and click D when exchanging items, an error dialog appears --> with no error written. I've no idea why that happens. I'm pointing to a readable place in memory, so wtf. Doesn't do anything bad, just doesn't show the message, but still very weird.
+- Other errors include when clicking D with fewer items to exchange with the body, all disappears. But only from the screen. It's all on the dead body's inventory if you go back and exchange items again. So again doesn't do anything bad, but wtf. Curious to know why it happens.
+- Or the current and total weight not showing on the inventory. As it replaces the format string from "%s %d" to "%s %d/%d" and that one doesn't work, it breaks the original functionality. That must also be fixed somehow, in my case without debugging the game, which is not easy or possible, but I'll try and see if I can (any help is appreciated). As this is not working and breaking original functionality (wow), it's disabled on the patcher.
 
-These for now, but maybe more as more patches are ported
+These for now, but maybe more as more patches are ported (and if there are bad bugs like the last one above, those will either be disabled or a warning will be added to them for the player to have an informed decision when I make the patches optional).
 
 ## How I've been doing this
 
