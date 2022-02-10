@@ -3,6 +3,8 @@ A patcher for the MS-DOS version of Fallout 1 including Crafty's sFall1 patches 
 
 Hi everyone. I've decided to attempt to port all patches made to the Windows version of Fallout 1 to the MS-DOS one. This way, those who play on devices which can only execute the game with an MS-DOS emulator, can also enjoy the patches that the Windows version players can.
 
+Why Go and not Python or C or something? I prefer Go over Python (I like compilers complaining over types and other things aside from Go being easy to compile to an EXE), and C is too much hassle for such a simple thing.
+
 ## Contributing
 
 Anyone is free to contribute to the repository with new patch ports, new patches entirely, port fixes, whatever that is useful.
