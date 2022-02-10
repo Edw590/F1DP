@@ -1,9 +1,9 @@
 # Fallout1DOSPatcher
 A patcher for the MS-DOS version of Fallout 1 including Crafty's sFall1 patches and maybe more
 
-Hi everyone. I've decided to attempt to port all patches made to the Windows version of Fallout 1 to the MS-DOS one. This way, those who play on devices which can only execute the game with an MS-DOS emulator, can also enjoy the patches that the Windows version players can.
+Hi everyone. I've decided to attempt to port all patches made to the Windows version of Fallout 1 to the MS-DOS one (the Windows pathes are DLL mods, and DOS doesn't know what a DLL is, so the patches are not used when playing with the DOS EXE). This way, those who need to play with the DOS version for whatever reason can enjoy the patches that the Windows version players can.
 
-NOTE: You need to have dos32a.exe in the Fallout directory instead of dos4gw.exe. This is one of the patches, and that other program (DOS/32) corrects an issue with one of the patches (aside from being faster). Download it here: https://sourceforge.net/projects/dos32a.
+**NOTE:** You need to have dos32a.exe in the Fallout directory instead of dos4gw.exe. This is one of the patches, and that other program (DOS/32) corrects an issue with one of the patches (aside from being faster). Download it here: https://sourceforge.net/projects/dos32a.
 
 Why Go and not Python or C or something? I prefer Go over Python (I like compilers complaining over types and other things aside from Go being easy to compile to an EXE), and C is too much hassle for such a simple thing.
 
