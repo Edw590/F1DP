@@ -24,7 +24,7 @@ These for now, but maybe more as more patches are ported
 
 ## How I've been doing this
 
-I've been checking this repository: https://github.com/Aramatheus/sfall_1. It has the sFall1 1.20 source with small modifications from Sduibek (Fallout Fixt's creator). If this one gets working well, I go over to sFall1 1.3 entirely by Crafty and then (or right to) 1.7.6. There's also version 1.8, but there's no public source that I have found. That one requires reverse engineering unless the source is found somewhere.
+I've been checking this repository: https://github.com/Aramatheus/sfall_1. It has the sFall1 1.20 source with small modifications from Sduibek (Fallout Fixt's creator). If this one gets working well, I go over to sFall1 1.3 entirely by Crafty and then (or right to) 1.7.6. There's also version 1.8, but there's no public source that I have found. That one requires reverse engineering unless the source is found somewhere. The reason I'm not already using version 1.7.6 is because the Loot/Drop all patch doesn't work when I port it. No idea if it needs other patches to work, but at least on 1.20 it's working, so it seems a good place to start.
 
 Also, MASM or NASN or whatever you prefer to use is very useful to assemble the instructions Crafty has on the source. Then the assembled EXE or OBJ file can be opened in a hex editor and the bytes copied to the DOS EXE, and finally the only thing left to do is correct all addresses and offsets. I've been going on the Windows EXE distributed with Fallout Fixt, go on all addresses I find on sFall1's source, and then use the hex bytes near that address to find the correct function on the DOS EXE. So far, this worked well for the Loot/Drop all feature, so that's what I've been doing.
 
