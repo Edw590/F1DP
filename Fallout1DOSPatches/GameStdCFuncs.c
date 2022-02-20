@@ -1,30 +1,10 @@
 //
-// Created by DADi590 on 19/02/2022.
+// Created by DADi590 on 20/02/2022.
 //
 
-#ifndef FALLOUT1DOSPATCHES_GAMESTANDARDCFUNCS_H
-#define FALLOUT1DOSPATCHES_GAMESTANDARDCFUNCS_H
+#include "Headers/GameStdCFuncs.h"
 
-// Naming: M == Macro; N == Naked
 
-#include "General.h"
-#include "GameAddrs.h"
-
-#define CODE_SEG_ADDR_OFFSET 4
-#define DATA_SEG_ADDR_OFFSET 8
-
-#define printfBefore(block_address)                       \
-	__asm {push    esi}                                   \
-	__asm {push    edi}                                   \
-	__asm {push    eax}                                   \
-	__asm {mov     esi, [block_address]}                  \
-	__asm {mov     esi, [esi + CODE_SEG_ADDR_OFFSET]}     \
-	__asm {mov     edi, [block_address]}                  \
-	__asm {mov     edi, [edi + DATA_SEG_ADDR_OFFSET]}
-#define printfAfter(block_address)                        \
-	__asm {pop     eax}                                   \
-	__asm {pop     edi}                                   \
-	__asm {pop     esi}
 /**
  * <p>ALWAYS call printfBefore() before calling this, and printfAfter() after calling this --> ALWAYS</p>
  */
@@ -154,5 +134,3 @@ void exit(const uint32_t code_seg_addr, const int status) {
 		call    ecx
 	}
 }
-
-#endif //FALLOUT1DOSPATCHES_GAMESTANDARDCFUNCS_H

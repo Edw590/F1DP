@@ -5,11 +5,9 @@
 // but more readable xD. For example the while loop could have the condition put outside, but that's one more variable
 // on the beginning of realMain() and that's a mess (I also don't want to create scopes just for that - no need).
 
-
-
 #define _CRT_INSECURE_DEPRECATE
 
-#include "GameStandardCFuncs.h"
+#include "Headers/GameStdCFuncs.h"
 
 // Special 32-bit numbers ("SN") that are not supposed to appear ANYwhere else in the entire code copied to the BIN
 // file. They're weird enough for me to think they won't appear. (Too much coincidence?)
@@ -21,8 +19,8 @@
 #define DOS_MAX_FILE_NAME_LEN 12
 
 void realMain(void);
+void patchPatcher(uint32_t block_address);
 __declspec(naked) void testFunc(void);
-void patchPatch(uint32_t block_address);
 
 // The sole purpose of this string below is for me to know where main() is so I know I need to start copying from 3
 // bytes above the NOPs that are generated AHAHAH.
@@ -46,10 +44,10 @@ __declspec(naked) int main(void) {
 	// as a normal program and nothing else.
 
 	__asm {
-		jmp     main1
+		jmp     main1 // Jump over the data in case the EXE is executed normally
 		dd      SN_MAIN_FUNCTION
 		main1:
-		jmp     realMain
+		jmp     realMain // Where code execution begins for the loader
 	}
 }
 
@@ -61,7 +59,7 @@ void realMain(void) {
 	__asm {
 		mov     [block_address], esi // Now the block address is decently stored before any code messes with ESI
 	}
-	patchPatch(block_address); // Right before anything else, patch the patch itself.
+	patchPatcher(block_address); // Right before anything else, patch the patch itself.
 
 
 	/*{
@@ -129,7 +127,7 @@ void realMain(void) {
 
 // THIS MUST BE ABOVE ANY PATCH FUNCTIONS!!!!!!!!!!
 // Because of the special numbers check (don't patch the FIRST occurrence, which must be in this function).
-void patchPatch(uint32_t block_address) {
+void patchPatcher(uint32_t block_address) {
 	int i = 0;
 	int patches_file_len = 0;
 	int file_descriptor = 0;
