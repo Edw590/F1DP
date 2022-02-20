@@ -1,7 +1,18 @@
 
-generated_binaries/*
-*.exe
+###############################
+# My things
 
+generated_binaries/
+*.exe
+*.lst
+*.map
+*.obj
+*.sbr
+*.mbr
+*.dll
+*.com
+
+###############################
 
 
 # Took from: https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
