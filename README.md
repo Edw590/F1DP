@@ -17,6 +17,7 @@ Download any version you'd like (preferably the most recent one) here: https://g
 Anyone is free to contribute to the repository with new patch ports, new patches entirely, port fixes, whatever that is useful.
 
 ## History of ideas for this to work
+(The versions are in the opposite order - the first is in the end.)
 
 ### Second version
 Carrying on from the last thing I said on the first version, I did find out a way to go around editing the relocations table. I got the idea from xttl user from Doom World forum, more precisely this thread: https://www.doomworld.com/forum/topic/86380-exe-hacking. This was an AMAZING found and I loved the idea. The idea there is to load a BIN file with binary instructions, then jump to it and execute the instructions. The only thing patched in the EXE is the loader. When the game starts, it loads the patch file and executes the instructions. After that, it comes back to the game and unloads the patch from memory. Inside the patch, there could be only simple patches, like patching a number or a call to NOPs, for example. No adding new functions or strings or things. There could not be any strings on it or global variables. Nothing outside the functions. So an idea I had first to go around having no strings was to allocate on the stack space for the characters and then assign char by char, index by index manually --> awful, but worked 😂. A char is an int, so it would create strings on the stack xD.
