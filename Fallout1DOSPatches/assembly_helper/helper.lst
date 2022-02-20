@@ -1,0 +1,522 @@
+Microsoft (R) Macro Assembler Version 9.00.21022.08	    02/20/22 02:30:36
+							     First Pass 1 - 1
+
+
+				
+				
+				; Helper to assemble the instructions and then it's only copy the hex bytes and correct addresses and offsets
+				
+				
+				.686p
+				.model flat
+				.stack 100h
+				
+ 00000000			.code
+				
+					; To be easy to know where the code begins - search for 5 NOPs with a hex editor.
+					nop
+					nop
+					nop
+					nop
+					nop
+				
+					START_DADI590:
+					; These things below are to be used for things only known when the code is in place. They're noticeble enough.
+					; One is a weird number, the other, all near calls and some jumps are to the same function - suspicious.
+					;whateverDadi590
+					;12345678h
+				
+				pusha
+				
+				mov     edi, [esi+8] ; Data section address
+				push    edi
+				mov     edi, [esi+4] ; Code section address
+				push    edi
+				mov     edi, [esi+8]
+				lea     edi, [edi+0FD5E0h] ; FALLOUT %d.%d string
+				push    edi
+				mov     edi, [esi+4]
+				lea     edi, [edi+0CA3B0h] ; printf()
+				call    edi
+				add     esp, 12
+				;mov     eax, 12345678h
+				;mov     edi, [esi+4]
+				;lea     edi, [edi+0CA40Ah] ; exit()
+				;call    edi
+				
+				popa
+				
+				ret
+				
+				
+				  ; Primeiro push é a cor
+				  ; Segundo push é posição Y
+				  ; No EAX vai a janela onde escrever
+				  ; No EBX vai a font da letra (ele tem 0 na string do sFall)
+				  ; No edi vai a posição X
+				  ; No EDX vai o endereço da string no CS
+				                    
+				  ;sub  dword ptr [esp], 12
+				  ;pop  edi
+				  ;push ds
+				  ;push cs
+				  ;pop  ds
+				  ;mov  edi, 10
+				  ;mov  dword ptr [esp+0Ch], 12345
+				  ;rep  movsb
+				  ;pop  ds
+				  ;pop  edi
+				  ;call whateverDadi590
+				  ;jmp  whateverDadi590
+				
+				
+				  	; Do NOT remove NOPs from here! I've tested them and it's needs to be this much for the last instruction, if it's
+				  	; a jump, to be a near jump, not a short jump --> which I don't want, or I'll have to move all the code when I
+				  	; edit it (like I'll do right now...). Of course, the other jumps count too, but these many NOPs will ensure even
+				  	; the last one is seen as a near jump and not a short one.
+				  	; Aside from this, it's easy to see where the code ends - just look for infinite NOPs.
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					nop
+					whateverDadi590:
+				
+				end START_DADI590
+Microsoft (R) Macro Assembler Version 9.00.21022.08	    02/20/22 02:30:36
+helper.asm						     Page 1 - 1
+
+
+
+
+				; Helper to assemble the instructions and then it's only copy the hex bytes and correct addresses and offsets
+
+
+				.686p
+				.model flat
+				.stack 100h
+
+ 00000000			.code
+
+					; To be easy to know where the code begins - search for 5 NOPs with a hex editor.
+ 00000000  90				nop
+ 00000001  90				nop
+ 00000002  90				nop
+ 00000003  90				nop
+ 00000004  90				nop
+
+ 00000005				START_DADI590:
+					; These things below are to be used for things only known when the code is in place. They're noticeble enough.
+					; One is a weird number, the other, all near calls and some jumps are to the same function - suspicious.
+					;whateverDadi590
+					;12345678h
+
+ 00000005  60			pusha
+
+ 00000006  8B 7E 08		mov     edi, [esi+8] ; Data section address
+ 00000009  57			push    edi
+ 0000000A  8B 7E 04		mov     edi, [esi+4] ; Code section address
+ 0000000D  57			push    edi
+ 0000000E  8B 7E 08		mov     edi, [esi+8]
+ 00000011  8D BF 000FD5E0	lea     edi, [edi+0FD5E0h] ; FALLOUT %d.%d string
+ 00000017  57			push    edi
+ 00000018  8B 7E 04		mov     edi, [esi+4]
+ 0000001B  8D BF 000CA3B0	lea     edi, [edi+0CA3B0h] ; printf()
+ 00000021  FF D7		call    edi
+ 00000023  83 C4 0C		add     esp, 12
+				;mov     eax, 12345678h
+				;mov     edi, [esi+4]
+				;lea     edi, [edi+0CA40Ah] ; exit()
+				;call    edi
+
+ 00000026  61			popa
+
+ 00000027  C3			ret
+
+
+				  ; Primeiro push é a cor
+				  ; Segundo push é posição Y
+				  ; No EAX vai a janela onde escrever
+				  ; No EBX vai a font da letra (ele tem 0 na string do sFall)
+				  ; No edi vai a posição X
+				  ; No EDX vai o endereço da string no CS
+				                    
+				  ;sub  dword ptr [esp], 12
+				  ;pop  edi
+				  ;push ds
+				  ;push cs
+				  ;pop  ds
+				  ;mov  edi, 10
+				  ;mov  dword ptr [esp+0Ch], 12345
+				  ;rep  movsb
+				  ;pop  ds
+				  ;pop  edi
+				  ;call whateverDadi590
+				  ;jmp  whateverDadi590
+
+
+				  	; Do NOT remove NOPs from here! I've tested them and it's needs to be this much for the last instruction, if it's
+				  	; a jump, to be a near jump, not a short jump --> which I don't want, or I'll have to move all the code when I
+				  	; edit it (like I'll do right now...). Of course, the other jumps count too, but these many NOPs will ensure even
+				  	; the last one is seen as a near jump and not a short one.
+				  	; Aside from this, it's easy to see where the code ends - just look for infinite NOPs.
+ 00000028  90				nop
+ 00000029  90				nop
+ 0000002A  90				nop
+ 0000002B  90				nop
+ 0000002C  90				nop
+ 0000002D  90				nop
+ 0000002E  90				nop
+ 0000002F  90				nop
+ 00000030  90				nop
+ 00000031  90				nop
+ 00000032  90				nop
+ 00000033  90				nop
+ 00000034  90				nop
+ 00000035  90				nop
+ 00000036  90				nop
+ 00000037  90				nop
+ 00000038  90				nop
+ 00000039  90				nop
+ 0000003A  90				nop
+ 0000003B  90				nop
+ 0000003C  90				nop
+ 0000003D  90				nop
+ 0000003E  90				nop
+ 0000003F  90				nop
+ 00000040  90				nop
+ 00000041  90				nop
+ 00000042  90				nop
+ 00000043  90				nop
+ 00000044  90				nop
+ 00000045  90				nop
+ 00000046  90				nop
+ 00000047  90				nop
+ 00000048  90				nop
+ 00000049  90				nop
+ 0000004A  90				nop
+ 0000004B  90				nop
+ 0000004C  90				nop
+ 0000004D  90				nop
+ 0000004E  90				nop
+ 0000004F  90				nop
+ 00000050  90				nop
+ 00000051  90				nop
+ 00000052  90				nop
+ 00000053  90				nop
+ 00000054  90				nop
+ 00000055  90				nop
+ 00000056  90				nop
+ 00000057  90				nop
+ 00000058  90				nop
+ 00000059  90				nop
+ 0000005A  90				nop
+ 0000005B  90				nop
+ 0000005C  90				nop
+ 0000005D  90				nop
+ 0000005E  90				nop
+ 0000005F  90				nop
+ 00000060  90				nop
+ 00000061  90				nop
+ 00000062  90				nop
+ 00000063  90				nop
+ 00000064  90				nop
+ 00000065  90				nop
+ 00000066  90				nop
+ 00000067  90				nop
+ 00000068  90				nop
+ 00000069  90				nop
+ 0000006A  90				nop
+ 0000006B  90				nop
+ 0000006C  90				nop
+ 0000006D  90				nop
+ 0000006E  90				nop
+ 0000006F  90				nop
+ 00000070  90				nop
+ 00000071  90				nop
+ 00000072  90				nop
+ 00000073  90				nop
+ 00000074  90				nop
+ 00000075  90				nop
+ 00000076  90				nop
+ 00000077  90				nop
+ 00000078  90				nop
+ 00000079  90				nop
+ 0000007A  90				nop
+ 0000007B  90				nop
+ 0000007C  90				nop
+ 0000007D  90				nop
+ 0000007E  90				nop
+ 0000007F  90				nop
+ 00000080  90				nop
+ 00000081  90				nop
+ 00000082  90				nop
+ 00000083  90				nop
+ 00000084  90				nop
+ 00000085  90				nop
+ 00000086  90				nop
+ 00000087  90				nop
+ 00000088  90				nop
+ 00000089  90				nop
+ 0000008A  90				nop
+ 0000008B  90				nop
+ 0000008C  90				nop
+ 0000008D  90				nop
+ 0000008E  90				nop
+ 0000008F  90				nop
+ 00000090  90				nop
+ 00000091  90				nop
+ 00000092  90				nop
+ 00000093  90				nop
+ 00000094  90				nop
+ 00000095  90				nop
+ 00000096  90				nop
+ 00000097  90				nop
+ 00000098  90				nop
+ 00000099  90				nop
+ 0000009A  90				nop
+ 0000009B  90				nop
+ 0000009C  90				nop
+ 0000009D  90				nop
+ 0000009E  90				nop
+ 0000009F  90				nop
+ 000000A0  90				nop
+ 000000A1  90				nop
+ 000000A2  90				nop
+ 000000A3  90				nop
+ 000000A4  90				nop
+ 000000A5  90				nop
+ 000000A6  90				nop
+ 000000A7  90				nop
+ 000000A8  90				nop
+ 000000A9  90				nop
+ 000000AA  90				nop
+ 000000AB  90				nop
+ 000000AC  90				nop
+ 000000AD  90				nop
+ 000000AE  90				nop
+ 000000AF  90				nop
+ 000000B0  90				nop
+ 000000B1  90				nop
+ 000000B2  90				nop
+ 000000B3  90				nop
+ 000000B4  90				nop
+ 000000B5  90				nop
+ 000000B6  90				nop
+ 000000B7  90				nop
+ 000000B8  90				nop
+ 000000B9  90				nop
+ 000000BA  90				nop
+ 000000BB  90				nop
+ 000000BC  90				nop
+ 000000BD  90				nop
+ 000000BE  90				nop
+ 000000BF  90				nop
+ 000000C0  90				nop
+ 000000C1  90				nop
+ 000000C2  90				nop
+ 000000C3  90				nop
+ 000000C4  90				nop
+ 000000C5  90				nop
+ 000000C6  90				nop
+ 000000C7  90				nop
+ 000000C8  90				nop
+ 000000C9  90				nop
+ 000000CA  90				nop
+ 000000CB  90				nop
+ 000000CC				whateverDadi590:
+
+				end START_DADI590
+Microsoft (R) Macro Assembler Version 9.00.21022.08	    02/20/22 02:30:36
+helper.asm						     Symbols 2 - 1
+
+
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+FLAT . . . . . . . . . . . . . .	GROUP
+STACK  . . . . . . . . . . . . .	32 Bit	 00000100 Para	  Stack	  'STACK'	 
+_DATA  . . . . . . . . . . . . .	32 Bit	 00000000 Para	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 000000CC Para	  Public  'CODE'	
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+@CodeSize  . . . . . . . . . . .	Number	 00000000h   
+@DataSize  . . . . . . . . . . .	Number	 00000000h   
+@Interface . . . . . . . . . . .	Number	 00000000h   
+@Model . . . . . . . . . . . . .	Number	 00000007h   
+@code  . . . . . . . . . . . . .	Text   	 _TEXT
+@data  . . . . . . . . . . . . .	Text   	 FLAT
+@fardata?  . . . . . . . . . . .	Text   	 FLAT
+@fardata . . . . . . . . . . . .	Text   	 FLAT
+@stack . . . . . . . . . . . . .	Text   	 FLAT
+START_DADI590  . . . . . . . . .	L Near	 00000005 _TEXT	
+whateverDadi590  . . . . . . . .	L Near	 000000CC _TEXT	
+
+	   0 Warnings
+	   0 Errors
