@@ -1,0 +1,3 @@
+C:/Users/DADi590/GoLandProjects/Fallout1DOSPatcher/Fallout1DOSPatches/cmake-build-debug/CMakeFiles/Fallout1DOSPatches.dir
+C:/Users/DADi590/GoLandProjects/Fallout1DOSPatcher/Fallout1DOSPatches/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/DADi590/GoLandProjects/Fallout1DOSPatcher/Fallout1DOSPatches/cmake-build-debug/CMakeFiles/rebuild_cache.dir
