@@ -174,21 +174,7 @@ void patchPatcher(uint32_t block_address) {
 	}
 }
 
-__declspec(naked) void testFunc(void) {
-	__asm {
-		mov     eax, SN_DATA_SEG_EXE_ADDR
-		add     eax, S_FALLOUT_D_D
-		push    eax
-		mov     ecx, SN_CODE_SEG_EXE_ADDR
-		add     ecx, F_printf_
-		call    ecx
-		add     esp, 4
-
-		mov     eax, 123872h
-		mov     ecx, SN_CODE_SEG_EXE_ADDR
-		add     ecx, F_exit_
-		call    ecx
-
-		ret
-	}
-}
+// This MUST be after patchPatcher(), and MUST include C files and not headers. The functions' CODE must be here, after
+// the mentioned function. So here below MUST be all the code, but I'm including it because I don't want to have here
+// infinite lines of code when I can just include the C files.
+#include "ExeNewFuncs.c"
