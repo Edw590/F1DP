@@ -12,6 +12,7 @@ generated_binaries/
 *.dll
 *.com
 *.err
+*.bak
 
 ###############################
 
