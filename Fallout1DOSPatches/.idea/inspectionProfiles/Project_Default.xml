@@ -27,7 +27,7 @@
           <ClangTidyCheckOption />
         </list>
       </option>
-      <option name="clangTidyChecks" value="*,-readability-avoid-const-params-in-decls,-llvmlibc-restrict-system-libc-headers,-altera-unroll-loops,-altera-id-dependent-backward-branch,-hicpp-uppercase-literal-suffix,-readability-uppercase-literal-suffix,-readability-identifier-length,-readability-isolate-declaration" />
+      <option name="clangTidyChecks" value="*,-readability-avoid-const-params-in-decls,-llvmlibc-restrict-system-libc-headers,-altera-unroll-loops,-altera-id-dependent-backward-branch,-hicpp-uppercase-literal-suffix,-readability-uppercase-literal-suffix,-readability-identifier-length,-readability-isolate-declaration,-cppcoreguidelines-avoid-magic-numbers" />
     </inspection_tool>
     <inspection_tool class="Clazy" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="clazyChecks" value="level0,level1,level2,manual" />

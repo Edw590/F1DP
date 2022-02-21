@@ -9,4 +9,4 @@ project(Fallout1DOSPatches C)
 set(CMAKE_C_FLAGS "-std=c90 -Wall -pedantic-errors")
 # These flags are specifically selected for the Microsoft Visual C++ Compiler (for GCC I'd add some more).
 
-add_executable(Fallout1DOSPatches main.c Headers/General.h Headers/GameAddrs.h GameStdCFuncs.c Headers/GameStdCFuncs.h General.c ExeNewFuncs/TestFunc.c ExeNewFuncs.c)
+add_executable(Fallout1DOSPatches main.c Headers/General.h Headers/GameAddrs.h GameStdCFuncs.c Headers/GameStdCFuncs.h Patches/MainMenu.c ExeNewFuncs.c EXEPatchUtils.c Headers/EXEPatchUtils.h BlockAddrUtils.c Headers/AddressUtils.h Patches/Criticals.c Patches/Criticals.h Headers/Logger.h PatchPatcher.c Headers/PatchPatcher.h Headers/MainMenu.h Headers/BlockAddrUtils.h)

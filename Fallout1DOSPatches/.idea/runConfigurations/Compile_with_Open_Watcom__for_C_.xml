@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Compile with Open Watcom (for C)" type="CLionExternalRunConfiguration" factoryName="Application" PROGRAM_PARAMS="..\main.c ..\General.c ..\GameStdCFuncs.c -bt=DOS -l=dos4g -fpd -mf -oi -ol+ -oneatx -or -ot -we -wx -za -zp4 -zc" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" WORKING_DIR="file://$ProjectFileDir$/generated_binaries" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Fallout1DOSPatches" TARGET_NAME="Unnamed" CONFIG_NAME="Unnamed" RUN_PATH="$PROJECT_DIR$/../../../../../WATCOM/binnt/wcl386.exe">
+  <configuration default="false" name="Compile with Open Watcom (for C)" type="CLionExternalRunConfiguration" factoryName="Application" PROGRAM_PARAMS="..\main.c   -bt=DOS -l=dos4g -fpd -mf -oi -ol+ -oneatx -ot -we -wx -za" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" WORKING_DIR="file://$ProjectFileDir$/generated_binaries" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Fallout1DOSPatches" TARGET_NAME="Unnamed" CONFIG_NAME="Unnamed" RUN_PATH="$PROJECT_DIR$/../../../../../WATCOM/binnt/wcl386.exe">
     <method v="2" />
   </configuration>
 </component>
