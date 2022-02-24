@@ -24,7 +24,7 @@
  * @return a struct with all attributes set, or one with none set (all attributes set to default values) if an error
  * occurred
  */
-bool readFile(const char *file_path, struct File *file) {
+bool readFile(const char *file_path, struct FileContents *file) {
 	char * file_contents = NULL;
 	unsigned long file_size = 0;
 	unsigned file_descriptor = 0;
@@ -59,8 +59,8 @@ bool readFile(const char *file_path, struct File *file) {
 
 	close((int) file_descriptor);
 
-	file->file_contents = file_contents;
-	file->file_size = file_size;
+	file->contents = file_contents;
+	file->size = file_size;
 
 	return true;
 }
@@ -73,7 +73,7 @@ bool readFile(const char *file_path, struct File *file) {
  *
  * @return true if the property was found with a value on it, false otherwise
  */
-bool checkPropIni(const char * ini_contents, unsigned long ini_len, const char * prop_name, char * prop_value) {
+bool getPropValueIni(const char * ini_contents, unsigned long ini_len, const char * prop_name, char * prop_value) {
 	unsigned long i = 0;
 	char line[MAX_LINE_LEN];
 	memset(line, 0, MAX_LINE_LEN);
@@ -88,39 +88,119 @@ bool checkPropIni(const char * ini_contents, unsigned long ini_len, const char *
 
 	// Terminate the string before looking for it, so if it's not found, an empty string is returned.
 	for (i = 0; i < ini_len; /*Nothing*/) {
-
-		// ////////////////////////
-		// Line reader
 		int j = 0;
-		while ((i < ini_len) && ('\n' != ini_contents[i])) {
-			if (('\r' != ini_contents[i]) && (j < (MAX_LINE_LEN - 1))) {
-				// If \r is present, it always comes before \n (\r\n - CR LF).
-				// Also, if the line in the file is bigger than the maximum allowed line length here, ignore everything
-				// that comes after the maximum length, but get to the end of the line on the file.
-				line[j] = ini_contents[i];
-				++j;
-			}
-			++i;
-		}
-		line[j] = '\0'; // The last character is a NULL byte
-		++i; // So that next time, it begins with the character after \n.
-		// ////////////////////////
+		bool comment_line = false;
 
-		if (';' != line[0]) {
-			int index_equal = strrchr(line, '=') - line;
-			if (index_equal >= 0) {
+		{
+			// ////////////////////////
+			// Line reader
+			bool first_decent_char_passed = false;
+
+			while ((i < ini_len) && ('\n' != ini_contents[i])) {
+				if (('\r' != ini_contents[i]) && (j < (MAX_LINE_LEN - 1))) {
+					// If \r is present, it always comes before \n (\r\n - CR LF).
+					// Also, if the line in the file is bigger than the maximum allowed line length here, ignore everything
+					// that comes after the maximum length, but get to the end of the line on the file.
+					if ((!first_decent_char_passed) && (' ' != line[j]) && ('\t' != line[j])) {
+						// Nothing here
+					} else {
+						first_decent_char_passed = true;
+					}
+					line[j] = ini_contents[i];
+					++j;
+				}
+				++i;
+			}
+			line[j] = '\0'; // The last character is a NULL byte
+			++i; // So that next time, it begins with the character after \n
+			// ////////////////////////
+		}
+
+		{
+			int k = 0;
+			// Ignore spaces and tabs and check if a semicolon is the first character after those 2
+			for (k = 0; k < j; ++k) {
+				if ((' ' != line[k]) && ('\t' != line[k])) {
+					if (';' == line[k]) {
+						comment_line = true;
+					} else {
+						comment_line = false;
+					}
+					break;
+				}
+			}
+		}
+
+		if (!comment_line) {
+			int index_equals_sign = strrchr(line, '=') - line; // Subtraction of addresses to get the index
+			if (index_equals_sign >= 0) {
+				int k = 0;
+				int prop_name_temp_len = 0;
 				char prop_name_temp[MAX_PROP_NAME_LEN];
+				char * prop_name_temp_real = NULL;
 				memset(prop_name_temp, 0, MAX_PROP_NAME_LEN);
 
-				strncpy(prop_name_temp, line, (size_t) index_equal);
-				prop_name_temp[index_equal] = '\0';
+				strncpy(prop_name_temp, line, (size_t) index_equals_sign);
+				prop_name_temp[index_equals_sign] = '\0';
+				prop_name_temp_len = (int) strnlen(prop_name_temp, MAX_PROP_NAME_LEN);
 
-				if (0 == strncmp(prop_name_temp, prop_name, MAX_PROP_NAME_LEN)) {
-					size_t prop_value_len = strnlen(line, MAX_LINE_LEN) - strnlen(prop_name_temp, MAX_PROP_NAME_LEN) - 1;
-					strncpy(prop_value, &line[index_equal + 1], prop_value_len);
-					prop_value[prop_value_len] = '\0';
+				// //////////////////////////
+				// Ignore the spaces before and after the property name
+				for (k = 0; k < prop_name_temp_len; ++k) {
+					if ((' ' != prop_name_temp[k]) && ('\t' != prop_name_temp[k])) {
+						prop_name_temp_real = prop_name_temp + k;
+						break;
+					}
+				}
+				for (k = (prop_name_temp_len - 1); k >= 0; --k) {
+					if ((' ' != prop_name_temp[k]) && ('\t' != prop_name_temp[k])) {
+						prop_name_temp[k + 1] = '\0'; // End the string on first whitespace
+						break;
+					}
+				}
+				if (NULL == prop_name_temp_real) {
+					// For any reason, no idea. Maybe if the line is empty or the key has no name and there's just an
+					// equals sign? Didn't check, but good to listen to the warnings (in this case NULL dereference), I
+					// guess.
+					continue;
+				}
+				// //////////////////////////
 
-					return true;
+				if (0 == strncmp(prop_name_temp_real, prop_name, MAX_PROP_NAME_LEN)) {
+					char prop_value_temp[MAX_PROP_VALUE_LEN];
+					size_t prop_value_len = 0;
+					int prop_value_real_len = 0;
+					int index_prop_value_real_begin = 0;
+
+					// Below, -1 from the equals sign
+					prop_value_len = strnlen(line, MAX_LINE_LEN) - strnlen(prop_name_temp_real, MAX_PROP_NAME_LEN) - 1;
+					strncpy(prop_value_temp, &line[index_equals_sign + 1], prop_value_len);
+					prop_value_temp[prop_value_len] = '\0';
+
+					// //////////////////////////
+					// Ignore the spaces before and after the property value
+					for (k = 0; k < prop_name_temp_len; ++k) {
+						if ((' ' != prop_value_temp[k]) && ('\t' != prop_value_temp[k])) {
+							index_prop_value_real_begin = k;
+							break;
+						}
+					}
+					for (k = (prop_name_temp_len - 1); k >= 0; --k) {
+						if ((' ' != prop_value_temp[k]) && ('\t' != prop_value_temp[k])) {
+							prop_value_real_len = (k + 1) - index_prop_value_real_begin;
+							prop_value[k + 1] = '\0'; // End the string on first whitespace
+							break;
+						}
+					}
+					// //////////////////////////
+
+					if (prop_value_real_len > 0) {
+						strncpy(prop_value, &prop_value_temp[index_prop_value_real_begin], (size_t) prop_value_real_len);
+
+						return true;
+					}
+
+					return false;
 				}
 			}
 		}

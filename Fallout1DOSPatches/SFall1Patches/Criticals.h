@@ -1,0 +1,14 @@
+//
+// Created by DADi590 on 20/02/2022.
+//
+
+#ifndef FALLOUT1DOSPATCHES_CRITICALS_H
+#define FALLOUT1DOSPATCHES_CRITICALS_H
+
+
+
+void CritInit(void);
+
+
+
+#endif //FALLOUT1DOSPATCHES_CRITICALS_H

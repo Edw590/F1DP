@@ -16,7 +16,7 @@
 #define SNO_DATA_SEC_BLOCK_ADDR 0x05000000
 
 #define BLOCK_CODE_SEC_OFFSET 0x10 // The code segment begins in the 16th byte, not on the 0th
-#define BLOCK_DATA_SEC_OFFSET (0x1000 + BLOCK_CODE_SEC_OFFSET) // The data segment begins 0x1000 bytes after the code segment (for now at least)
+#define BLOCK_DATA_SEC_OFFSET (0x2000 + BLOCK_CODE_SEC_OFFSET) // The data segment begins 0x1000 bytes after the code segment (for now at least)
 
 // Explanation of this file and all the SN_ constants thing around the project files
 //
