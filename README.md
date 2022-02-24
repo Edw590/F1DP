@@ -4,12 +4,12 @@ A patcher for the MS-DOS version of Fallout 1 including Crafty's sFall1 patches 
 
 ## Introduction
 
-Hi everyone. I've decided to attempt to port all patches made to the Windows version of Fallout 1 to the MS-DOS one. Some Windows patches are DLL mods, and even if DOS recognizes DLLs with help of extenders or whatever it is, the DLL code is for the Windows version only (but anyway, I've no idea how to load and even program a DLL, at least yet. But I've went around that. This way, those who need to play with the DOS version like me for whatever reason can enjoy the patches that the Windows version players can.
+Hi everyone. I've decided to attempt to port all patches made to the Windows version of Fallout 1 to the MS-DOS one. Some Windows patches are DLL mods, and even if DOS recognizes DLLs with help of extenders or whatever it is, the DLL code is for the Windows version only (but anyway, I've no idea how to load and even program a DLL, at least yet). But I've went around that. This way, those who need to play with the DOS version like me for whatever reason can enjoy the patches that the Windows version players can.
 
 This repository contains the code for everything involved with the patch:
-- the patcher, in Go (a GoLand project);
-- the patches themselves, in C and Assembly (a CLion project);
-- and the patches loader, in Assembly (a file compiled from Sublime Text 3 using MASM 9.0 and using the compilation assistant and Sublime Text stuff from this repository of mine: https://github.com/DADi590/Chrome-Dino-Game-in-Assembly).
+- the patcher installer, in Go (a GoLand project);
+- the patcher, in C and Assembly (a CLion project);
+- and the patcher loader, in Assembly (a file compiled from Sublime Text 3 using MASM 9.0 and using the compilation assistant and Sublime Text stuff from this repository of mine: https://github.com/DADi590/Chrome-Dino-Game-in-Assembly).
 
 ## Download
 
