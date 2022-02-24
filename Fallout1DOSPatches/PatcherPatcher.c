@@ -2,7 +2,7 @@
 // Created by DADi590 on 21/02/2022.
 //
 
-#include "Headers/PatchPatcher.h"
+#include "OtherHeaders/PatcherPatcher.h"
 
 #define CODE_SEC_ADDR_OFFSET 4
 #define DATA_SEC_ADDR_OFFSET 8
@@ -16,7 +16,7 @@
 #define SNO_DATA_SEC_BLOCK_ADDR 0x05000000
 
 #define BLOCK_CODE_SEC_OFFSET 0x10 // The code segment begins in the 16th byte, not on the 0th
-#define BLOCK_DATA_SEC_OFFSET 0x1000 + BLOCK_CODE_SEC_OFFSET // The data segment begins 0x1000 bytes after the code segment (for now at least)
+#define BLOCK_DATA_SEC_OFFSET (0x1000 + BLOCK_CODE_SEC_OFFSET) // The data segment begins 0x1000 bytes after the code segment (for now at least)
 
 // Explanation of this file and all the SN_ constants thing around the project files
 //
@@ -36,7 +36,14 @@
 // How does the program not patch itself when comparing values? Because I'm putting the patchPatcher() function with a
 // constant parameter (a base value, SN_BASE) which it then sums to macros to get the final value to compare, every time
 // it wants to compare values. It's not a decent idea, but it works, because Open Watcom doesn't optimize it, so I guess
-// it's perfect.
+// it's good enough.
+// EDIT: thinking a bit more, I think the idea is the same as relocations. I just don't have a table nor I want to make
+// one xD - my way is kind of simpler, I just have to hope (😂) that the special numbers are never used anywhere else
+// than where I put them.
+
+// This function must NOT use ANY other function from this project to achieve its goal. It must be all internal to this
+// file. That way, for sure it's not using something that needs to be replaced (which can only happen after this
+// function ends its job successfully and without external help).
 
 // The sn_base parameter MUST be SN_BASE. Constant parameter ALWAYS. This is to disable sum optimizations. I need the
 // function to not have any of the SN_ constants on it, else it will replace them (not good to replace the replacer...).
@@ -50,7 +57,7 @@ void patchPatcher(uint32_t sn_base) {
 	uint32_t data_sec_block_addr = 0;
 	// NO ASSIGNMENTS ABOVE THE __asm DECLARATION!!!!! THE ESI REGISTER MUST BE INTACT INSIDE IT!!!!
 	__asm {
-		mov     [block_addr], esi // Now the block address is decently stored before any code messes with ESI
+		mov     dword ptr [block_addr], esi // Now the block address is decently stored before any code messes with ESI
 	}
 	code_sec_exe_addr = *(uint32_t *) (block_addr + CODE_SEC_ADDR_OFFSET);
 	data_sec_exe_addr = *(uint32_t *) (block_addr + DATA_SEC_ADDR_OFFSET);

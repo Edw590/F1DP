@@ -1,0 +1,15 @@
+//
+// Created by DADi590 on 22/02/2022.
+//
+
+#ifndef FALLOUT1DOSPATCHES_STRINGS_H
+#define FALLOUT1DOSPATCHES_STRINGS_H
+
+
+
+// "FALLOUT %d.%d"
+#define S_FALLOUT_D_D 0xFD5E0
+
+
+
+#endif //FALLOUT1DOSPATCHES_STRINGS_H

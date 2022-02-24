@@ -2,6 +2,8 @@
 ###############################
 # My things
 
+*.pdf
+
 generated_binaries/
 *.exe
 *.lst

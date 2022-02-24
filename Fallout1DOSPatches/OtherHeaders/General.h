@@ -7,9 +7,9 @@
 
 
 
-#define NULL ((void *)0)
-#define EXIT_SUCCESS 0
-#define EXIT_FAILURE 1
+#define NL "\r\n"
+
+#define freeNew(ptr) free(ptr); ptr = NULL
 
 
 
