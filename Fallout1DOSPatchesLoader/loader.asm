@@ -29,6 +29,12 @@
 ; Note: I could call all functions with the relative offset, but I prefer to have it hard-coded here so less bugs happen.
 ; This will only run in the beginning anyway, so no big deal with performance.
 
+; All (or most of) these functions and file names belong to POSIX 1003.1 (filelength doesn't), the same used by Watcom,
+; the compiler used for the game.
+; When there's no register mention on the parameters, it means it's on the stack (don't forget the calling convention
+; is backwards on that).
+; The return value is either a register name, or [stack] or (void). To know what's returned, go to the official docs.
+
 pusha ; Save all registers
 
 call    rightAfter
@@ -37,24 +43,24 @@ pop     esi
 sub     esi, 0EA2E0h ; ESI = Code section address --> ATTENTION: if you put the loader anywhere else in the game, change this value!!!
 
 ; Allocate the code block here
-push    0
-push    200h ; O_RDONLY | O_BINARY
+push    400  ; S_IRUSR
+push    600h ; O_RDONLY | O_BINARY | O_EXCL
 lea     edi, [esi+12345678h] ; PATCHES_BIN_FILE
 push    edi
-lea     ecx, [esi+0D555Ah] ; open_(file name) EAX = file handle
+lea     ecx, [esi+0D555Ah] ; open_(path, oflag, ...) EAX
 call    ecx
 add     esp, 0Ch
 cmp     eax, -1
 je      errorOpen
 push    eax ; Save the file handle for read()
 
-lea     ecx, [esi+0BF9ECh] ; filelength_(EAX = file handle) EAX = file length
+lea     ecx, [esi+0BF9ECh] ; filelength_(EAX = handle) EAX
 call    ecx
 cmp     eax, -1
 je      errorFileLength
 push    eax ; Save the file length for read()
 
-lea     ecx, [esi+0CAC68h] ; _nmalloc_(EAX = file length) EAX = allocated block address
+lea     ecx, [esi+0CAC68h] ; _nmalloc_(EAX = size) EAX
 call    ecx
 test    eax, eax
 jz      errorMalloc
@@ -62,13 +68,13 @@ jz      errorMalloc
 mov     edx, eax
 mov     eax, [esp+4]
 mov     ebx, [esp]
-lea     ecx, [esi+0D545Fh] ; read(EAX = file handle, EBX = length to read, EDX = buffer address) EAX = number of read bytes
+lea     ecx, [esi+0D545Fh] ; read_(EAX = fildes, EDX = buf, EBX = nbyte) EAX
 call    ecx
 cmp     eax, [esp]
 jne     errorRead
 
 mov     eax, [esp+4]
-lea     ecx, [esi+0D57CCh] ; close(EAX = file handle) EAX = error code
+lea     ecx, [esi+0D57CCh] ; close_(EAX = fildes) EAX
 call    ecx
 ; I'll not check for file not closed here. I don't think it's that bad anyway.
 ; The patches are already in place really.
@@ -110,16 +116,19 @@ call    eax
 pop     esi
 ;;;;;;;;;;;;;;;;;;;
 
-test    eax, eax
-jz      printSuccess
-jmp     printErrors
+; realMain's return type is 'bool'. That's 0 or 1, and when it's to put false, Watcom XORs AL with AL, not EAX, with EAX.
+; Makes sense, because it's only 0 or 1, nothing else. So I've put the check with AL too (no need for EAX really if Watcom
+; zeroes at least AL when it's to return false).
+test    al, al
+jz      printErrors   ; Returned false, then an error occurred
+jmp     printSuccess  ; Returned true, then all went fine
 
 errorOpen:
 	call    printErrorP1
 	push    edi ; File name
 	lea     eax, [esi+12345678h] ; ERR_OPEN_STR
 	push    eax
-	lea     ecx, [esi+0CA3B0h] ; printf(string)
+	lea     ecx, [esi+0CA3B0h] ; printf_(format, ...) EAX
 	call    ecx
 	add     esp, 8
 	jmp     printErrorP2
@@ -130,7 +139,7 @@ errorFileLength:
 	push    edi ; File name
 	lea     eax, [esi+12345678h] ; ERR_FILE_LENGTH_STR
 	push    eax
-	lea     ecx, [esi+0CA3B0h] ; printf(string)
+	lea     ecx, [esi+0CA3B0h] ; printf_(format, ...) EAX
 	call    ecx
 	add     esp, 8
 	jmp     printErrorP2
@@ -141,7 +150,7 @@ errorMalloc:
 	push    ebx ; File length
 	lea     eax, [esi+12345678h] ; ERR_MALLOC_STR
 	push    eax
-	lea     ecx, [esi+0CA3B0h] ; printf(string)
+	lea     ecx, [esi+0CA3B0h] ; printf_(format, ...) EAX
 	call    ecx
 	add     esp, 8
 	jmp     printErrorP2
@@ -152,7 +161,7 @@ errorRead:
 	push    edi ; File name
 	lea     eax, [esi+12345678h] ; ERR_READ_STR
 	push    eax
-	lea     ecx, [esi+0CA3B0h] ; printf(string)
+	lea     ecx, [esi+0CA3B0h] ; printf_(format, ...) EAX
 	call    ecx
 	add     esp, 8
 	jmp     printErrorP2
@@ -163,7 +172,7 @@ errorWrongVer:
 	push    edi ; File name
 	lea     eax, [esi+12345678h] ; ERR_WRNG_VER_STR
 	push    eax
-	lea     ecx, [esi+0CA3B0h] ; printf(string)
+	lea     ecx, [esi+0CA3B0h] ; printf_(format, ...) EAX
 	call    ecx
 	add     esp, 12
 	jmp     printErrorP2
@@ -171,7 +180,7 @@ errorWrongVer:
 printErrorP1:
 	lea     eax, [esi+12345678h] ; ERR_IN_PATCHER_STR
 	push    eax
-	lea     ecx, [esi+0CA3B0h] ; printf(string)
+	lea     ecx, [esi+0CA3B0h] ; printf_(format, ...) EAX
 	call    ecx
 	add     esp, 4
 	ret
@@ -179,7 +188,7 @@ printErrorP1:
 printErrorP2:
 	lea     eax, [esi+12345678h] ; PRESS_ENTER_STR
 	push    eax
-	lea     ecx, [esi+0CA3B0h] ; printf(string)
+	lea     ecx, [esi+0CA3B0h] ; printf_(format, ...) EAX
 	call    ecx
 	add     esp, 4
 	lea     ecx, [esi+0DE2DEh] ; getch() EAX = entered character in ASCII
@@ -189,7 +198,7 @@ printErrorP2:
 printSuccess:
 	lea     eax, [esi+12345678h] ; PATCHER_SUCCESS
 	push    eax
-	lea     ecx, [esi+0CA3B0h] ; printf(string)
+	lea     ecx, [esi+0CA3B0h] ; printf_(format, ...) EAX
 	call    ecx
 	add     esp, 4
 	jmp     end1
@@ -197,7 +206,7 @@ printSuccess:
 printErrors:
 	lea     eax, [esi+12345678h] ; PATCHER_ERRORS
 	push    eax
-	lea     ecx, [esi+0CA3B0h] ; printf(string)
+	lea     ecx, [esi+0CA3B0h] ; printf_(format, ...) EAX
 	call    ecx
 	add     esp, 4
 	lea     ecx, [esi+0DE2DEh] ; getch() EAX = entered character in ASCII
@@ -213,6 +222,7 @@ call    whateverDadi590 ; sub_13450
 
 ret
 
+; At most 80 chars per line, don't forget that
 PATCHES_BIN_FILE db "dospatch.bin", 0
 ERR_OPEN_STR db "--> Error opening the patches file %s",0Dh,0Ah, 0
 ERR_FILE_LENGTH_STR db "--> Error getting the length of the patches file %s",0Dh,0Ah, 0
@@ -221,7 +231,7 @@ ERR_READ_STR db "--> Error reading the file %s",0Dh,0Ah, 0
 ERR_WRNG_VER_STR db "--> Wrong patches file %s version type. Expecting 0, but got %d",0Dh,0Ah, 0 ; [!!!] VERSION TYPE HERE
 ERR_IN_PATCHER_STR db 0Dh,0Ah,"Attention - error loading Fallout 1 DOS Patcher",0Dh,0Ah, 0
 PRESS_ENTER_STR db 0Dh,0Ah,"Press any key to continue with game execution WITHOUT patches...",0Dh,0Ah, 0
-PATCHER_SUCCESS db 0Dh,0Ah,"Fallout 1 DOS Patcher exited successfully! The game will now start automatically.",0Dh,0Ah, 0
+PATCHER_SUCCESS db 0Dh,0Ah,"Fallout 1 DOS Patcher exited successfully! The game will now start automatically",0Dh,0Ah, 0
 PATCHER_ERRORS db 0Dh,0Ah,"Fallout 1 DOS Patcher exited with errors! Please check the console.",0Dh,0Ah,
 				  "Press any key to proceed loading the game...",0Dh,0Ah, 0
 
