@@ -8,7 +8,7 @@ Hi everyone. I've decided to attempt to port all patches made to the Windows ver
 
 This repository contains the code for everything involved with the patch:
 - the patcher installer, in Go (a GoLand project);
-- the patcher, in C and Assembly (a CLion project);
+- the patcher, in C and Inline-Assembly (a CLion project);
 - and the patcher loader, in Assembly (a file compiled from Sublime Text 3 using MASM 9.0 and using the compilation assistant and Sublime Text stuff from this repository of mine: https://github.com/DADi590/Chrome-Dino-Game-in-Assembly).
 
 ## Download
