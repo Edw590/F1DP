@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Run" type="GoApplicationRunConfiguration" factoryName="Go Application">
-    <module name="Fallout1DOSPatcher" />
+    <module name="Fallout1DOSPatcherInstaller" />
     <working_directory value="$PROJECT_DIR$" />
     <kind value="PACKAGE" />
     <package value="FalloutDOSDebugPatcher" />
