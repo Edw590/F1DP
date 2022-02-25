@@ -8,9 +8,9 @@
 
 #include <stdbool.h>
 
-#define MAX_LINE_LEN 550
-#define MAX_PROP_NAME_LEN 50
-#define MAX_PROP_VALUE_LEN 500
+#define MAX_LINE_LEN 1000
+#define MAX_PROP_NAME_LEN 100
+#define MAX_PROP_VALUE_LEN 900
 
 struct FileContents {
 	char *contents;

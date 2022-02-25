@@ -8,7 +8,7 @@
 
 
 #define O_RDONLY 0x0000
-#define O_TEXT 0x0100
+#define O_BINARY 0x0200
 #define O_EXCL 0x0400
 
 #define S_IRUSR 000400

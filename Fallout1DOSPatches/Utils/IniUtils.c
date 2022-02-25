@@ -34,7 +34,7 @@ bool readFile(const char *file_path, struct FileContents *file) {
 	file_path = getRealBlockAddrData(file_path);
 	file = getRealBlockAddrData(file);
 
-	temp = open(file_path, O_RDONLY | O_TEXT | O_EXCL, S_IRUSR);
+	temp = open(file_path, O_RDONLY | O_BINARY | O_EXCL, S_IRUSR);
 	if (temp < 0) {
 		return false;
 	}
@@ -50,17 +50,16 @@ bool readFile(const char *file_path, struct FileContents *file) {
 
 	file_contents = malloc(file_size * sizeof(*file_contents));
 
-	if (-1 == read((int) file_descriptor, file_contents, (size_t) file_size)) {
+	if (temp != read((int) file_descriptor, file_contents, (size_t) file_size)) {
 		freeNew(file_contents);
 		close((int) file_descriptor);
 
 		return false;
 	}
-
 	close((int) file_descriptor);
 
 	file->contents = file_contents;
-	file->size = file_size;
+	file->size = file_size - 2;
 
 	return true;
 }
@@ -95,6 +94,7 @@ bool getPropValueIni(const char * ini_contents, unsigned long ini_len, const cha
 			// ////////////////////////
 			// Line reader
 			bool first_decent_char_passed = false;
+			bool semicolon_reached = false;
 
 			while ((i < ini_len) && ('\n' != ini_contents[i])) {
 				if (('\r' != ini_contents[i]) && (j < (MAX_LINE_LEN - 1))) {
@@ -106,8 +106,13 @@ bool getPropValueIni(const char * ini_contents, unsigned long ini_len, const cha
 					} else {
 						first_decent_char_passed = true;
 					}
-					line[j] = ini_contents[i];
-					++j;
+					// If a semicolon is found, stop copying things (a comment just began)
+					if ((!semicolon_reached) && (';' == line[j])) {
+						semicolon_reached = true;
+
+						line[j] = ini_contents[i];
+						++j;
+					}
 				}
 				++i;
 			}
