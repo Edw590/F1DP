@@ -94,7 +94,7 @@ Anyone is free to contribute to the repository with new patch ports, new patches
 
 ### - License
 
-This project is licensed under GNU GPL-3.0-or-later License - https://www.gnu.org/licenses/, BUT the majority of the code is licensed under Apache 2.0 License -http://www.apache.org/licenses/LICENSE-2.0. The project is under said GNU GPL license because sFall1 is licensed under that license. But all the code I made is under the mentioned Apache license.
+This project and included and modified sFall1 source code is licensed under GNU GPL-3.0-or-later - https://www.gnu.org/licenses/, BUT all my code is licensed under Apache 2.0 License - http://www.apache.org/licenses/LICENSE-2.0.
 
 ## Support
 If you have any questions, try the options below:
