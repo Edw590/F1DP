@@ -1,3 +1,24 @@
+/*
+ * Copyright 2021 DADi590
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package main
 
 import (
@@ -7,19 +28,19 @@ import (
 )
 
 func showInitialScreen() {
-	fmt.Println("-----------------------------------------")
-	fmt.Println("Fallout 1 DOS EXE patcher v0.2 by DADi590")
-	fmt.Println("-----------------------------------------")
+	fmt.Println("-----------------------------------------------")
+	fmt.Println("Fallout 1 DOS Patcher Installer v0.2 by DADi590")
+	fmt.Println("-----------------------------------------------")
 	fmt.Println()
 	fmt.Println("-----Credits-----")
 	fmt.Println()
 	fmt.Println("This patcher was made by me, but the patches are not mine. Credits for all the patches go to the " +
-				"creator of the original sFall, Timeslip, and the creator of the sFall1 modification, Crafty (the one I'm " +
-				"using here)")
+		"creator of the original sFall, Timeslip, and the creator of the sFall1 modification, Crafty (the one I'm " +
+		"using here)")
 	fmt.Println()
 	fmt.Println("Also a thanks for Sduibek because it seems I used a repository with commits from him to improve some " +
-				"minor things, so a thank you him too. And because of this, another thanks to Aramatheus for forking a copy of " +
-				"the deleted repository.")
+		"minor things, so a thank you him too. And because of this, another thanks to Aramatheus for forking a copy of " +
+		"the deleted repository.")
 	fmt.Println()
 	fmt.Println("Link for sFall by Timeslip: http://timeslip.chorrol.com/sfallchangelog.html")
 	fmt.Println("Link for Crafty's sFall1 thread: http://fforum.kochegarov.com/index.php?showtopic=29288")
@@ -48,7 +69,7 @@ func main() {
 	var argv []string = os.Args
 	if 2 != len(argv) {
 		fmt.Println("Missing one parameter: the path to the file to patch. Either drag the file to patch to this " +
-					"program, or call it with the file path as parameter.")
+			"program, or call it with the file path as parameter.")
 		fmt.Println()
 
 		exit(ERR_MISSING_PARAM)
@@ -96,7 +117,7 @@ func main() {
 	fmt.Println("------------------")
 	fmt.Println("Additional patches")
 	fmt.Println("ATTENTION: Currently (at least), this patcher only applies these patches to the Fallout 1 DOS EXE " +
-				"v1.2 semi-official by TeamX.")
+		"v1.2 semi-official by TeamX.")
 	fmt.Println()
 	if additionalPatches(file_bytes, file_md5) {
 		fmt.Println("\nMD5 matched! Additional patches successfully applied!")
@@ -121,7 +142,7 @@ func main() {
 
 	fmt.Println("----------")
 	fmt.Println("ATTENTION: Read ALL the console before you close it. I may put warnings on it and just did on " +
-				"the 'Loot/Drop all' patch at the moment I'm writing this.")
+		"the 'Loot/Drop all' patch at the moment I'm writing this.")
 	fmt.Println("----------")
 	fmt.Println()
 
@@ -147,6 +168,17 @@ func additionalPatches(file_bytes []byte, file_md5 string) bool {
 	fmt.Println("-----")
 	fmt.Println("Necessary patches for the other patches")
 	fmt.Println("-----")
+
+	///////////////////////
+	fmt.Println("- Mark the code segment as readable, writable, and executable.") // Data executable for the allocated block, and Code writable to patch it
+	// Making them writable and executable or not is actually the same, because they already are because it works either
+	// way (xtll at Doomforums thinks the LE loader ignores the flags). But always good to do it just in case.
+	initial_offset = 0x2D5C
+	new_bytes = []byte{0x47}
+	patchBytes(file_bytes, initial_offset, new_bytes)
+	initial_offset = 0x2D74
+	new_bytes = []byte{0x47}
+	//patchBytes(file_bytes, initial_offset, new_bytes) - Can't make Data executable, an exception will be thrown (?)
 
 	///////////////////////
 	fmt.Println("- Extend the code segment to its maximum size") // (required for the patches)
@@ -308,9 +340,9 @@ func additionalPatches(file_bytes []byte, file_md5 string) bool {
 	///////////////////////
 	fmt.Println("- Loot/Drop all")
 	fmt.Println("  NOTICE 1: click 'A' to loot everything and 'D' to drop everything when exchanging inventories. I " +
-				"didn't include the buttons, at least yet.")
+		"didn't include the buttons, at least yet.")
 	fmt.Println("  NOTICE 2: it won't display the error messages for some reason I don't understand. The one for the " +
-				"'A' key says that you cannot carry that much, and the one for the 'D' key says there is no space left.")
+		"'A' key says that you cannot carry that much, and the one for the 'D' key says there is no space left.")
 	// todo Missing creating the buttons here
 	// Insert a JMP
 	initial_offset = 0x9B2C1
@@ -355,7 +387,7 @@ func additionalPatches(file_bytes []byte, file_md5 string) bool {
 	///////////////////////
 	fmt.Println("- [!] Show maximum weight in inventory (NOT applied, because of the below)")
 	fmt.Println("  NOTICE: this is not working. Currently, it will do nothing good - will delete the current weight " +
-				"message when you open the Inventory (it should just add the max weight, not delete things...)")
+		"message when you open the Inventory (it should just add the max weight, not delete things...)")
 	// todo THIS DOESN'T WORK WELL!!!!! It's supposed to only add the maximum weight, but it doesn't work and even
 	//  breaks the original functionality of displaying the current weight!!!
 	// Hopefully some other patch is missing for this one to work well... Else, not sure why it's not working.

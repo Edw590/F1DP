@@ -1,4 +1,0 @@
-C:\Users\DADi590\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\213.6461.75\bin\cmake\win\bin\cmake.exe -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - NMake Makefiles" C:\Users\DADi590\GoLandProjects\Fallout1DOSPatcher\Fallout1DOSPatches
--- Configuring done
--- Generating done
--- Build files have been written to: C:/Users/DADi590/GoLandProjects/Fallout1DOSPatcher/Fallout1DOSPatches/cmake-build-debug-visual-studio
