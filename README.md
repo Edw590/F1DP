@@ -92,9 +92,10 @@ Command I'm using to compile: `C:\MASM615\BIN\ml_9.00.21022.08_x86.EXE /omf /Fl 
 
 Anyone is free to contribute to the repository with new patch ports, new patches entirely, port fixes, whatever that is useful.
 
-### - License
+### - Licensing
 
-This project and included and modified sFall1 source code is licensed under GNU GPL-3.0-or-later - https://www.gnu.org/licenses/, BUT all my code is licensed under Apache 2.0 License - http://www.apache.org/licenses/LICENSE-2.0.
+- This project and included sFall1 source code is licensed under GNU GPL-3.0-or-later - https://www.gnu.org/licenses/.
+- All my code is licensed under Apache 2.0 License - http://www.apache.org/licenses/LICENSE-2.0.
 
 ## Support
 If you have any questions, try the options below:
