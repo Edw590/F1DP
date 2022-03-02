@@ -1,30 +1,28 @@
-/*
- *    sfall
- *    Copyright (C) 2011  Timeslip, 2022 DADi590
- *
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    (at your option) any later version.
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+// sfall
+// Copyright (C) 2011  Timeslip, 2022 DADi590
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // Original code modified by me, DADi590, to adapt it to this project, starting on 2022-03-02.
 
-#include "../CLibs/string.h"
 #include "../OtherHeaders/GlobalEXEAddrs.h"
 #include "../Utils/BlockAddrUtils.h"
 #include "../Utils/EXEPatchUtils.h"
 #include "Define.h"
 #include "FalloutEngine.h"
 #include "Inventory.h"
+#include "SFall1Patches.h"
 
 static void __declspec(naked) make_loot_drop_button() {
 	__asm {
@@ -310,7 +308,10 @@ static void __declspec(naked) loot_drop_all(void) {
 			call    edi
 			pop     edi
 			xchg    edx, eax                             // edx = ìàêñ. âåñ ãðóçà öåëè
-			// todo sub     edx, WeightOnBody                    // Ó÷èòûâàåì âåñ îäåòîé íà öåëè áðîíè è îðóæèÿ
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			sub     edx, [edi+WeightOnBody]              // Ó÷èòûâàåì âåñ îäåòîé íà öåëè áðîíè è îðóæèÿ
+			pop     edi
 			mov     eax, esi
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -483,7 +484,7 @@ static void __declspec(naked) loot_drop_all(void) {
 			push    edi
 			mov     edi, SN_DATA_SEC_EXE_ADDR
 			mov     eax, ds:[edi+D__target_curr_stack]
-			mov     eax, ds:[edi+D__target_stack_offset][eax*4]// eax = inventory_offset
+			mov     eax, ds:[edi+D__target_stack_offset][eax*4] // eax = inventory_offset
 			pop     edi
 			mov     edx, esi                             // -1 (visible_offset)
 			pop     ecx                                  // 2 (mode)
@@ -544,14 +545,12 @@ static void __declspec(naked) loot_drop_all(void) {
 	}
 }
 
-void InventoryInit(struct FileInfo sfall1_ini_info) {
-	(void) sfall1_ini_info;
-
+void InventoryInit(void) {
 	// "Take All" and "Put All" Buttons
 	MakeCallEXE(0x6352A, getRealBlockAddrCode((void *) &make_loot_drop_button), false);
 	MakeCallEXE(0x672C1, getRealBlockAddrCode((void *) &loot_drop_all), false);
-	strcpy(OverloadedLoot, "Sorry, you cannot carry that much.");
-	strcpy(OverloadedDrop, "Sorry, there is not enough space left.");
-	// todo GetPrivateProfileString("sfall", "OverloadedLoot", "Sorry, you cannot carry that much.", OverloadedLoot, 48, translationIni);
-	// todo GetPrivateProfileString("sfall", "OverloadedDrop", "Sorry, there is no space left.", OverloadedDrop, 48, translationIni);
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "sfall", "OverloadedLoot", "Sorry, you cannot carry that much.",
+					OverloadedLoot, &translation_ini_info_G);
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "sfall", "OverloadedDrop", "Sorry, there is no space left.",
+					OverloadedDrop, &translation_ini_info_G);
 }

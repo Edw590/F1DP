@@ -1,4 +1,4 @@
-// Copyright 2021 DADi590
+// Copyright 2022 DADi590
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -23,10 +23,9 @@
 #include "../CLibs/stdlib.h"
 #include "../CLibs/string.h"
 #include "../CLibs/unistd.h"
+#include "../OtherHeaders/General.h"
 #include "BlockAddrUtils.h"
 #include "IniUtils.h"
-#include "../OtherHeaders/General.h"
-#include "../CLibs/stdio.h"
 
 bool readFile(const char *file_path, struct FileInfo *file) {
 	char *file_contents = NULL;
@@ -37,6 +36,10 @@ bool readFile(const char *file_path, struct FileInfo *file) {
 	// Pointer correction
 	file_path = getRealBlockAddrData(file_path);
 	file = getRealBlockAddrData(file);
+
+	if (NULL == file_path) {
+		return false;
+	}
 
 	temp = open(file_path, O_RDONLY | O_BINARY | O_EXCL, S_IRUSR);
 	if (temp < 0) {
@@ -63,17 +66,17 @@ bool readFile(const char *file_path, struct FileInfo *file) {
 	close((int) file_descriptor);
 
 	file->contents = file_contents;
-	file->size = file_size - 2;
+	file->size = file_size;
 
 	return true;
 }
 
-bool getPropValueIni(struct FileInfo ini_info, const char *prop_spec_section_name, const char *prop_section_name,
-					 const char *prop_key, const char *def_value, char *prop_value) {
+bool getPropValueIni(const char *prop_spec_section_name, const char *prop_section_name, const char *prop_key,
+					 const char *def_value, char *prop_value, const struct FileInfo *ini_info) {
 	unsigned long i = 0;
 	size_t temp = 0;
-	const char *ini_contents = ini_info.contents;
-	unsigned long ini_len = ini_info.size;
+	const char *ini_contents = NULL;
+	unsigned long ini_len = 0;
 	char curr_section_name[MAX_SEC_NAME_LEN];
 	char curr_spec_section_name[MAX_SEC_NAME_LEN];
 	char line[MAX_LINE_LEN];
@@ -99,19 +102,34 @@ bool getPropValueIni(struct FileInfo ini_info, const char *prop_spec_section_nam
 	prop_key = getRealBlockAddrData(prop_key);
 	def_value = getRealBlockAddrData(def_value);
 	prop_value = getRealBlockAddrData(prop_value);
+	ini_info = getRealBlockAddrData(ini_info);
+
+	// A pointer to the struct intead of the struct itself is because if it is declared globally, a pointer is much
+	// easier to pass then to be calling getRealBlockAddrData() each time manually (while this function does it by itself).
+	ini_contents = ini_info->contents;
+	ini_len = ini_info->size;
+
+	if (!ini_info->is_main_ini) {
+		// If it's not the main INI, ignore the Special Section parameter (those sections exist only in the main INI).
+		prop_spec_section_name = NULL;
+	}
 
 	// Convert the given key and section names to lowercase
-	strcpy(prop_spec_section_name_lower, prop_spec_section_name);
-	strcpy(prop_section_name_lower, prop_section_name);
+	if (NULL != prop_spec_section_name) {
+		strcpy(prop_spec_section_name_lower, prop_spec_section_name);
+		temp = strnlen(prop_spec_section_name_lower, MAX_SEC_NAME_LEN);
+		for (i = 0; i < temp; ++i) {
+			prop_spec_section_name_lower[i] = (char) tolower(prop_spec_section_name_lower[i]);
+		}
+	}
+	if (NULL != prop_section_name) {
+		strcpy(prop_section_name_lower, prop_section_name);
+		temp = strnlen(prop_section_name_lower, MAX_SEC_NAME_LEN);
+		for (i = 0; i < temp; ++i) {
+			prop_section_name_lower[i] = (char) tolower(prop_section_name_lower[i]);
+		}
+	}
 	strcpy(prop_key_lower, prop_key);
-	temp = strnlen(prop_spec_section_name_lower, MAX_SEC_NAME_LEN);
-	for (i = 0; i < temp; ++i) {
-		prop_spec_section_name_lower[i] = (char) tolower(prop_spec_section_name_lower[i]);
-	}
-	temp = strnlen(prop_section_name_lower, MAX_SEC_NAME_LEN);
-	for (i = 0; i < temp; ++i) {
-		prop_section_name_lower[i] = (char) tolower(prop_section_name_lower[i]);
-	}
 	temp = strnlen(prop_key_lower, MAX_PROP_KEY_LEN);
 	for (i = 0; i < temp; ++i) {
 		prop_key_lower[i] = (char) tolower(prop_key_lower[i]);

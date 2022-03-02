@@ -1,5 +1,4 @@
-// sfall
-// Copyright (C) 2011  Timeslip, 2022 DADi590
+// Copyright (C) 2022 DADi590
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -14,15 +13,20 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+// This had no copyright notice on it. Hopefully, the author doesn't mind me using it. I'm keeping
+// the same license as in the other files of the project on it though (I'm just licensing it only
+// to myself because I can't put the original authors there, whoever they were - no notice).
+//
 // Original code modified by me, DADi590, to adapt it to this project, starting on 2022-03-02.
 
-#ifndef F1DPPATCHER_INVENTORY_H
-#define F1DPPATCHER_INVENTORY_H
+#ifndef F1DPPATCHER_BUGS_H
+#define F1DPPATCHER_BUGS_H
+
+
+#include <stdint.h>
+
+extern uint32_t WeightOnBody;
 
 
 
-void InventoryInit(void);
-
-
-
-#endif //F1DPPATCHER_INVENTORY_H
+#endif //F1DPPATCHER_BUGS_H

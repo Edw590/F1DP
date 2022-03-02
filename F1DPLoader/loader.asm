@@ -1,4 +1,4 @@
-; Copyright 2021 DADi590
+; Copyright 2022 DADi590
 ;
 ; Licensed to the Apache Software Foundation (ASF) under one
 ; or more contributor license agreements.  See the NOTICE file
@@ -61,6 +61,13 @@
 ; anywhere else more obscure (as an idea from the one with the loader idea, xtll, DOS video memory).
 
 pusha ; Save all registers
+push    eax
+push    ebx
+;push    ecx - See the end to know why it's commented
+push    edx
+push    esi
+push    edi
+push    ebp
 
 call    rightAfter
 rightAfter:
@@ -115,7 +122,7 @@ lea     ecx, [esi+0D57CCh] ; close_(EAX = fildes) EAX
 call    ecx
 ; I'll not check for file not closed here (why wouldn't it close anyway? The descriptor is still valid).
 
-; Below, "LES" + type (00h in this case), always in Little Endian (those must be the 1st 4 bytes of the BIN file).
+; Below, "LES" + type (00h in this case), always in Little Endian (those must be the first 4 bytes of the BIN file).
 ; The type is the type of the Patcher. Must be the same type that this loader is supposed to load.
 ; Also, LES means Linear Executable Segments, because I compiled an LE EXE and copy-pasted its segments to another file.
 cmp     dword ptr [edx], 0053454Ch ; [!!!] VERSION HERE
@@ -271,10 +278,24 @@ lea     ecx, [esi+0CA3B0h] ; printf_(format, ...) EAX
 call    ecx
 add     esp, 4
 
-popa ; Restore all registers
+mov     ecx, esi ; ECX = Code section address
 
-; Execute removed main() call, now with offsets and not effective addresses (no ESI to help here)
-call    whateverDadi590 ; sub_13450()
+; Restore all registers
+push    ebp
+push    edi
+push    esi
+push    edx
+;push    ecx
+push    ebx
+push    eax
+
+; Execute the removed main() call, now with offsets and not effective addresses (no ESI to help here).
+; EDIT: since ECX is set right after returning from this code cave and sub_13450() doesn't use it,
+; that means its current value is of no use. So I can just use it with ESI's value one last time.
+; This is just to ease my life when testing the Loader (one less thing to fix on IDA, because I
+; already have to fix all the strings manually... - boring).
+lea     ecx, [ecx+13450h] ; sub_13450() as IDA calls it
+call    ecx
 
 ret
 
@@ -283,22 +304,22 @@ ret
 
 ; At most 80 chars per line, don't forget that.
 
-INIT_MSG db "------------------------",0Dh,0Ah,"--- F1DP Loader v1.0 ---",0Dh,0Ah, 0
-END_MSG db  "--- F1DP Loader v1.0 ---",0Dh,0Ah,"------------------------",0Dh,0Ah, 0
+INIT_MSG db "----------------------------",0Dh,0Ah,"----- F1DP Loader v1.0 -----",0Dh,0Ah, 0
+END_MSG db  "----- F1DP Loader v1.0 -----",0Dh,0Ah,"----------------------------",0Dh,0Ah, 0
 
 BIN_FILE_NAME db "dospatch.bin", 0 ; At most 12 characters excluding the NULL one (DOS' 8.3 file names - 8 name chars, one dot, 3 chars the extension)
-PRT_BIN_FILE_NAME db "BIN file containing the Patcher: dospatch.bin",0Dh,0Ah, 0
-START_PATCHER_STR db "Patcher loaded correctly. Starting it now...",0Dh,0Ah, 0
+PRT_BIN_FILE_NAME db "- BIN file containing the Patcher: dospatch.bin",0Dh,0Ah, 0
+START_PATCHER_STR db "- Patcher loaded correctly. Starting it now...",0Dh,0Ah, 0
 
-ERR_OPEN_STR db "Error opening the BIN file.",0Dh,0Ah, 0
-ERR_FILE_LENGTH_STR db "[/!\] Error getting the length of the BIN file.",0Dh,0Ah, 0
-ERR_MALLOC_STR db "[/!\] Error allocating RAM memory space (%u bytes) for the Patcher.",0Dh,0Ah, 0
-ERR_READ_STR db "[/!\] Error reading the BIN file.",0Dh,0Ah, 0
-ERR_WRNG_TYPE_STR db "[/!\] Wrong BIN file type. Expecting type LES0, but got %s%d.",0Dh,0Ah, 0 ; [!!!] VERSION HERE
-ERR_LOAD_NO_PATCHES db 0Dh,0Ah,"Press any key to proceed loading the game WITHOUT any patches...",0Dh,0Ah, 0
-PATCHER_SUCCESS db 0Dh,0Ah,"The Patcher exited successfully! The game will now start automatically.",0Dh,0Ah, 0
-PATCHER_ERRORS db 0Dh,0Ah,"The Patcher exited with errors! Please check the console.",0Dh,0Ah,
-				          "Press any key to proceed loading the game...",0Dh,0Ah, 0
+ERR_OPEN_STR db "- [X] Error opening the BIN file.",0Dh,0Ah, 0
+ERR_FILE_LENGTH_STR db "- [X] Error getting the length of the BIN file.",0Dh,0Ah, 0
+ERR_MALLOC_STR db "- [X] Error allocating RAM memory space (%u bytes) for the Patcher.",0Dh,0Ah, 0
+ERR_READ_STR db "- [X] Error reading the BIN file.",0Dh,0Ah, 0
+ERR_WRNG_TYPE_STR db "- [X] Wrong BIN file type. Expecting type LES0, but got %s%d.",0Dh,0Ah, 0 ; [!!!] VERSION HERE
+ERR_LOAD_NO_PATCHES db 0Dh,0Ah,"- Press any key to proceed loading the game WITHOUT any patches...",0Dh,0Ah, 0
+PATCHER_SUCCESS db 0Dh,0Ah,"- The Patcher exited successfully! The game will now start automatically.",0Dh,0Ah, 0
+PATCHER_ERRORS db 0Dh,0Ah,"- The Patcher exited with errors! Please check the console.",0Dh,0Ah,
+				          "  Press any key to proceed loading the game...",0Dh,0Ah, 0
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

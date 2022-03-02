@@ -1,4 +1,4 @@
-// Copyright 2021 DADi590
+// Copyright 2022 DADi590
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -28,7 +28,8 @@
 // Don't forget EVERY variable you put here, to get it you'll have to go through getRealBlockAddrData(), so put only
 // things that won't be used that much or that will be used only in one place or something.
 
-extern bool prop_logPatcher;
+extern bool prop_logPatcher_G;
+extern struct FileInfo dospatch_ini_info_G;
 
 
 

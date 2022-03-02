@@ -1,4 +1,4 @@
-// Copyright 2021 DADi590
+// Copyright 2022 DADi590
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -105,7 +105,7 @@ int printlnStr(const char *string) {
 __declspec(naked) int logf(const char *format, ...) {
 	(void) format;
 	__asm {
-		lea     eax, [prop_logPatcher]
+		lea     eax, [prop_logPatcher_G]
 		call    getRealBlockAddrData
 		cmp     [eax], 0
 		je      end1
@@ -125,7 +125,7 @@ __declspec(naked) int logf(const char *format, ...) {
 }
 
 int loglnStr(const char *string) {
-	if (!(*(bool *) getRealBlockAddrData(&prop_logPatcher))) {
+	if (!(*(bool *) getRealBlockAddrData(&prop_logPatcher_G))) {
 		return -3234;
 	}
 

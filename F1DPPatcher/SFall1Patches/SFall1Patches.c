@@ -1,4 +1,4 @@
-// Copyright 2021 DADi590
+// Copyright 2022 DADi590
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -22,34 +22,36 @@
 #include "../CLibs/string.h"
 #include "../OtherHeaders/General.h"
 #include "../OtherHeaders/GlobalVars.h"
+#include "../Utils/BlockAddrUtils.h"
 #include "Inventory.h"
 #include "SFall1Patches.h"
 
-void sFall1Patches(struct FileInfo sfall1_ini_info);
+struct FileInfo sfall1_ini_info_G = {0};
+struct FileInfo translation_ini_info_G = {0};
 
-bool initSfall1Patcher(struct FileInfo dospatch_ini_info) {
+void sFall1Patches(void);
+
+bool initSfall1Patcher(void) {
 	bool ret_var = true;
-	struct FileInfo sfall1_ini_info;
-	char ini_prop_value[MAX_PROP_VALUE_LEN];
-	bool main_ini_for_settings = true;
+	char prop_value[MAX_PROP_VALUE_LEN];
 
-	memset(&sfall1_ini_info, 0, sizeof(sfall1_ini_info));
-	memset(ini_prop_value, 0, MAX_PROP_VALUE_LEN);
+	memset(prop_value, 0, MAX_PROP_VALUE_LEN);
 
-	if (getPropValueIni(dospatch_ini_info, F1DP_INI_SPEC_SEC_MAIN, NULL, "sFall1SettingsFile", NULL, ini_prop_value)) {
-		if (0 != strcmp(ini_prop_value, F1DP_MAIN_INI)) { // Don't reopen the main INI file, use the one already open.
-			if (readFile(ini_prop_value, &sfall1_ini_info)) {
-				logf(LOGGER_STR "File \"%s\" opened for sFall1 settings."NL, ini_prop_value);
-				main_ini_for_settings = false;
+	if (getPropValueIni(MAIN_INI_SPEC_SEC_MAIN, NULL, "sFall1SettingsFile", NULL, prop_value, &dospatch_ini_info_G)) {
+		if (0 != strcmp(prop_value, F1DP_MAIN_INI)) { // Don't reopen the main INI file, use the one already open.
+			if (readFile(prop_value, &sfall1_ini_info_G)) {
+				logf(LOGGER_STR "File \"%s\" opened for sFall1 settings."NL, prop_value);
+				((struct FileInfo *) getRealBlockAddrData(&sfall1_ini_info_G))->is_main_ini = false;
 			} else {
-				logf(LOGGER_STR "File \"%s\" not found for sFall1 settings. Aborting sFall1 patches."NL, ini_prop_value);
-				memset(&sfall1_ini_info, 0, sizeof(sfall1_ini_info));
+				logf(LOGGER_STR "File \"%s\" not found for sFall1 settings. Aborting sFall1 patches."NL, prop_value);
+				memset(&sfall1_ini_info_G, 0, sizeof(sfall1_ini_info_G));
 
 				ret_var = false;
 				goto funcEnd;
 			}
 		} else {
-			sfall1_ini_info = dospatch_ini_info;
+			*(struct FileInfo *) getRealBlockAddrData(&sfall1_ini_info_G) =
+					*(struct FileInfo *) getRealBlockAddrData(&dospatch_ini_info_G);
 		}
 	} else {
 		loglnStr(LOGGER_ERR_STR "No file specified for sFall1 settings. Aborting sFall1 patches.");
@@ -58,15 +60,15 @@ bool initSfall1Patcher(struct FileInfo dospatch_ini_info) {
 		goto funcEnd;
 	}
 
-
-	sFall1Patches(sfall1_ini_info);
+	sFall1Patches();
 
 
 	funcEnd:
 
-	// If the file was opened here, release its contents before leaving the function.
-	if (!main_ini_for_settings) {
-		freeNew(sfall1_ini_info.contents);
+	// If the file was opened here, release its contents before leaving the function (unless it's the main one, which is
+	// taken care of by realMain().
+	if (!((struct FileInfo *) getRealBlockAddrData(&sfall1_ini_info_G))->is_main_ini) {
+		freeNew(((struct FileInfo *) getRealBlockAddrData(&sfall1_ini_info_G))->contents);
 	}
 
 	return ret_var;
@@ -76,12 +78,19 @@ bool initSfall1Patcher(struct FileInfo dospatch_ini_info) {
 // the special numbers in use. If you want to understand what was done, just go to the sFall1 source and see there. If
 // you think anything is wrong with the ones here, redo from scratch, don't try to fix. It's a mess with this way of
 // Special Numbers, but I don't have better ideas without making a relocation table for the EXE, parsing it and applying
-// it (as long as this way works, I think it's much better than going that route which would take infinity).
+// it (as long as this way works, I think it's much better than going that route, which would take infinity).
 
-void sFall1Patches(struct FileInfo sfall1_ini_info) {
-	//char prop_value[MAX_PROP_VALUE_LEN];
+void sFall1Patches(void) {
+	char prop_value[MAX_PROP_VALUE_LEN];
 
-	InventoryInit(sfall1_ini_info);
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Main", "TranslationsINI", "./Translations.ini", prop_value, &sfall1_ini_info_G);
+	// If it fails, the struct will have 0s and the file won't be read, so the default values will be used as sFall1 does.
+	readFile(prop_value, &translation_ini_info_G);
+
+	InventoryInit();
+
+	freeNew(((struct FileInfo *) getRealBlockAddrData(&translation_ini_info_G))->contents);
 }
 
+#include "Bugs.c"
 #include "Inventory.c"

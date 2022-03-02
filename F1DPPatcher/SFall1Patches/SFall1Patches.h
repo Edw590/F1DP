@@ -1,4 +1,4 @@
-// Copyright 2021 DADi590
+// Copyright 2022 DADi590
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -25,7 +25,10 @@
 #include "../Utils/IniUtils.h"
 #include <stdbool.h>
 
-bool initSfall1Patcher(struct FileInfo dospatch_ini_info);
+extern struct FileInfo sfall1_ini_info_G;
+extern struct FileInfo translation_ini_info_G;
+
+bool initSfall1Patcher(void);
 
 
 

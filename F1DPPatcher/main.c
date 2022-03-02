@@ -1,4 +1,4 @@
-// Copyright 2021 DADi590
+// Copyright 2022 DADi590
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -30,7 +30,6 @@
 // This is also just because I don't want to be appending NULL bytes or hard-coding a number on the Loader for it to
 // always allocate space for the uninitialized data section. So just initialize everything (easy thing to do anyways).
 
-#include "CLibs/conio.h"
 #include "CLibs/stdio.h"
 #include "CLibs/stdlib.h"
 #include "CLibs/string.h"
@@ -44,7 +43,8 @@
 
 #define SN_MAIN_FUNCTION 0x78563412 // 12 34 56 78 in little endian
 
-bool prop_logPatcher = true;
+bool prop_logPatcher_G = true;
+struct FileInfo dospatch_ini_info_G = {0};
 
 bool realMain(void);
 void patchVerStr(void);
@@ -58,23 +58,27 @@ __declspec(naked) int main(void) {
 	// Also, implementing this function is just to be able to run the program as a normal EXE in case it's needed for
 	// any reason. Though, this is unnecessary if it's for the patch to be tested only when ran inside the EXE. In that
 	// case, the special number could be put in the beginning of realMain().
-	// EDIT: actually no, because if it's for realMain() not to be naked, then the first thing must be declarations of
-	// local variables. So this is still needed. Though, the 1st jump is still unnecessary and is only there to run this
-	// as a normal program and nothing else.
+	// EDIT: actually no, because to put the DD and JMP statements on realMain(), without making it naked, it wouldn't
+	// be the real start of the function (PUSHes and POPs first, aside from the part that local variables must be above
+	// all other things); and putting it naked, would make it a pain to be sure it's working well. This is MUCH easier.
+	// So this is still needed. Though, the 1st jump is still unnecessary and is only there to run this as a normal
+	// program and nothing else.
 
 	__asm {
 		jmp     main1 // Jump over the data in case this program's EXE is executed normally
 		dd      SN_MAIN_FUNCTION
 		main1: // Where code execution begins for the loader
-		// Right before ANYthing else (before the ESI register is used somewhere), patch the patch itself. And also
-		// before any operations that need the special numbers already replaced.
+		// Right before ANYthing else (before the ESI register, which contains the address of the allocated block) is
+		// used somewhere), patch the patcher itself - and also before any operations that need the special numbers
+		// already replaced.
 		mov     eax, SN_BASE
 		call    patchPatcher
 		jmp     realMain
 	}
 
 	// No return value here on main() because this function never returns - it's realMain() that returns, so the return
-	// value is there.
+	// value is there, and may or may not of int type (the Loader is the one interpreting that value, so it's decided
+	// by the programmer, not by C's specifications).
 }
 
 /**
@@ -87,18 +91,19 @@ bool realMain(void) {
 	// Don't forget we can't initialize variables that are not initialized with just "= [number]". If it's with "= {0}"
 	// or something like that, it will copy from empty memory to the destination --> memory without address correction,
 	// because it's automatic.
-	// So ONLY initialize if it can be initialized with "= [number]", OR ask memset to help if it can't.
+	// So ONLY initialize if it can be initialized with "= number", OR if it can't, ask for memset()'s help.
 	bool ret_var = true;
 	char ini_prop_value[MAX_PROP_VALUE_LEN];
-	struct FileInfo dospatch_ini_info;
 
-	memset(&dospatch_ini_info, 0, sizeof(dospatch_ini_info));
+	memset(&dospatch_ini_info_G, 0, sizeof(dospatch_ini_info_G));
 	memset(ini_prop_value, 0, MAX_PROP_VALUE_LEN);
+
+	((struct FileInfo *) getRealBlockAddrData(&dospatch_ini_info_G))->is_main_ini = true;
 
 	printlnStr("  ----- F1DP Patcher "F1DP_VER_STR" -----");
 
 	// Open the main INI file
-	if (!readFile(F1DP_MAIN_INI, &dospatch_ini_info)) {
+	if (!readFile(F1DP_MAIN_INI, &dospatch_ini_info_G)) {
 		printlnStr(LOGGER_ERR_STR "DOSPATCH.INI NOT FOUND!!!");
 		printlnStr(LOGGER_STR "Press any key to create a new dospatch.ini file with default values...");
 
@@ -112,7 +117,7 @@ bool realMain(void) {
 	//logf(LOGGER_STR "Code section at: 0x%X; Data section at: 0x%X."NL, SN_CODE_SEC_BLOCK_ADDR, SN_DATA_SEC_BLOCK_ADDR);
 
 	// Check if the version of the INI file is the same as of the Patcher
-	if (getPropValueIni(dospatch_ini_info, F1DP_INI_SPEC_SEC_MAIN, NULL, "F1DPVersion", NULL, ini_prop_value)) {
+	if (getPropValueIni(MAIN_INI_SPEC_SEC_MAIN, NULL, "F1DPVersion", NULL, ini_prop_value, &dospatch_ini_info_G)) {
 		if (0 != strcmp(ini_prop_value, F1DP_VER_STR)) {
 			printlnStr(LOGGER_ERR_STR "Wrong INI settings file version. Aborting the Patcher...");
 
@@ -131,29 +136,29 @@ bool realMain(void) {
 	patchVerStr();
 
 	// Enable or disable the logger
-	if (getPropValueIni(dospatch_ini_info, F1DP_INI_SPEC_SEC_MAIN, NULL, "logPatcher", NULL, ini_prop_value)) {
-		*(bool *) getRealBlockAddrData(&prop_logPatcher) = (0 == strcmp(ini_prop_value, "0")) ? false : true;
+	if (getPropValueIni(MAIN_INI_SPEC_SEC_MAIN, NULL, "logPatcher", NULL, ini_prop_value, &dospatch_ini_info_G)) {
+		*(bool *) getRealBlockAddrData(&prop_logPatcher_G) = (0 == strcmp(ini_prop_value, "0")) ? false : true;
 		if (0 == strcmp(ini_prop_value, "0")) {
-			*(bool *) getRealBlockAddrData(&prop_logPatcher) = false;
+			*(bool *) getRealBlockAddrData(&prop_logPatcher_G) = false;
 			loglnStr(LOGGER_STR "Patcher logger disabled."); // Will never print (logger = false), but anyway.
 		} else if (0 == strcmp(ini_prop_value, "1")) {
-			*(bool *) getRealBlockAddrData(&prop_logPatcher) = true;
+			*(bool *) getRealBlockAddrData(&prop_logPatcher_G) = true;
 			loglnStr(LOGGER_STR "Patcher logger enabled.");
 		} else {
-			*(bool *) getRealBlockAddrData(&prop_logPatcher) = true;
+			*(bool *) getRealBlockAddrData(&prop_logPatcher_G) = true;
 			printlnStr(LOGGER_ERR_STR "'logPatcher' has a wrong value. Using 1 as default...");
 
 			ret_var = false;
 		}
 	} else {
-		*(bool *) getRealBlockAddrData(&prop_logPatcher) = true;
+		*(bool *) getRealBlockAddrData(&prop_logPatcher_G) = true;
 		printlnStr(LOGGER_ERR_STR "'logPatcher' not specified. Using 1 as default...");
 
 		ret_var = false;
 	}
 
 	// Enable or disable the sFall1 patches
-	if (getPropValueIni(dospatch_ini_info, F1DP_INI_SPEC_SEC_MAIN, NULL, "sFall1Enable", NULL, ini_prop_value)) {
+	if (getPropValueIni(MAIN_INI_SPEC_SEC_MAIN, NULL, "sFall1Enable", NULL, ini_prop_value, &dospatch_ini_info_G)) {
 		// Clang-Tidy is complaining of "Comparison length is too long and might lead to a buffer overflow" with the 2
 		// below, but both are null-terminated strings, so ignore that - and I need to check if the string starts and
 		// ends with "1", so I need to check the NULL character too (2 characters total).
@@ -162,7 +167,7 @@ bool realMain(void) {
 		} else if (0 == strcmp(ini_prop_value, "1")) {
 			loglnStr(LOGGER_STR "sFall1 patches enabled.");
 
-			ret_var = ret_var && initSfall1Patcher(dospatch_ini_info);
+			ret_var = ret_var && initSfall1Patcher();
 		} else {
 			printlnStr(LOGGER_ERR_STR "'sFall1Enable' has a wrong value. Aborting sFall1 patches...");
 
@@ -176,7 +181,7 @@ bool realMain(void) {
 
 	funcEnd:
 
-	freeNew(dospatch_ini_info.contents);
+	freeNew(((struct FileInfo *) getRealBlockAddrData(&dospatch_ini_info_G))->contents);
 
 	printlnStr(ret_var ? NL LOGGER_STR "true" : NL LOGGER_STR "false");
 	printlnStr("  ----- F1DP Patcher "F1DP_VER_STR" -----");
@@ -191,7 +196,7 @@ void patchVerStr(void) {
 	writeMem32EXE(0xA10E3, 0x90909090); // Remove the 2 pushes
 	writeMem32EXE(0xA10E7 + 1, (uint32_t) getRealBlockAddrData("F1DOSPatcher "F1DP_VER_STR)); // Change the string address
 	writeMem32EXE(0x73373 + 1, 0x1BD); // Change the string height (445)
-	writeMem8EXE(0xA10F2 + 2, 0x8); // Change what's added to ESP
+	writeMem8EXE(0xA10F2 + 2, 0x8); // Correct what's added to ESP
 }
 
 // This is just because I don't want to be adding and removing targets on the compiler flags manually...

@@ -1,4 +1,4 @@
-// Copyright 2021 DADi590
+// Copyright 2022 DADi590
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -22,10 +22,10 @@
 
 
 
-// 2 chars
-#define LOGGER_STR "  "
-// 6 chars
-#define LOGGER_ERR_STR "  [!] "
+// 4 chars
+#define LOGGER_STR "  - "
+// 8 chars
+#define LOGGER_ERR_STR "  - [X] "
 
 __declspec(naked) int printf(const char * format, ...);
 

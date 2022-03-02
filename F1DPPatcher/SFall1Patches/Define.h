@@ -1,21 +1,22 @@
-/*
- *    sfall
- *    Copyright (C) 2011  Timeslip, 2022 DADi590
- *
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    (at your option) any later version.
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+// Copyright (C) 2022 DADi590
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+// This had no copyright notice on it. Hopefully, the author doesn't mind me using it. I'm keeping
+// the same license as in the other files of the project on it though (I'm just licensing it only
+// to myself because I can't put the original authors there, whoever they were - no notice).
+//
 // Original code modified by me, DADi590, to adapt it to this project, starting on 2022-03-02.
 
 #ifndef F1DPPATCHER_DEFINE_H
@@ -23,13 +24,17 @@
 
 
 
+#define PID_ACTIVE_GEIGER_COUNTER 207
+#define PID_ACTIVE_STEALTH_BOY    210
+#define PID_SUPER_STIMPAK         144
+
 // Perk Trait Types
 #define PERK_bonus_awareness     (0)
 #define PERK_bonus_hth_attacks   (1)
 #define PERK_bonus_hth_damage    (2)
 #define PERK_bonus_move          (3)
 #define PERK_bonus_ranged_damage (4)
-#define PERK_bonus_rate_of_fire  (5)
+#define PERK_bonus_rate_of_fire	 (5)
 #define PERK_earlier_sequence    (6)
 #define PERK_faster_healing      (7)
 #define PERK_more_criticals      (8)
@@ -76,11 +81,11 @@
 #define PERK_smooth_talker       (49)
 #define PERK_swift_learner       (50)
 #define PERK_tag                 (51)
-#define PERK_mutate              (52)
-#define PERK_add_nuka            (53)
+#define PERK_mutate		         (52)
+#define PERK_add_nuka	         (53)
 #define PERK_add_buffout         (54)
 #define PERK_add_mentats         (55)
-#define PERK_add_psycho          (56)
+#define PERK_add_psycho	         (56)
 #define PERK_add_radaway         (57)
 #define PERK_weapon_long_range   (58)
 #define PERK_weapon_accurate     (59)
@@ -190,8 +195,7 @@
 #define item_type_key       (6)
 
 #define ObjType_Item     (0)
-#define \
-ObjType_Critter  (1)
+#define ObjType_Critter  (1)
 #define ObjType_Scenery  (2)
 #define ObjType_Wall     (3)
 #define ObjType_Tile     (4)
@@ -206,6 +210,13 @@ ObjType_Critter  (1)
 #define hit_kick                   (5)
 #define hit_left_weapon_reload     (6)
 #define hit_right_weapon_reload    (7)
+
+#define ROLL_CRITICAL_FAILURE (0)
+#define ROLL_FAILURE          (1)
+#define ROLL_SUCCESS          (2)
+#define ROLL_CRITICAL_SUCCESS (3)
+
+#define destroy_p_proc (18)
 
 
 
