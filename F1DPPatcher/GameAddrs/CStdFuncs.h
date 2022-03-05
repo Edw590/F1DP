@@ -77,6 +77,8 @@
 
 // exit_(EAX = status) (void)
 #define F_exit_ 0xCA40A
+// itoa_(EAX = value, EDX = str, EBX = base) (void)
+#define F_itoa_ 0xC6DCA
 // _nfree_(EAX = ptr) (void)
 #define F__nfree_ 0xCADE9
 // _nmalloc_(EAX = size) EAX

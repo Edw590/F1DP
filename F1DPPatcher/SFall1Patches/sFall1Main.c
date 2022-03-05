@@ -25,10 +25,17 @@
 // NOTE: I don't see mention to Crafty in the copyright notices, but I'll just say here that this code was taken from
 // his modification of the original sFall1 by Timeslip.
 
+#include "../CLibs/stdio.h"
 #include "../CLibs/stdlib.h"
 #include "../CLibs/string.h"
 #include "../OtherHeaders/General.h"
+#include "../OtherHeaders/GlobalEXEAddrs.h"
 #include "../Utils/BlockAddrUtils.h"
+#include "../Utils/EXEPatchUtils.h"
+#include "AmmoMod.h"
+#include "Criticals.h"
+#include "Define.h"
+#include "FalloutEngine.h"
 #include "Inventory.h"
 #include "SFall1Patches.h"
 #include "sFall1Main.h"
@@ -120,7 +127,128 @@
 
 struct FileInfo translation_ini_info_G = {0};
 
+static char mapName[65] = {0};
+//static char versionString[65] = {0};
+static char windowName[65] = {0};
+static char configName[65] = {0};
+static char dmModelName[65] = {0};
+static char dfModelName[65] = {0};
+static char MovieNames[14 * 65] = {0};
+
+static const char *origMovieNames[] = {
+		"iplogo.mve",
+		"mplogo.mve",
+		"intro.mve",
+		"vexpld.mve",
+		"cathexp.mve",
+		"ovrintro.mve",
+		"boil3.mve",
+		"ovrrun.mve",
+		"walkm.mve",
+		"walkw.mve",
+		"dipedv.mve",
+		"boil1.mve",
+		"boil2.mve",
+		"raekills.mve",
+};
+
+static char KarmaGainMsg[128] = {0};
+static char KarmaLossMsg[128] = {0};
+
+static void __stdcall SetKarma(int value) {
+	char buf[128];
+	if (value > 0) {
+		sprintf(buf, KarmaGainMsg, value);
+	} else {
+		sprintf(buf, KarmaLossMsg, -value);
+	}
+	__asm {
+			lea     eax, [buf]
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			add     edi, C_display_print_
+			call    edi
+			pop     edi
+	}
+}
+
+static void __declspec(naked) op_set_global_var_hook() {
+	__asm {
+			cmp     eax, 155                             // PLAYER_REPUTATION
+			jne     end
+			pushad
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			add     edi, C_game_get_global_var_
+			call    edi
+			pop     edi
+			sub     edx, eax
+			test    edx, edx
+			jz      skip
+			push    edx
+			call    SetKarma
+		skip:
+			popad
+		end:
+			sub     esp, 4 // [DADi590] Reserve space for the return address
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			add     edi, C_game_set_global_var_
+			mov     [esp+4], edi
+			pop     edi
+			retn
+	}
+}
+
+static void __declspec(naked) intface_item_reload_hook() {
+	__asm {
+			pushad
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			mov     eax, ds:[edi+D__obj_dude]
+			pop     edi
+			push    eax
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			add     edi, C_register_clear_
+			call    edi
+			pop     edi
+			xor     eax, eax
+			inc     eax
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			add     edi, C_register_begin_
+			call    edi
+			pop     edi
+			xor     edx, edx
+			xor     ebx, ebx
+			dec     ebx
+			pop     eax                                  // _obj_dude
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			add     edi, C_register_object_animate_
+			call    edi
+			pop     edi
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			add     edi, C_register_end_
+			call    edi
+			pop     edi
+			popad
+
+			sub     esp, 4 // [DADi590] Reserve space for the return address
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			add     edi, C_gsound_play_sfx_file_
+			mov     [esp+4], edi
+			pop     edi
+			retn
+	}
+}
+
 void DllMain2(void) {
+	uint32_t i = 0;
+	int temp_int = 0;
 	char prop_value[MAX_PROP_VALUE_LEN];
 	memset(prop_value, 0, MAX_PROP_VALUE_LEN);
 
@@ -130,6 +258,97 @@ void DllMain2(void) {
 	readFile(prop_value, &translation_ini_info_G);
 
 	InventoryInit();
+
+	AmmoModInit();
+
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "StartingMap", "", mapName, &sfall1_ini_info_G);
+	if (0 != strcmp(mapName, "")) {
+		writeMem32EXE(0x72995, (uint32_t) getRealBlockAddrData(mapName));
+	}
+
+	// I'm already replacing this string and moving it up. If it were on Windows, both could be there. On DOS, with the
+	// other things there too, only one can, and it's F1DP's mark (to know it's loaded and working).
+	//getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "VersionString", "", versionString, &sfall1_ini_info_G);
+	//if (0 != strcmp(mapName, "")) {
+	//	writeMem32EXE(0xA10E7+1, (uint32_t) getRealBlockAddrData(versionString));
+	//}
+
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "WindowName", "", windowName, &sfall1_ini_info_G);
+	if (0 != strcmp(windowName, "")) {
+		writeMem32EXE(0x72B86+1, (uint32_t) getRealBlockAddrData(windowName));
+	}
+
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "ConfigFile", "", configName, &sfall1_ini_info_G);
+	if (0 != strcmp(configName, "")) {
+		writeMem32EXE(0x3DE14+1, (uint32_t) getRealBlockAddrData(configName));
+		writeMem32EXE(0x3DE39+1, (uint32_t) getRealBlockAddrData(configName));
+	}
+
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "MaleDefaultModel", "hmjmps", dmModelName, &sfall1_ini_info_G);
+	writeMem32EXE(0x183BD+1, (uint32_t) getRealBlockAddrData(dmModelName));
+
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "FemaleDefaultModel", "hfjmps", dfModelName, &sfall1_ini_info_G);
+	writeMem32EXE(0x183E0+1, (uint32_t) getRealBlockAddrData(dfModelName));
+
+	for (i = 0; i < 14; ++i) {
+		char ininame[8];
+		MovieNames[(i * 65) + 64] = 0;
+		strcpy(ininame, "Movie");
+		itoa((int) i + 1, &ininame[5], 10);
+		getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", ininame, origMovieNames[i], &MovieNames[i * 65],
+						&sfall1_ini_info_G);
+		writeMem32EXE(0x1055F0 + (i * 4), (uint32_t) getRealBlockAddrData(&MovieNames[i * 65]));
+	}
+
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "StartYear", "-1", prop_value, &sfall1_ini_info_G);
+	// I'd use stdtol() for the conversion, but that's not available on the game EXE...
+	sscanf(prop_value, "%d", &temp_int);
+	if (temp_int >= 0) {
+		writeMem32EXE(0x9175A+2, (uint32_t) temp_int);
+	}
+
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "StartMonth", "-1", prop_value, &sfall1_ini_info_G);
+	sscanf(prop_value, "%d", &temp_int);
+	if ((temp_int >= 1) && (temp_int <= 12)) {
+		writeMem32EXE(0x91771+1, (uint32_t) temp_int);
+	}
+
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "StartDay", "-1", prop_value, &sfall1_ini_info_G);
+	sscanf(prop_value, "%d", &temp_int);
+	if ((temp_int >= 1) && (temp_int <= 31)) {
+		writeMem8EXE(0x91744+2, (uint8_t) temp_int);
+	}
+
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "LocalMapXLimit", "0", prop_value, &sfall1_ini_info_G);
+	sscanf(prop_value, "%d", &temp_int);
+	if (0 != temp_int) {
+		writeMem32EXE(0x9DFB9+4, (uint32_t) temp_int);
+	}
+
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "LocalMapYLimit", "0", prop_value, &sfall1_ini_info_G);
+	sscanf(prop_value, "%d", &temp_int);
+	if (0 != temp_int) {
+		writeMem32EXE(0x9DFC7+4, (uint32_t) temp_int);
+	}
+
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "DialogueFix", "1", prop_value, &sfall1_ini_info_G);
+	if (0 != strcmp(prop_value, "0")) {
+		writeMem8EXE(0x3EFA4+2, 0x31);
+	}
+
+	CritInit();
+
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "DisplayKarmaChanges", "0", prop_value, &sfall1_ini_info_G);
+	if (0 != strcmp(prop_value, "0")) {
+		getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "sfall", "KarmaGain", "You gained %d karma.", KarmaGainMsg, &translation_ini_info_G);
+		getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "sfall", "KarmaLoss", "You lost %d karma.", KarmaLossMsg, &translation_ini_info_G);
+		HookCallEXE(0x4CED4, getRealBlockAddrCode((void *) &op_set_global_var_hook));
+	}
+
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "PlayIdleAnimOnReload", "0", prop_value, &sfall1_ini_info_G);
+	if (0 != strcmp(prop_value, "0")) {
+		HookCallEXE(0x563D9, getRealBlockAddrCode((void *) &intface_item_reload_hook));
+	}
 
 
 	freeNew(((struct FileInfo *) getRealBlockAddrData(&translation_ini_info_G))->contents);

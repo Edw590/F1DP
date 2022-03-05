@@ -17,7 +17,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-#include "../CLibs/stdio.h"
 #include "../CLibs/string.h"
 #include "../OtherHeaders/GlobalEXEAddrs.h"
 #include "EXEPatchUtils.h"
@@ -75,19 +74,6 @@ void BlockCallJmpEXE(uint32_t addr) {
 }
 
 
-/**
- * @brief Calculates the real address of a game address got from IDA.
- *
- * It is done by checking if the given address is <= than CODE_SEC_EXE_IDA_END_ADDR. If it is, sum the code section
- * address to it. Else, sum the data section address. This carries a warning...
- *
- * WARNING: PAY ATTENTION TO HOW MANY CALLS YOU DO TO THIS FUNCTION WITH THE SAME VARIABLE!!! You can't rely on it to
- * know if the sum was already done like with the getRealBlockAddr functions!
- *
- * @param addr the address seen on IDA
- *
- * @return the real address to use
- */
 void *getRealEXEAddr(volatile uint32_t addr) {
 	if (addr <= CODE_SEC_EXE_IDA_END_ADDR) {
 		return (void *) (addr + SN_CODE_SEC_EXE_ADDR);

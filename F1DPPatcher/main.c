@@ -30,7 +30,6 @@
 // This is also just because I don't want to be appending NULL bytes or hard-coding a number on the Loader for it to
 // always allocate space for the uninitialized data section. So just initialize everything (easy thing to do anyways).
 
-#include "CLibs/conio.h"
 #include "CLibs/stdio.h"
 #include "CLibs/stdlib.h"
 #include "CLibs/string.h"
@@ -41,7 +40,6 @@
 #include "Utils/EXEPatchUtils.h"
 #include "Utils/IniUtils.h"
 #include <stdbool.h>
-#include "SFall1Patches/dinput.h"
 
 #define SN_MAIN_FUNCTION 0x78563412 // 12 34 56 78 in little endian
 
@@ -49,7 +47,7 @@ bool prop_logPatcher_G = true;
 struct FileInfo dospatch_ini_info_G = {0};
 
 bool realMain(void);
-void patchVerStr(void);
+static void patchVerStr(void);
 
 __declspec(naked) int main(void) {
 	// The special number declaration below is for the loader to look for it and start the execution right there.
@@ -197,8 +195,8 @@ void patchVerStr(void) {
 	// other text. I'm not just replacing the original string on the Data section because this way, it's perfectly fine
 	// to put a string with more characters than the original one.
 	writeMem32EXE(0xA10E3, 0x90909090); // Remove the 2 pushes
-	writeMem32EXE(0xA10E7 + 1, (uint32_t) getRealBlockAddrData("F1DOSPatcher "F1DP_VER_STR)); // Change the string address
-	writeMem32EXE(0x73373 + 1, 0x1BD); // Change the string height (445)
-	writeMem8EXE(0xA10F2 + 2, 0x8); // Correct what's added to ESP
+	writeMem32EXE(0xA10E7+1, (uint32_t) getRealBlockAddrData("F1DOSPatcher "F1DP_VER_STR)); // Change the string address
+	writeMem32EXE(0x73373+1, 0x1BD); // Change the string height (445)
+	writeMem8EXE(0xA10F2+2, 0x8); // Correct what's added to ESP
 }
 

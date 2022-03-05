@@ -1,0 +1,127 @@
+// Copyright 2022 DADi590
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+//
+// Created by DADi590 on 05/03/2022.
+//
+
+#include "timer.hNOTDONE"
+#include "dinput.h"
+#include "../CLibs/math.h"
+#include "../Utils/BlockAddrUtils.h"
+
+static bool Enabled = true;
+static bool Toggled = true;
+
+static uint32_t Slideshow = 0;
+
+static double Multi = 0;
+static uint32_t StoredTickCount = 0;
+static uint32_t LastTickCount = 0;
+static double TickCountFraction = 0;
+
+static uint32_t StartTime = 0;
+
+static double Multipliers[10] = {0};
+static uint16_t Keys[10] = {0};
+static int ModKey = 0;
+static int ToggleKey = 0;
+
+uint32_t GetTickCount() {
+	uint32_t ret_var = 0;
+	__asm {
+		push    eax
+
+		mov     ah, 0
+		int     0x1A
+
+		mov     ax, cx
+		shl     eax, 16
+		mov     ax, dx
+
+		mov     [ret_var], eax
+
+		pop     eax
+	}
+
+	return ret_var;
+}
+
+uint32_t __stdcall FakeGetTickCount() {
+	uint32_t *Slideshow_local = getRealBlockAddrData(&Slideshow);
+
+	double *Multi_local = getRealBlockAddrData(&Multi);
+	uint32_t *StoredTickCount_local = getRealBlockAddrData(&StoredTickCount);
+	uint32_t *LastTickCount_local = getRealBlockAddrData(&LastTickCount);
+	double *TickCountFraction_local = getRealBlockAddrData(&TickCountFraction);
+
+	double *Multipliers_local = getRealBlockAddrData(&Multipliers);
+	uint16_t *Keys_local = getRealBlockAddrData(&Keys);
+	int *ModKey_local = getRealBlockAddrData(&ModKey);
+	int *ToggleKey_local = getRealBlockAddrData(&ToggleKey);
+
+	uint32_t NewTickCount = GetTickCount();
+
+	//Keyboard control
+	if (!*ModKey_local || (*ModKey_local > 0 && KeyDown(*ModKey_local))
+	   || (*ModKey_local == -1 && (KeyDown(DIK_LCONTROL) || KeyDown(DIK_RCONTROL)))
+	   || (*ModKey_local == -2 && (KeyDown(DIK_LMENU) || KeyDown(DIK_RMENU)))
+	   || (*ModKey_local == -3 && (KeyDown(DIK_LSHIFT) || KeyDown(DIK_RSHIFT)))) {
+
+		for (int i = 0; i < 10 ; ++i) {
+			if (Keys_local[i] && KeyDown(Keys_local[i])) {
+				*Multi_local = Multipliers_local[i];
+			}
+		}
+
+		if (*ToggleKey_local && KeyDown(*ToggleKey_local)) {
+			if (!Toggled) {
+				*(bool *) getRealBlockAddrData(&Toggled) = true;
+				*(bool *) getRealBlockAddrData(&Enabled) = !(*(bool *) getRealBlockAddrData(&Enabled));
+			}
+		} else {
+			*(bool *) getRealBlockAddrData(&Toggled) = false;
+		}
+	}
+
+	//Just in case someone's been running their computer for 49 days straight
+	if(NewTickCount < *LastTickCount_local) {
+		NewTickCount = *LastTickCount_local;
+
+		return *StoredTickCount_local;
+	}
+
+	//Multiply the tick count difference by the multiplier
+	double add = (double) (NewTickCount - *LastTickCount_local) * (Enabled && !*Slideshow_local ? *Multi_local : 1.0);
+	*LastTickCount_local = NewTickCount;
+	*TickCountFraction_local += modf(add, &add);
+	*StoredTickCount_local += (uint32_t) add;
+	if (*TickCountFraction_local > 1) {
+		*TickCountFraction_local -= 1;
+		++*StoredTickCount_local;
+	}
+
+	return *StoredTickCount_local;
+}
+
+void __stdcall FakeGetLocalTime(LPSYSTEMTIME time) {
+	int32_t CurrentTime = *(uint32_t *) getRealBlockAddrData(&StartTime) + *(uint32_t *) getRealBlockAddrData(&StoredTickCount) * (uint32_t) 10000;
+
+	FileTimeToSystemTime((FILETIME*) & CurrentTime, time);
+}

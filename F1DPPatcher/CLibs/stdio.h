@@ -29,6 +29,7 @@
 
 __declspec(naked) int printf(const char * format, ...);
 __declspec(naked) int sscanf(const char* s, const char *format, ...);
+__declspec(naked) int sprintf(const char* s, const char *format, ...);
 
 // //////////////////////////////////////////////////////////////
 // Non-standard functions

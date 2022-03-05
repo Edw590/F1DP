@@ -17,20 +17,17 @@
 // specific language governing permissions and limitations
 // under the License.
 
-#ifndef F1DPPATCHER_STDLIB_H
-#define F1DPPATCHER_STDLIB_H
+//
+// Created by DADi590 on 05/03/2022.
+//
 
-
-#include <stddef.h>
-
-#define EXIT_SUCCESS 0
-#define EXIT_FAILURE 1
-
-__declspec(noreturn) void exit(int status);
-char *itoa(int value, char *str, int base);
-void free(void * ptr);
-void *malloc(size_t size);
+#ifndef F1DPPATCHER_CRITICALS_H
+#define F1DPPATCHER_CRITICALS_H
 
 
 
-#endif //F1DPPATCHER_STDLIB_H
+void CritInit(void);
+
+
+
+#endif //F1DPPATCHER_CRITICALS_H

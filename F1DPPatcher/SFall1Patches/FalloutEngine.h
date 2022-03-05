@@ -102,7 +102,7 @@
 #define C_debug_register_env_                x
 #define C_dialog_out_                        0x1BFA0 // Args: +stack / No prototype (5 stack arguments)
 #define C_display_inventory_                 0x639E8 // Args: non-stack / int __usercall display_inventory_@<eax>(int inventory_offset@<eax>, int mode@<ebx>, int visible_offset@<edx>)
-#define C_display_print_                     x
+#define C_display_print_                     0x2C05C // Args: non-stack / No prototype
 #define C_display_scroll_down_               x
 #define C_display_scroll_up_                 x
 #define C_display_stats_                     0x654F4 // Args: non-stack / No prototype
@@ -119,8 +119,8 @@
 #define C_endgame_movie_                     x
 #define C_endgame_slideshow_                 x
 #define C_exec_script_proc_                  x
-#define C_game_get_global_var_               x
-#define C_game_set_global_var_               x
+#define C_game_get_global_var_               0x3C750 // Args: non-stack / int __usercall game_get_global_var_@<eax>(int GVAR@<eax>)
+#define C_game_set_global_var_               0x3C780 // Args: non-stack / int __usercall game_set_global_var_@<eax>(int GVAR@<eax>, int Value@<edx>)
 #define C_gdialog_display_msg_               0x3E694 // Args: non-stack / No prototype
 #define C_get_input_                         x
 #define C_get_time_                          x
@@ -131,7 +131,7 @@
 #define C_GNW_find_                          0xC3868 // Args: non-stack / No prototype
 #define C_gsnd_build_weapon_sfx_name_        x
 #define C_gsound_get_sound_ready_for_effect_ x
-#define C_gsound_play_sfx_file_              x
+#define C_gsound_play_sfx_file_              0x49524 // Args: non-stack / No prototype
 #define C_gsound_red_butt_press_             0x494EC // Args: non-stack / No prototype
 #define C_InitLoadSave_                      x
 #define C_intface_redraw_                    x
@@ -199,7 +199,7 @@
 #define C_pc_flag_off_                       x
 #define C_pc_flag_on_                        x
 #define C_pc_flag_toggle_                    x
-#define C_perk_level_                        x // Args: non-stack / int __usercall perk_level_@<eax>(int perk@<eax>)
+#define C_perk_level_                        0x86804 // Args: non-stack / int __usercall perk_level_@<eax>(int perk@<eax>)
 #define C_perks_dialog_                      x
 #define C_PipStatus_                         x
 #define C_PrintBasicStat_                    x
@@ -211,10 +211,10 @@
 #define C_queue_clear_type_                  x
 #define C_queue_find_                        x
 #define C_queue_remove_this_                 x
-#define C_register_begin_                    x
-#define C_register_clear_                    x
-#define C_register_end_                      x
-#define C_register_object_animate_           x
+#define C_register_begin_                    0x13534 // Args: non-stack / No prototype
+#define C_register_clear_                    0x136B8 // Args: non-stack / No prototype
+#define C_register_end_                      0x13738 // Args: non-stack / No prototype
+#define C_register_object_animate_           0x14330 // Args: non-stack / No prototype
 #define C_register_object_change_fid_        x
 #define C_RestorePlayer_                     x
 #define C_SaveGame_                          x
@@ -273,7 +273,7 @@
 #define D__combat_list             x
 #define D__combat_state            0xFEE78
 #define D__combat_turn_running     x
-#define D__crit_succ_eff           x
+#define D__crit_succ_eff           0xFEEA8
 #define D__critter_db_handle       x
 #define D__crnt_func               x
 #define D__curr_font_num           0x13A374

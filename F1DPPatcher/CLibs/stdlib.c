@@ -37,6 +37,30 @@ __declspec(noreturn) void exit(int status) {
 	}
 }
 
+char *itoa(int value, char *str, int base) {
+	// STR is an x86 instruction...
+	char *ret_var = NULL;
+
+	// Pointer correction
+	char *string = getRealBlockAddrData(str);
+
+	__asm {
+			pusha
+
+			mov     eax, [value]
+			mov     edx, [string]
+			mov     ebx, [base]
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			add     edi, F_itoa_
+			call    edi
+			mov     [ret_var], eax
+
+			popa
+	}
+
+	return ret_var;
+}
+
 void free(void *ptr) {
 	// ptr is a reserved word for MASM...
 

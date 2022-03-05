@@ -75,6 +75,51 @@ __declspec(naked) int printf(const char *format, ...) {
 	}
 }
 
+__declspec(naked) int sprintf(const char* s, const char *format, ...) {
+	(void) s; // To ignore the unused parameter warning
+	(void) format; // To ignore the unused parameter warning
+	__asm {
+			// For explanations of how this function works, check printf()
+
+			// Pointer correction
+			mov     eax, [esp+4]
+			call    getRealBlockAddrData
+			mov     [esp+4], eax
+			mov     eax, [esp+8]
+			call    getRealBlockAddrData
+			mov     [esp+8], eax
+
+			push    edi
+
+			mov     edi, [esp+4] // Return address
+			lea     eax, [ret_addr]
+			add     eax, SN_DATA_SEC_BLOCK_ADDR
+			mov     [eax], edi
+
+			pop     edi
+			add     esp, 4 // Remove the return address from the stack
+
+			mov     eax, SN_CODE_SEC_EXE_ADDR
+			add     eax, F_sprintf_
+			call    eax
+
+			sub     esp, 4 // Get space on the stack to put the return address back on
+			push    edi
+			lea     edi, [ret_addr]
+			add     edi, SN_DATA_SEC_BLOCK_ADDR
+			mov     edi, [edi]
+			mov     [esp+4], edi // Store the return address on the stack again
+
+			lea     edi, [ret_addr]
+			add     edi, SN_DATA_SEC_BLOCK_ADDR
+			mov     [edi], 0 // Empty ret_addr just in case I ever use it elsewhere and check its value(?)
+
+			pop     edi
+
+			ret
+	}
+}
+
 __declspec(naked) int sscanf(const char* s, const char *format, ...) {
 	(void) s; // To ignore the unused parameter warning
 	(void) format; // To ignore the unused parameter warning
