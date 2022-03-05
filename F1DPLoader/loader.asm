@@ -156,21 +156,29 @@ call    ecx
 add     esp, 4
 
 ;;;;;;;;;;;;;;;;;;;
-push esi
+push    esi
+push    ebx
 
 ; Parameters for the Patcher
 mov     esi, edx ; ESI = block address (the Patcher requires ESI to be the block address)
 
-mov     eax, edx ; EAX = block address (a copy to be used to find realMain())
-dec     eax ; So that it's "-1". Then it starts at 0 and no jumps are needed.
+mov     ebx, edx ; EAX = block address (a copy to be used to find realMain())
+dec     ebx ; So that it's "-1". Then it starts at 0 and no jumps are needed.
 loop_find_main:
-	inc     eax
-	cmp     dword ptr [eax], 78563412h ; This constant is defined in the Patcher as SN_MAIN_FUNCTION (Special Number)
+	inc     ebx
+	cmp     dword ptr [ebx], 78563412h ; This constant is defined in the Patcher as SN_MAIN_FUNCTION (Special Number)
 	loopne  loop_find_main
-add     eax, 4 ; EAX = main external function address (jump over the 32-bit Special Number)
+add     ebx, 4 ; EAX = main external function address (jump over the 32-bit Special Number)
 
-call    eax ; Call the Patcher's realMain() function
+; In case anything goes wrong inside the Patcher (wrong out of what is expected - not an error and return false, I mean
+; a serious unexpected error related with stack or Special Numbers or something like that) and it is able to return
+; here, hopefully EAX (or at least AL, in the case of a bool return value) will not be modified and will still be 0 and
+; the Loader will report an error.
+mov     eax, 0
 
+call    ebx ; Call the Patcher's realMain() function
+
+pop     ebx
 pop     esi
 ;;;;;;;;;;;;;;;;;;;
 
