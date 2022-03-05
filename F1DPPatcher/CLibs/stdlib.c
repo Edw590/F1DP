@@ -25,15 +25,15 @@
 
 __declspec(noreturn) void exit(int status) {
 	__asm {
-	// No need for pusha and popa --> exit() does not return. But I'll put them anyway.
-		pusha
+			// No need for pusha and popa --> exit() does not return. But I'll put them anyway.
+			pusha
 
-		mov     eax, dword ptr [status]
-		mov     edi, SN_CODE_SEC_EXE_ADDR
-		add     edi, F_exit_
-		call    edi
+			mov     eax, [status]
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			add     edi, F_exit_
+			call    edi
 
-		popa
+			popa
 	}
 }
 
@@ -44,29 +44,29 @@ void free(void *ptr) {
 	void *pointer = getRealBlockAddrData(ptr);
 
 	__asm {
-		pusha
+			pusha
 
-		mov     eax, dword ptr [pointer]
-		mov     edi, SN_CODE_SEC_EXE_ADDR
-		add     edi, F__nfree_
-		call    edi
+			mov     eax, [pointer]
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			add     edi, F__nfree_
+			call    edi
 
-		popa
+			popa
 	}
 }
 
 void *malloc(size_t size) {
 	void *ret_var = NULL;
 	__asm {
-		pusha
+			pusha
 
-		mov     eax, dword ptr [size]
-		mov     edi, SN_CODE_SEC_EXE_ADDR
-		add     edi, F__nmalloc_
-		call    edi
-		mov     dword ptr [ret_var], eax
+			mov     eax, [size]
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			add     edi, F__nmalloc_
+			call    edi
+			mov     [ret_var], eax
 
-		popa
+			popa
 	}
 
 	ret_var = getRealBlockAddrData(ret_var);

@@ -38,12 +38,17 @@
 // to which one the address is supposed to belong - unlike the EXE addresses, which when seen on IDA, they have decent
 // values and it's just compare if it's inside the code section of the data section and add the corresponding offset.
 
-// And hopefully, no valid address will return 0, since I'm checking if they're 0 or not, and if they are (meaning
+// And hopefully, no valid address will return 0 (wtf), since I'm checking if they're 0 or not, and if they are (meaning
 // NULL), then the result is the unmodified function argument. From what I see on HxD, the Data section of this program
 // always begins with 01 01 01 01 (or something like that, but starts with a padding even if the section starts at the
 // beginning of a 16-byte line, meaning paragraph-aligned), so at minimum, real data starts address 0x4. As long as it
 // stays that way, cool and this will always work. Useful for example for free() with a NULL pointer - not supposed to
 // add anything to a NULL pointer if it's supposed to be NULL (0).
+
+// The volatile keywords around the functions that use the Special Numbers, like the 2 below, is just for me to be 100%
+// sure Watcom will not optimize the functions and inline all values, adding or subtracting the Special Numbers to
+// others if it is an obvious things that "should" be optimized --> except there can be no optimizations here, or the
+// patcherPatcher() won't replace them because the Special Number is gone.
 
 void *getRealBlockAddrCode(volatile const void *addr) {
 	// Inside the EXE segments address space already, or it's a NULL pointer? Then return the original. Else, correct it.

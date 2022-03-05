@@ -26,15 +26,15 @@
 int close(int fildes) {
 	int ret_var = 0;
 	__asm {
-		pusha
+			pusha
 
-		mov     eax, dword ptr [fildes]
-		mov     edi, SN_CODE_SEC_EXE_ADDR
-		add     edi, F_close_
-		call    edi
-		mov     dword ptr [ret_var], eax
+			mov     eax, [fildes]
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			add     edi, F_close_
+			call    edi
+			mov     [ret_var], eax
 
-		popa
+			popa
 	}
 
 	return ret_var;
@@ -47,17 +47,17 @@ ssize_t read(int fildes, void *buf, size_t nbyte) {
 	buf = getRealBlockAddrData(buf);
 
 	__asm {
-		pusha
+			pusha
 
-		mov     eax, dword ptr [fildes]
-		mov     edx, dword ptr [buf]
-		mov     ebx, dword ptr [nbyte]
-		mov     edi, SN_CODE_SEC_EXE_ADDR
-		add     edi, F_read_
-		call    edi
-		mov     dword ptr [ret_var], eax
+			mov     eax, [fildes]
+			mov     edx, [buf]
+			mov     ebx, [nbyte]
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			add     edi, F_read_
+			call    edi
+			mov     [ret_var], eax
 
-		popa
+			popa
 	}
 
 	return ret_var;

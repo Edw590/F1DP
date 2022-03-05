@@ -24,15 +24,15 @@
 long filelength(int handle) {
 	int ret_var = 0;
 	__asm {
-		pusha
+			pusha
 
-		mov     eax, dword ptr [handle]
-		mov     edi, SN_CODE_SEC_EXE_ADDR
-		add     edi, F_filelength_
-		call    edi
-		mov     dword ptr [ret_var], eax
+			mov     eax, [handle]
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			add     edi, F_filelength_
+			call    edi
+			mov     [ret_var], eax
 
-		popa
+			popa
 	}
 
 	return ret_var;

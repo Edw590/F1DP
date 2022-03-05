@@ -34,66 +34,70 @@
 // conio.h
 
 // getch_(void) EAX
-#define F_getch_ 0x0DE2DE
+#define F_getch_ 0xDE2DE
 
 // /////////////////
 // ctype.h
 
 // getch_(void) EAX
-#define F_tolower_ 0x0CA3D2
-#define F_toupper_ 0x0CA367
+#define F_tolower_ 0xCA3D2
+#define F_toupper_ 0xCA367
 
 // /////////////////
 // fcntl.h
 
 // open_(path, oflag, ...) EAX
-#define F_open_ 0x0D555A
+#define F_open_ 0xD555A
 
 // /////////////////
 // io.h
 
 // filelength_(EAX = handle) EAX
-#define F_filelength_ 0x0BF9EC
+#define F_filelength_ 0xBF9EC
 
 // /////////////////
 // stdio.h
 
 // printf_(format, ...) EAX
-#define F_printf_ 0x0CA3B0
+#define F_printf_ 0xCA3B0
+// sprintf_(s, format, ...) EAX
+#define F_sprintf_ 0xBCEF2
+// sscanf_(s, format, ...) EAX
+#define F_sscanf_ 0xCA48C
 
 // /////////////////
 // stdlib.h
 
 // exit_(EAX = status) (void)
-#define F_exit_ 0x0CA40A
+#define F_exit_ 0xCA40A
 // _nfree_(EAX = ptr) (void)
-#define F__nfree_ 0x0CADE9
+#define F__nfree_ 0xCADE9
 // _nmalloc_(EAX = size) EAX
-#define F__nmalloc_ 0x0CAC68
+#define F__nmalloc_ 0xCAC68
 
 // /////////////////
 // string.h
 
 // memset_(EAX = s, EDX = c, EBX = n) EAX
-#define F_memset_ 0x0B5730
+#define F_memset_ 0xB5730
 // strcmp_(EAX = s1, EDX = s2) EAX
-#define F_strcmp_ 0x0C6040
+#define F_strcmp_ 0xC6040
 // strcpy_(EAX = s1, EDX = s2) EAX
-#define F_strcpy_ 0x0E2B66
+#define F_strcpy_ 0xE2B66
 // strncmp_(EAX = s1, EDX = s2, EBX = c) EAX
-#define F_strncmp_ 0x0CA3E0
+#define F_strncmp_ 0xCA3E0
 // strncpy_(EAX = s1, EDX = s2, EBX = n) EAX
-#define F_strncpy_ 0x0BDBCA
+#define F_strncpy_ 0xBDBCA
 // strrchr_(EAX = s, EDX = c) EAX
-#define F_strrchr_ 0x0BDBEF
+#define F_strrchr_ 0xBDBEF
 
 // /////////////////
 // unistd.h
 
 // close_(EAX = fildes) EAX
-#define F_close_ 0x0D57CC
+#define F_close_ 0xD57CC
 // read_(EAX = fildes, EDX = buf, EBX = nbyte) EAX
-#define F_read_ 0x0D545F
+#define F_read_ 0xD545F
 
 
 

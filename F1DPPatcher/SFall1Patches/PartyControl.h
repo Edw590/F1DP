@@ -17,31 +17,19 @@
 // specific language governing permissions and limitations
 // under the License.
 
-#include "../GameAddrs/CStdFuncs.h"
-#include "../OtherHeaders/GlobalEXEAddrs.h"
-#include "../Utils/BlockAddrUtils.h"
-#include "fcntl.h"
+//
+// Created by DADi590 on 04/03/2022.
+//
 
-int open(const char *path, int oflag, int mode) {
-	int ret_var = 0;
+#ifndef F1DPPATCHER_PARTYCONTROL_H
+#define F1DPPATCHER_PARTYCONTROL_H
 
-	// Pointer correction
-	path = getRealBlockAddrData(path);
 
-	__asm {
-			pusha
 
-			push    dword ptr [mode]
-			push    dword ptr [oflag]
-			push    dword ptr [path]
-			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, F_open_
-			call    edi
-			add     esp, 0Ch
-			mov     [ret_var], eax
+#include <stdint.h>
 
-			popa
-	}
+extern uint32_t HiddenArmor;
 
-	return ret_var;
-}
+
+
+#endif //F1DPPATCHER_PARTYCONTROL_H

@@ -26,7 +26,6 @@
 #include <stdbool.h>
 
 extern struct FileInfo sfall1_ini_info_G;
-extern struct FileInfo translation_ini_info_G;
 
 bool initSfall1Patcher(void);
 

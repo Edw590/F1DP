@@ -24,14 +24,14 @@
 int getch(void) {
 	int ret_var = 0;
 	__asm {
-		pusha
+			pusha
 
-		mov     edi, SN_CODE_SEC_EXE_ADDR
-		add     edi, F_getch_
-		call    edi
-		mov     dword ptr [ret_var], eax
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			add     edi, F_getch_
+			call    edi
+			mov     [ret_var], eax
 
-		popa
+			popa
 	}
 
 	return ret_var;

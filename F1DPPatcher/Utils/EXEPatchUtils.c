@@ -30,8 +30,6 @@
 // automatically they care of seeing if the address is supposed to be from the Data section or the Code section and it
 // is corrected internally. So do NOT correct it externally, or it WILL be wrong inside the functions.
 
-void *getRealEXEAddr(volatile uint32_t addr);
-
 void writeMem32EXE(uint32_t addr, uint32_t data) {
 	*(uint32_t *) getRealEXEAddr(addr) = data;
 }

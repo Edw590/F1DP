@@ -30,17 +30,17 @@ void *memset(void *s, int c, size_t n) {
 	s = getRealBlockAddrData(s);
 
 	__asm {
-		pusha
+			pusha
 
-		mov     eax, dword ptr [s]
-		mov     edx, dword ptr [c]
-		mov     ebx, dword ptr [n]
-		mov     edi, SN_CODE_SEC_EXE_ADDR
-		add     edi, F_memset_
-		call    edi
-		mov     dword ptr [ret_var], eax
+			mov     eax, [s]
+			mov     edx, [c]
+			mov     ebx, [n]
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			add     edi, F_memset_
+			call    edi
+			mov     [ret_var], eax
 
-		popa
+			popa
 	}
 
 	ret_var = getRealBlockAddrData(ret_var);
@@ -56,16 +56,16 @@ int strcmp(const char *s1, const char *s2) {
 	s2 = getRealBlockAddrData(s2);
 
 	__asm {
-		pusha
+			pusha
 
-		mov     eax, dword ptr [s1]
-		mov     edx, dword ptr [s2]
-		mov     edi, SN_CODE_SEC_EXE_ADDR
-		add     edi, F_strcmp_
-		call    edi
-		mov     dword ptr [ret_var], eax
+			mov     eax, [s1]
+			mov     edx, [s2]
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			add     edi, F_strcmp_
+			call    edi
+			mov     [ret_var], eax
 
-		popa
+			popa
 	}
 
 	return ret_var;
@@ -79,16 +79,16 @@ char *strcpy(char *s1, const char *s2) {
 	s2 = getRealBlockAddrData(s2);
 
 	__asm {
-		pusha
+			pusha
 
-		mov     eax, dword ptr [s1]
-		mov     edx, dword ptr [s2]
-		mov     edi, SN_CODE_SEC_EXE_ADDR
-		add     edi, F_strcpy_
-		call    edi
-		mov     dword ptr [ret_var], eax
+			mov     eax, [s1]
+			mov     edx, [s2]
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			add     edi, F_strcpy_
+			call    edi
+			mov     [ret_var], eax
 
-		popa
+			popa
 	}
 
 	ret_var = getRealBlockAddrData(ret_var);
@@ -117,17 +117,17 @@ int strncmp(const char *s1, const char *s2, size_t n) {
 	s2 = getRealBlockAddrData(s2);
 
 	__asm {
-		pusha
+			pusha
 
-		mov     eax, dword ptr [s1]
-		mov     edx, dword ptr [s2]
-		mov     ebx, dword ptr [n]
-		mov     edi, SN_CODE_SEC_EXE_ADDR
-		add     edi, F_strncmp_
-		call    edi
-		mov     dword ptr [ret_var], eax
+			mov     eax, [s1]
+			mov     edx, [s2]
+			mov     ebx, [n]
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			add     edi, F_strncmp_
+			call    edi
+			mov     [ret_var], eax
 
-		popa
+			popa
 	}
 
 	return ret_var;
@@ -141,17 +141,17 @@ char *strncpy(char *s1, const char *s2, size_t n) {
 	s2 = getRealBlockAddrData(s2);
 
 	__asm {
-		pusha
+			pusha
 
-		mov     eax, dword ptr [s1]
-		mov     edx, dword ptr [s2]
-		mov     ebx, dword ptr [n]
-		mov     edi, SN_CODE_SEC_EXE_ADDR
-		add     edi, F_strncpy_
-		call    edi
-		mov     dword ptr [ret_var], eax
+			mov     eax, [s1]
+			mov     edx, [s2]
+			mov     ebx, [n]
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			add     edi, F_strncpy_
+			call    edi
+			mov     [ret_var], eax
 
-		popa
+			popa
 	}
 
 	ret_var = getRealBlockAddrData(ret_var);
@@ -186,16 +186,16 @@ char *strrchr(const char *s, int c) {
 	s = getRealBlockAddrData(s);
 
 	__asm {
-		pusha
+			pusha
 
-		mov     eax, dword ptr [s]
-		mov     edx, dword ptr [c]
-		mov     edi, SN_CODE_SEC_EXE_ADDR
-		add     edi, F_strrchr_
-		call    edi
-		mov     dword ptr [ret_var], eax
+			mov     eax, [s]
+			mov     edx, [c]
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			add     edi, F_strrchr_
+			call    edi
+			mov     [ret_var], eax
 
-		popa
+			popa
 	}
 
 	ret_var = getRealBlockAddrData(ret_var);

@@ -23,13 +23,10 @@
 #include "../OtherHeaders/General.h"
 #include "../OtherHeaders/GlobalVars.h"
 #include "../Utils/BlockAddrUtils.h"
-#include "Inventory.h"
 #include "SFall1Patches.h"
+#include "sFall1Main.h"
 
 struct FileInfo sfall1_ini_info_G = {0};
-struct FileInfo translation_ini_info_G = {0};
-
-void sFall1Patches(void);
 
 bool initSfall1Patcher(void) {
 	bool ret_var = true;
@@ -60,7 +57,7 @@ bool initSfall1Patcher(void) {
 		goto funcEnd;
 	}
 
-	sFall1Patches();
+	DllMain2();
 
 
 	funcEnd:
@@ -74,23 +71,9 @@ bool initSfall1Patcher(void) {
 	return ret_var;
 }
 
-// ADVICE: don't try to understand the functions in each patch... Infinite EDI register uses there to be able to have
-// the special numbers in use. If you want to understand what was done, just go to the sFall1 source and see there. If
-// you think anything is wrong with the ones here, redo from scratch, don't try to fix. It's a mess with this way of
-// Special Numbers, but I don't have better ideas without making a relocation table for the EXE, parsing it and applying
-// it (as long as this way works, I think it's much better than going that route, which would take infinity).
-
-void sFall1Patches(void) {
-	char prop_value[MAX_PROP_VALUE_LEN];
-
-	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Main", "TranslationsINI", "./Translations.ini", prop_value, &sfall1_ini_info_G);
-	// If it fails, the struct will have 0s and the file won't be read, so the default values will be used as sFall1 does.
-	readFile(prop_value, &translation_ini_info_G);
-
-	InventoryInit();
-
-	freeNew(((struct FileInfo *) getRealBlockAddrData(&translation_ini_info_G))->contents);
-}
-
 #include "Bugs.c"
 #include "Inventory.c"
+#include "LoadGameHook.c"
+#include "PartyControl.c"
+#include "dinput.c"
+#include "sFall1Main.c"

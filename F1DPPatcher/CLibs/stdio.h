@@ -28,6 +28,7 @@
 #define LOGGER_ERR_STR "  - [X] "
 
 __declspec(naked) int printf(const char * format, ...);
+__declspec(naked) int sscanf(const char* s, const char *format, ...);
 
 // //////////////////////////////////////////////////////////////
 // Non-standard functions

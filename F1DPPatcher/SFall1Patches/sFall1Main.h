@@ -17,31 +17,25 @@
 // specific language governing permissions and limitations
 // under the License.
 
-#include "../GameAddrs/CStdFuncs.h"
-#include "../OtherHeaders/GlobalEXEAddrs.h"
-#include "../Utils/BlockAddrUtils.h"
-#include "fcntl.h"
+// This had no copyright notice on it. Hopefully, the author doesn't mind me using it. I'm keeping
+// the same license as in the other files of the project on it though (I'm just licensing it only
+// to myself because I can't put the original authors there, whoever they were - no notice).
+//
+// Original code modified by me, DADi590, to adapt it to this project, starting on 2022-03-02.
+// NOTE: I don't see mention to Crafty in the copyright notices, but I'll just say here that this code was taken from
+// his modification of the original sFall1 by Timeslip.
 
-int open(const char *path, int oflag, int mode) {
-	int ret_var = 0;
+#ifndef F1DPPATCHER_SFALL1MAIN_H
+#define F1DPPATCHER_SFALL1MAIN_H
 
-	// Pointer correction
-	path = getRealBlockAddrData(path);
 
-	__asm {
-			pusha
 
-			push    dword ptr [mode]
-			push    dword ptr [oflag]
-			push    dword ptr [path]
-			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, F_open_
-			call    edi
-			add     esp, 0Ch
-			mov     [ret_var], eax
+#include "../Utils/IniUtils.h"
 
-			popa
-	}
+extern struct FileInfo translation_ini_info_G;
 
-	return ret_var;
-}
+void DllMain2(void);
+
+
+
+#endif //F1DPPATCHER_SFALL1MAIN_H

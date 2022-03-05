@@ -67,16 +67,17 @@ bool readFile(const char *file_path, struct FileInfo *file);
  * ATTENTION: the attribute is_main_ini of FileInfo is NOT modified. That must be modified manually externally.
  *
  * @param prop_spec_section_name the name of the special section where the given key is, or NULL to ignore. WARNING: if
- *                               the given INI has *is_main_ini* set to false, this parameter will be IGNORED
+ *                               the given INI has *is_main_ini* set to false, this parameter will be used as if it were
+ *                               set to NULL
  * @param prop_section_name the name of the section where the given key is, or NULL to ignore
  * @param prop_key the name of the key to get the value from
  * @param def_value a string to copy to *prop_value* in case the key is not found, or NULL to don't touch in
  *                  *prop_value* in that case
- * @param prop_value an array with enough space to copy the found value to (which is only modified if this function
- *                   returns true - will mean the found value is on the array)
+ * @param prop_value an array with enough space to copy the found value to
  * @param ini_info a pointer to the information of the INI file where to search the value in
  *
- * @return true if the property was found with a value on it, false otherwise
+ * @return true if the property key was found (and hence, its value returned), false otherwise (which will mean the
+ *         default value was returned, if there was any)
  */
 bool getPropValueIni(const char *prop_spec_section_name, const char *prop_section_name, const char *prop_key,
 					 const char *def_value, char *prop_value, const struct FileInfo *ini_info);

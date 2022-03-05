@@ -25,6 +25,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+void *getRealEXEAddr(volatile uint32_t addr);
+
 void writeMem32EXE(uint32_t addr, uint32_t data);
 void writeMem16EXE(uint32_t addr, uint16_t data);
 void writeMem8EXE(uint32_t addr, uint8_t data);

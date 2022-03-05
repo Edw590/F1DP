@@ -30,6 +30,7 @@
 // This is also just because I don't want to be appending NULL bytes or hard-coding a number on the Loader for it to
 // always allocate space for the uninitialized data section. So just initialize everything (easy thing to do anyways).
 
+#include "CLibs/conio.h"
 #include "CLibs/stdio.h"
 #include "CLibs/stdlib.h"
 #include "CLibs/string.h"
@@ -40,6 +41,7 @@
 #include "Utils/EXEPatchUtils.h"
 #include "Utils/IniUtils.h"
 #include <stdbool.h>
+#include "SFall1Patches/dinput.h"
 
 #define SN_MAIN_FUNCTION 0x78563412 // 12 34 56 78 in little endian
 
@@ -65,15 +67,15 @@ __declspec(naked) int main(void) {
 	// program and nothing else.
 
 	__asm {
-		jmp     main1 // Jump over the data in case this program's EXE is executed normally
-		dd      SN_MAIN_FUNCTION
+			jmp     main1 // Jump over the data in case this program's EXE is executed normally
+			dd      SN_MAIN_FUNCTION
 		main1: // Where code execution begins for the loader
-		// Right before ANYthing else (before the ESI register, which contains the address of the allocated block) is
-		// used somewhere), patch the patcher itself - and also before any operations that need the special numbers
-		// already replaced.
-		mov     eax, SN_BASE
-		call    patchPatcher
-		jmp     realMain
+			// Right before ANYthing else (before the ESI register, which contains the address of the allocated block) is
+			// used somewhere), patch the patcher itself - and also before any operations that need the special numbers
+			// already replaced.
+			mov     eax, SN_BASE
+			call    patchPatcher
+			jmp     realMain
 	}
 
 	// No return value here on main() because this function never returns - it's realMain() that returns, so the return
@@ -114,7 +116,7 @@ bool realMain(void) {
 	}
 
 	printlnStr(LOGGER_STR "Initialization successful.");
-	//logf(LOGGER_STR "Code section at: 0x%X; Data section at: 0x%X."NL, SN_CODE_SEC_BLOCK_ADDR, SN_DATA_SEC_BLOCK_ADDR);
+	logf(LOGGER_STR "Code section at: 0x%X; Data section at: 0x%X."NL, SN_CODE_SEC_BLOCK_ADDR, SN_DATA_SEC_BLOCK_ADDR);
 
 	// Check if the version of the INI file is the same as of the Patcher
 	if (getPropValueIni(MAIN_INI_SPEC_SEC_MAIN, NULL, "F1DPVersion", NULL, ini_prop_value, &dospatch_ini_info_G)) {
@@ -178,6 +180,7 @@ bool realMain(void) {
 
 		ret_var = false;
 	}
+
 
 	funcEnd:
 
