@@ -174,7 +174,7 @@ add     ebx, 4 ; EAX = main external function address (jump over the 32-bit Spec
 ; a serious unexpected error related with stack or Special Numbers or something like that) and it is able to return
 ; here, hopefully EAX (or at least AL, in the case of a bool return value) will not be modified and will still be 0 and
 ; the Loader will report an error.
-mov     eax, 0
+xor     eax, eax
 
 call    ebx ; Call the Patcher's realMain() function
 
