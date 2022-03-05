@@ -41,7 +41,7 @@
 // it (as long as this way works, I think it's much better than going that route, which would take infinity).
 
 /*
- * /////////////////////////////////////////////////////////////////
+ * // ///////////////////////////////////////////////////////////////
  *             RULES TO FOLLOW IN THE PORTS!!!!!!!!!!!
  *
  * - All absolute addresses must have added to them a Special Number corresponding to where that absolute address refers
@@ -114,7 +114,7 @@
  * - Ctrl+F all "0x"s, check if they are addresses, and if they are, use the appropriate SN.
  * - Go check all the C_s and D_s that remained untouched and use the appropriate SN.
  *
- * /////////////////////////////////////////////////////////////////
+ * // ///////////////////////////////////////////////////////////////
  */
 
 
@@ -122,7 +122,6 @@ struct FileInfo translation_ini_info_G = {0};
 
 void DllMain2(void) {
 	char prop_value[MAX_PROP_VALUE_LEN];
-
 	memset(prop_value, 0, MAX_PROP_VALUE_LEN);
 
 

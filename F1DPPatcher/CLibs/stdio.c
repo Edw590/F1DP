@@ -19,10 +19,11 @@
 
 #include "../GameAddrs/CStdFuncs.h"
 #include "../OtherHeaders/General.h"
-#include "../OtherHeaders/GlobalVars.h"
 #include "../OtherHeaders/GlobalEXEAddrs.h"
+#include "../OtherHeaders/GlobalVars.h"
 #include "../Utils/BlockAddrUtils.h"
 #include "stdio.h"
+#include <stdint.h>
 
 uint32_t ret_addr = 0;
 

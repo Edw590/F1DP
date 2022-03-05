@@ -39,8 +39,9 @@
 // /////////////////
 // ctype.h
 
-// getch_(void) EAX
+// tolower_(EAX = c) EAX
 #define F_tolower_ 0xCA3D2
+// toupper_(EAX = c) EAX
 #define F_toupper_ 0xCA367
 
 // /////////////////
@@ -54,6 +55,12 @@
 
 // filelength_(EAX = handle) EAX
 #define F_filelength_ 0xBF9EC
+
+// /////////////////
+// math.h
+
+// __stdcall modf_(x, iptr) EAX
+#define F_modf_ 0xE9CFE
 
 // /////////////////
 // stdio.h

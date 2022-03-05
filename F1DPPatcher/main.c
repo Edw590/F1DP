@@ -202,14 +202,3 @@ void patchVerStr(void) {
 	writeMem8EXE(0xA10F2 + 2, 0x8); // Correct what's added to ESP
 }
 
-// This is just because I don't want to be adding and removing targets on the compiler flags manually...
-// If I could get CMake to do it, but I don't seem to find out how it's done, so I need to do that manually on the
-// command to send to Watcom (........).
-// Also, if main() is in the beginning, I can just search for the special name and know right there where the segment
-// starts (3 bytes before the NOPs that come before the special number and the jump that comes before it).
-#include "CLibs/CLibs.c"
-#include "PatcherPatcher.c"
-#include "SFall1Patches/SFall1Patches.c"
-#include "Utils/BlockAddrUtils.c"
-#include "Utils/EXEPatchUtils.c"
-#include "Utils/IniUtils.c"

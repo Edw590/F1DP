@@ -25,6 +25,7 @@
 #include "../OtherHeaders/GlobalEXEAddrs.h"
 #include "../Utils/BlockAddrUtils.h"
 #include "../Utils/EXEPatchUtils.h"
+#include "Bugs.h"
 #include "Define.h"
 #include "FalloutEngine.h"
 #include "Inventory.h"
@@ -35,11 +36,11 @@
 
 bool UseScrollWheel = true;
 
-static char ReloadWeaponKey = '\0';
+char ReloadWeaponKey = '\0';
 
-static uint32_t StackEmptyWeapons = 0;
+uint32_t StackEmptyWeapons = 0;
 
-static void __declspec(naked) ReloadActiveHand(void) {
+void __declspec(naked) ReloadActiveHand(void) {
 	__asm {
 			// esi=-1 unless reloading the inactive hand or shifting the inactive hand
 			push    ebx
@@ -136,7 +137,7 @@ bool wasReloadWeaponKeyPressed(char c) {
 	return (toupper(c) == toupper(*(char *) getRealBlockAddrData(&ReloadWeaponKey)));
 }
 
-static void __declspec(naked) ReloadWeaponHotKey(void) {
+void __declspec(naked) ReloadWeaponHotKey(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -230,7 +231,7 @@ static void __declspec(naked) ReloadWeaponHotKey(void) {
 	}
 }
 
-static void __declspec(naked) AutoReloadWeapon(void) {
+void __declspec(naked) AutoReloadWeapon(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -328,7 +329,7 @@ static void __declspec(naked) AutoReloadWeapon(void) {
 	}
 }
 
-static void __declspec(naked) SetDefaultAmmo(void) {
+void __declspec(naked) SetDefaultAmmo(void) {
 	__asm {
 			push    eax
 			push    ebx
@@ -364,7 +365,7 @@ static void __declspec(naked) SetDefaultAmmo(void) {
 	}
 }
 
-static void __declspec(naked) inven_action_cursor_hook(void) {
+void __declspec(naked) inven_action_cursor_hook(void) {
 	__asm {
 			mov     edx, [esp+0x1C]
 			call    SetDefaultAmmo
@@ -380,7 +381,7 @@ static void __declspec(naked) inven_action_cursor_hook(void) {
 	}
 }
 
-static void __declspec(naked) fontHeight(void) {
+void __declspec(naked) fontHeight(void) {
 	__asm {
 			push    ebx
 			push    edi
@@ -409,8 +410,8 @@ static void __declspec(naked) fontHeight(void) {
 	}
 }
 
-static char MsgBuf[32];
-static void __declspec(naked) printFreeMaxWeight(void) {
+char MsgBuf[32];
+void __declspec(naked) printFreeMaxWeight(void) {
 	__asm {
 			// ebx = source, ecx = ToWidth, edi = posOffset, esi = extraWeight
 			push    edi
@@ -656,7 +657,7 @@ static void __declspec(naked) printFreeMaxWeight(void) {
 	}
 }
 
-static void __declspec(naked) display_inventory_hook(void) {
+void __declspec(naked) display_inventory_hook(void) {
 	__asm {
 			call    fontHeight
 			inc     eax
@@ -720,7 +721,7 @@ static void __declspec(naked) display_inventory_hook(void) {
 	}
 }
 
-static void __declspec(naked) display_target_inventory_hook(void) {
+void __declspec(naked) display_target_inventory_hook(void) {
 	__asm {
 			call    fontHeight
 			inc     eax
@@ -781,7 +782,7 @@ static void __declspec(naked) display_target_inventory_hook(void) {
 	}
 }
 
-static void __declspec(naked) display_table_inventories_hook(void) {
+void __declspec(naked) display_table_inventories_hook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -802,7 +803,7 @@ static void __declspec(naked) display_table_inventories_hook(void) {
 	}
 }
 
-static void __declspec(naked) display_table_inventories_hook1(void) {
+void __declspec(naked) display_table_inventories_hook1(void) {
 	__asm {
 			add     dword ptr [esp+8], 20
 			sub     dword ptr [esp+16], 20*480
@@ -862,7 +863,7 @@ static void __declspec(naked) display_table_inventories_hook1(void) {
 }
 
 // Draw a section of the window
-static void __declspec(naked) display_table_inventories_hook2(void) {
+void __declspec(naked) display_table_inventories_hook2(void) {
 	__asm {
 			mov     dword ptr [edx+4], 4                 // WinRect.y_start = 4
 			push    edi
@@ -873,7 +874,7 @@ static void __declspec(naked) display_table_inventories_hook2(void) {
 	}
 }
 
-static void __declspec(naked) barter_inventory_hook(void) {
+void __declspec(naked) barter_inventory_hook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -896,7 +897,7 @@ static void __declspec(naked) barter_inventory_hook(void) {
 	}
 }
 
-static void __declspec(naked) barter_inventory_hook1(void) {
+void __declspec(naked) barter_inventory_hook1(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -916,7 +917,7 @@ static void __declspec(naked) barter_inventory_hook1(void) {
 	}
 }
 
-static void __declspec(naked) inven_pickup_hook2(void) {
+void __declspec(naked) inven_pickup_hook2(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_DATA_SEC_EXE_ADDR
@@ -1017,7 +1018,7 @@ static void __declspec(naked) inven_pickup_hook2(void) {
 	}
 }
 
-static void __declspec(naked) display_stats_hook(void) {
+void __declspec(naked) display_stats_hook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_DATA_SEC_EXE_ADDR
@@ -1162,7 +1163,7 @@ static void __declspec(naked) display_stats_hook(void) {
 	}
 }
 
-static void __declspec(naked) make_loot_drop_button(void) {
+void __declspec(naked) make_loot_drop_button(void) {
 	__asm {
 			cmp     dword ptr [esp+0x4+0x4], 2
 			jne     end
@@ -1360,9 +1361,9 @@ static void __declspec(naked) make_loot_drop_button(void) {
 	}
 }
 
-static char OverloadedLoot[48] = "";
-static char OverloadedDrop[48] = "";
-static void __declspec(naked) loot_drop_all(void) {
+char OverloadedLoot[48] = "";
+char OverloadedDrop[48] = "";
+void __declspec(naked) loot_drop_all(void) {
 	__asm {
 			xor     ebx, ebx
 			cmp     eax, 'A'
@@ -1710,8 +1711,8 @@ static void __declspec(naked) loot_drop_all(void) {
 	}
 }
 
-static char SuperStimMsg[128] = "";
-static void __declspec(naked) protinst_use_item_on_hook(void) {
+char SuperStimMsg[128] = "";
+void __declspec(naked) protinst_use_item_on_hook(void) {
 	__asm {
 			mov     edx, [ebx+0x64]                      // edx = item pid
 			cmp     edx, PID_SUPER_STIMPAK
@@ -1753,7 +1754,7 @@ static void __declspec(naked) protinst_use_item_on_hook(void) {
 	}
 }
 
-static void __declspec(naked) loot_container_hook(void) {
+void __declspec(naked) loot_container_hook(void) {
 	__asm {
 			cmp     esi, 0x150                           // source_down
 			je      scroll
@@ -1803,7 +1804,7 @@ static void __declspec(naked) loot_container_hook(void) {
 	}
 }
 
-static void __declspec(naked) barter_inventory_hook2(void) {
+void __declspec(naked) barter_inventory_hook2(void) {
 	__asm {
 			push    edx
 			push    ecx
@@ -1904,7 +1905,7 @@ static void __declspec(naked) barter_inventory_hook2(void) {
 	}
 }
 
-static void __declspec(naked) handle_inventory_hook(void) {
+void __declspec(naked) handle_inventory_hook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -1922,7 +1923,7 @@ static void __declspec(naked) handle_inventory_hook(void) {
 	}
 }
 
-static void __declspec(naked) item_add_check(void) {
+void __declspec(naked) item_add_check(void) {
 	__asm {
 			push    edi
 			push    esi
@@ -2124,7 +2125,7 @@ static void __declspec(naked) item_add_check(void) {
 	}
 }
 
-static void __declspec(naked) item_add_mult(void) {
+void __declspec(naked) item_add_mult(void) {
 	__asm {
 			mov     ecx, eax
 			call    item_add_check
@@ -2149,7 +2150,7 @@ static void __declspec(naked) item_add_mult(void) {
 	}
 }
 
-static void __declspec(naked) drop_into_container_hook(void) {
+void __declspec(naked) drop_into_container_hook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_DATA_SEC_EXE_ADDR
@@ -2174,7 +2175,7 @@ static void __declspec(naked) drop_into_container_hook(void) {
 	}
 }
 
-static void __declspec(naked) item_add_force_call(void) {
+void __declspec(naked) item_add_force_call(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_DATA_SEC_EXE_ADDR
@@ -2194,7 +2195,7 @@ static void __declspec(naked) item_add_force_call(void) {
 	}
 }
 
-static void __declspec(naked) move_table_source() {
+void __declspec(naked) move_table_source() {
 	__asm {
 			xchg    ecx, eax                             // ecx = source, eax = count
 			xchg    ebx, eax                             // ebx = count, eax = item
@@ -2221,7 +2222,7 @@ static void __declspec(naked) move_table_source() {
 	}
 }
 
-static void __declspec(naked) move_table_target() {
+void __declspec(naked) move_table_target() {
 	__asm {
 			mov     edx, ds:[D__target_curr_stack]
 			mov     edx, ds:[D__target_stack][edx*4]
@@ -2229,7 +2230,7 @@ static void __declspec(naked) move_table_target() {
 	}
 }
 
-static void __declspec(naked) checkContainerSize() {
+void __declspec(naked) checkContainerSize() {
 	__asm {
 			push    eax
 			call    item_add_check
@@ -2252,7 +2253,7 @@ static void __declspec(naked) checkContainerSize() {
 	}
 }
 
-static void __declspec(naked) proto_ptr_call() {
+void __declspec(naked) proto_ptr_call() {
 	__asm {
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR

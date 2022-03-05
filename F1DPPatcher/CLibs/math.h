@@ -17,22 +17,17 @@
 // specific language governing permissions and limitations
 // under the License.
 
-#ifndef F1DPPATCHER_STRING_H
-#define F1DPPATCHER_STRING_H
+//
+// Created by DADi590 on 05/03/2022.
+//
+
+#ifndef F1DPPATCHER_MATH_H
+#define F1DPPATCHER_MATH_H
 
 
 
-#include <sys/types.h>
-
-void * memset(void *s, int c, size_t n);
-int strcmp(const char * s1, const char * s2);
-char * strcpy(char * s1, const char * s2);
-size_t strlen(const char *s);
-int strncmp(const char * s1, const char * s2, size_t n);
-char * strncpy(char * s1, const char * s2, size_t n);
-size_t strnlen(const char * s, size_t maxlen);
-char * strrchr(const char * s, int c);
+double modf(double x, double *iptr);
 
 
 
-#endif //F1DPPATCHER_STRING_H
+#endif //F1DPPATCHER_MATH_H

@@ -20,8 +20,8 @@
 #include "../GameAddrs/CStdFuncs.h"
 #include "../OtherHeaders/GlobalEXEAddrs.h"
 #include "../Utils/BlockAddrUtils.h"
-#include <stdint.h>
 #include "string.h"
+#include <stddef.h>
 
 void *memset(void *s, int c, size_t n) {
 	void *ret_var = NULL;

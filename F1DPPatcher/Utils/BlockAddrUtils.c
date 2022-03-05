@@ -17,9 +17,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-#include "../CLibs/stdio.h"
 #include "../OtherHeaders/GlobalEXEAddrs.h"
 #include "BlockAddrUtils.h"
+#include <stddef.h>
+#include <stdint.h>
 
 // If the address is greater than SN_CODE_SEC_EXE_ADDR, then that means it's already a real address somewhere. So don't
 // touch it (even if we'd add some offset to it to get it to some section we wanted, it would overflow the EXE's space

@@ -1,4 +1,4 @@
-..\main.c -bt=DOS -l=dos4g -fpd -mf -oi -ol+ -oneatx -ot -we -wx -za
+..\main.c -bt=DOS -l=dos4g -fpd -mf -oi -ol+ -oneatx -ot -we -wo -wx -za
 
 To generate debug info (I won't include it above so it's not a waste of space (and a mess for me to get where the actual segment ends and starts unnecessary debug info which I don't even use to debug this):
 -d3 -db

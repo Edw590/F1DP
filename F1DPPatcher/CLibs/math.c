@@ -17,22 +17,33 @@
 // specific language governing permissions and limitations
 // under the License.
 
-#ifndef F1DPPATCHER_STRING_H
-#define F1DPPATCHER_STRING_H
+//
+// Created by DADi590 on 05/03/2022.
+//
 
+#include "../GameAddrs/CStdFuncs.h"
+#include "../OtherHeaders/GlobalEXEAddrs.h"
+#include "../Utils/BlockAddrUtils.h"
+#include "math.h"
 
+double modf(double x, double *iptr) {
+	double ret_var = 0;
 
-#include <sys/types.h>
+	// Pointer correction
+	iptr = getRealBlockAddrData(iptr);
 
-void * memset(void *s, int c, size_t n);
-int strcmp(const char * s1, const char * s2);
-char * strcpy(char * s1, const char * s2);
-size_t strlen(const char *s);
-int strncmp(const char * s1, const char * s2, size_t n);
-char * strncpy(char * s1, const char * s2, size_t n);
-size_t strnlen(const char * s, size_t maxlen);
-char * strrchr(const char * s, int c);
+	__asm {
+			pusha
 
+			push    [iptr]
+			push    [x]
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			add     edi, F_modf_
+			call    edi
+			mov     dword ptr [ret_var], eax
 
+			popa
+	}
 
-#endif //F1DPPATCHER_STRING_H
+	return ret_var;
+}

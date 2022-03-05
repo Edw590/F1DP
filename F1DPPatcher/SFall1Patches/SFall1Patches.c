@@ -31,7 +31,6 @@ struct FileInfo sfall1_ini_info_G = {0};
 bool initSfall1Patcher(void) {
 	bool ret_var = true;
 	char prop_value[MAX_PROP_VALUE_LEN];
-
 	memset(prop_value, 0, MAX_PROP_VALUE_LEN);
 
 	if (getPropValueIni(MAIN_INI_SPEC_SEC_MAIN, NULL, "sFall1SettingsFile", NULL, prop_value, &dospatch_ini_info_G)) {
@@ -70,10 +69,3 @@ bool initSfall1Patcher(void) {
 
 	return ret_var;
 }
-
-#include "Bugs.c"
-#include "Inventory.c"
-#include "LoadGameHook.c"
-#include "PartyControl.c"
-#include "dinput.c"
-#include "sFall1Main.c"
