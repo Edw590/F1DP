@@ -74,9 +74,9 @@ void patchPatcher(uint32_t sn_base) {
 	uint32_t bin_file_len = 0;
 	uint32_t code_sec_block_addr = 0;
 	uint32_t data_sec_block_addr = 0;
-	// NO ASSIGNMENTS ABOVE THE __asm DECLARATION!!!!! THE ESI REGISTER MUST BE INTACT INSIDE IT!!!!
+	// NO ASSIGNMENTS ABOVE THE __asm DECLARATION!!!!! THE EDI REGISTER MUST BE INTACT INSIDE IT!!!!
 	__asm {
-			mov     [block_addr], esi // Now the block address is decently stored before any code messes with ESI
+			mov     [block_addr], edi // Now the block address is decently stored before any code messes with EDI
 	}
 	code_sec_exe_addr = *(uint32_t *) (block_addr + CODE_SEC_EXE_ADDR_OFFSET);
 	data_sec_exe_addr = *(uint32_t *) (block_addr + DATA_SEC_EXE_ADDR_OFFSET);

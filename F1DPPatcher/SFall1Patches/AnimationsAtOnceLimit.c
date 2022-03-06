@@ -1,6 +1,6 @@
 /*
  *    sfall
- *    Copyright (C) 2009, 2010  Mash (Matt Wells, mashw at bigpond dot net dot au)
+ *    Copyright (C) 2009, 2010  Mash (Matt Wells, mashw at bigpond dot net dot au), 2022 DADi590
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -15,6 +15,10 @@
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+// Original code modified by me, DADi590, to adapt it to this project, starting on 2022-03-02.
+// NOTE: I don't see mention to Crafty in the copyright notices, but I'll just say here that this code was taken from
+// his modification of the original sFall1 by Timeslip.
 
 #include "../CLibs/stdlib.h"
 #include "../OtherHeaders/General.h"

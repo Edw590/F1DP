@@ -17,10 +17,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-//
-// Created by DADi590 on 05/03/2022.
-//
-
 #ifndef F1DPPATCHER_MATH_H
 #define F1DPPATCHER_MATH_H
 
