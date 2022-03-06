@@ -11,6 +11,8 @@ This repository contains the code for everything involved with F1DP:
 - the Patcher, in C and Inline-Assembly (a CLion project);
 - and Loader, in Assembly (a file compiled from Sublime Text 3 using MASM 9.0 and using the compilation assistant and Sublime Text stuff from this repository of mine: https://github.com/DADi590/Chrome-Dino-Game-in-Assembly).
 
+Small note about the naming: I know it's kind of awful. But I'm not sure of a better naming. The Installer installs the Loader into the game EXE and creates the BIN file containing the Patcher code. But the project is (or was) called Fallout 1 DOS Patcher (best name I came up with). So I've reduced the name to F1DP, and now I can say F1DP Patcher more normally (don't think too much about it... xD).
+
 ## Download
 
 Download any version you'd like (preferably the most recent one) here: https://github.com/DADi590/F1DP/releases.
@@ -88,6 +90,13 @@ At the moment of writing this (02-03-2022), I don't have all the target C files 
 Command I'm using to compile: `C:\MASM615\BIN\ml_9.00.21022.08_x86.EXE /omf /Fl /Fm /FR /errorReport:send /Sf /W3 /WX "%BASE_FILE_NAME%.asm"`.
 
 ## About
+### - Credits
+[Not sure what the order should be in this case, as it's all very important, so alphabetical order.]
+
+- DADi590 (me), for making the patcher and adapting all patches the DOS EXE
+- Crafty for his sFall1 modifications
+- Timeslip for the original sFall1 mod
+- xttl on the Doomworld forums for his posted knowledge, which helped making my life MUCH easier while trying to figure out how to get the patcher to work on DOS
 ### - Contributing
 
 Anyone is free to contribute to the repository with new patch ports, new patches entirely, port fixes, whatever that is useful.
