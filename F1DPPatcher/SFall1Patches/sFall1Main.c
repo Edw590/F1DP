@@ -586,8 +586,6 @@ void DllMain2(void) {
 	sscanf(prop_value, "%ud", &temp_uint32);
 	*((uint32_t *) getRealEXEAddr(0xFEEA4)) = temp_uint32;
 
-	Revê as licenças do código!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
-
 
 	freeNew(((struct FileInfo *) getRealBlockAddrData(&translation_ini_info_G))->contents);
 }
