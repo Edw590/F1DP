@@ -344,12 +344,7 @@ static void __declspec(naked) _WinMain_hook(void) {
 	__asm {
 			call    OnExit
 
-			sub     esp, 4 // [DADi590] Reserve space for the return address
-			push    edi
-			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, F_exit_
-			mov     [esp+4], edi
-			pop     edi
+			// [DADi590: no need to call exit() here. That's done in the Loader code already.]
 			retn
 	}
 }
@@ -362,7 +357,9 @@ void DllMain2(void) {
 	memset(prop_value, 0, MAX_PROP_VALUE_LEN);
 
 
-	HookCallEXE(0xE1B8A, getRealBlockAddrCode((void *) &_WinMain_hook));
+	// Make a call just before the game exits, which is inside the Loader code, in the NOPs I left there for this.
+	// Those NOPs that are replaced here are just before this block of code is freed by free().
+	MakeCallEXE(0xEA2DA, getRealBlockAddrCode((void *) &_WinMain_hook), false);
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Main", "TranslationsINI", "./Translations.ini", prop_value, &sfall1_ini_info_G);
 	// If it fails, the struct will have 0s and the file won't be read, so the default values will be used as sFall1 does.
