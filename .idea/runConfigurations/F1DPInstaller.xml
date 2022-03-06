@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="F1DPInstaller" type="GoApplicationRunConfiguration" factoryName="Go Application">
+    <module name="F1DPInstaller" />
+    <working_directory value="$PROJECT_DIR$/../F1DP" />
+    <kind value="PACKAGE" />
+    <package value="F1DP" />
+    <directory value="$PROJECT_DIR$" />
+    <filePath value="$PROJECT_DIR$" />
+    <output_directory value="$PROJECT_DIR$/../F1DP/generated_binaries" />
+    <method v="2" />
+  </configuration>
+</component>
