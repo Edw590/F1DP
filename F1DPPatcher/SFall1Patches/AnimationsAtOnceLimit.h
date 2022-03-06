@@ -17,18 +17,20 @@
 // specific language governing permissions and limitations
 // under the License.
 
-#ifndef F1DPPATCHER_BLOCKADDRUTILS_H
-#define F1DPPATCHER_BLOCKADDRUTILS_H
+//
+// Created by DADi590 on 05/03/2022.
+//
+
+#ifndef F1DPPATCHER_ANIMATIONSATONCELIMIT_H
+#define F1DPPATCHER_ANIMATIONSATONCELIMIT_H
 
 
 
-#define SN_CODE_SEC_BLOCK_ADDR 0x76563412 // 12 34 56 75 in little endian
-#define SN_DATA_SEC_BLOCK_ADDR 0x75563412 // 12 34 56 74 in little endian
-#define SN_BLOCK_ADDR 0x74563412 // 12 34 56 74 in little endian
+extern int AnimationsLimit;
 
-void * getRealBlockAddrCode(volatile const void * addr);
-void * getRealBlockAddrData(volatile const void * addr);
+void AnimationsAtOnceInit(void);
+void AnimationsAtOnceExit(void);
 
 
 
-#endif //F1DPPATCHER_BLOCKADDRUTILS_H
+#endif //F1DPPATCHER_ANIMATIONSATONCELIMIT_H

@@ -75,7 +75,7 @@
 #define C_buf_fill_                          x
 #define C_buf_to_buf_                        0xBD6F4 // Args: +stack / int __cdecl buf_to_buf_(int from, int width, int height, int from_width, int to, int to_width)
 #define C_closedir_                          x
-#define C_combat_ai_                         x
+#define C_combat_ai_                         0x25E4C // Args: non-stack / No prototype
 #define C_combat_is_shot_blocked_            x
 #define C_combat_should_end_                 x
 #define C_combat_turn_                       x
@@ -99,7 +99,7 @@
 #define C_db_init_hash_table_                x
 #define C_db_init_patches_                   x
 #define C_db_select_                         x
-#define C_debug_register_env_                x
+#define C_debug_register_env_                0xB3080 // Args: non-stack / No prototype
 #define C_dialog_out_                        0x1BFA0 // Args: +stack / No prototype (5 stack arguments)
 #define C_display_inventory_                 0x639E8 // Args: non-stack / int __usercall display_inventory_@<eax>(int inventory_offset@<eax>, int mode@<ebx>, int visible_offset@<edx>)
 #define C_display_print_                     0x2C05C // Args: non-stack / No prototype
@@ -204,7 +204,7 @@
 #define C_PipStatus_                         x
 #define C_PrintBasicStat_                    x
 #define C_PrintLevelWin_                     x
-#define C_process_bk_                        x
+#define C_process_bk_                        0xB3638 // Args: non-stack / No prototype
 #define C_proto_dude_update_gender_          x
 #define C_proto_ptr_                         0x9045C // Args: non-stack / int __usercall proto_ptr_@<eax>(int pid@<eax>, int buf@<edx>)
 #define C_queue_add_                         x
@@ -272,7 +272,7 @@
 #define D__combat_highlight        x
 #define D__combat_list             x
 #define D__combat_state            0xFEE78
-#define D__combat_turn_running     x
+#define D__combat_turn_running     0xFEE74
 #define D__crit_succ_eff           0xFEEA8
 #define D__critter_db_handle       x
 #define D__crnt_func               x

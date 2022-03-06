@@ -62,7 +62,7 @@ bool initSfall1Patcher(void) {
 	funcEnd:
 
 	// If the file was opened here, release its contents before leaving the function (unless it's the main one, which is
-	// taken care of by realMain().
+	// taken care of by realMain()).
 	if (!((struct FileInfo *) getRealBlockAddrData(&sfall1_ini_info_G))->is_main_ini) {
 		freeNew(((struct FileInfo *) getRealBlockAddrData(&sfall1_ini_info_G))->contents);
 	}

@@ -29,12 +29,13 @@
 #define SNO_DATA_SEC_EXE_ADDR 0x07000000
 #define SNO_CODE_SEC_BLOCK_ADDR 0x06000000
 #define SNO_DATA_SEC_BLOCK_ADDR 0x05000000
+#define SNO_BLOCK_ADDR 0x04000000
 
 // The code segment begins in the 16th byte, not on the 0th
 #define CODE_SEC_BLOCK_ADDR_OFFSET 0x10
 // The data segment begins some pages (each of 0x1000 bytes) after the code segment. This number can change and must be
 // updated manually each time the code needs one more page in the EXE.
-#define DATA_SEC_BLOCK_ADDR_OFFSET (0xA000 + CODE_SEC_BLOCK_ADDR_OFFSET)
+#define DATA_SEC_BLOCK_ADDR_OFFSET (0xB000 + CODE_SEC_BLOCK_ADDR_OFFSET)
 
 // Explanation of this file and all the SN_ constants thing around the project files
 //
@@ -98,6 +99,8 @@ void patchPatcher(uint32_t sn_base) {
 			*(uint32_t *) curr_addr = code_sec_block_addr;
 		} else if (curr_value == (sn_base + SNO_DATA_SEC_BLOCK_ADDR)) {
 			*(uint32_t *) curr_addr = data_sec_block_addr;
+		} else if (curr_value == (sn_base + SNO_BLOCK_ADDR)) {
+			*(uint32_t *) curr_addr = block_addr;
 		} else {
 			// Do nothing if none of the special numbers are found
 		}

@@ -30,6 +30,9 @@
 // This is also just because I don't want to be appending NULL bytes or hard-coding a number on the Loader for it to
 // always allocate space for the uninitialized data section. So just initialize everything (easy thing to do anyways).
 
+// WARNING 3: NO SWITCH CASES MUST BE IN THIS ENTIRE PROJECT!!!!!! For those, there are things called Jump Tables. They
+// use absolute addresses --> no way. Use IF statements ¯\_(ツ)_/¯.
+
 #include "CLibs/stdio.h"
 #include "CLibs/stdlib.h"
 #include "CLibs/string.h"
@@ -163,18 +166,18 @@ bool realMain(void) {
 		// below, but both are null-terminated strings, so ignore that - and I need to check if the string starts and
 		// ends with "1", so I need to check the NULL character too (2 characters total).
 		if (0 == strcmp(ini_prop_value, "0")) {
-			loglnStr(LOGGER_STR "sFall1 patches disabled.");
+			loglnStr(LOGGER_STR "sFall1 1.7.6 patches disabled.");
 		} else if (0 == strcmp(ini_prop_value, "1")) {
-			loglnStr(LOGGER_STR "sFall1 patches enabled.");
+			loglnStr(LOGGER_STR "sFall1 1.7.6 patches enabled.");
 
 			ret_var = ret_var && initSfall1Patcher();
 		} else {
-			printlnStr(LOGGER_ERR_STR "'sFall1Enable' has a wrong value. Aborting sFall1 patches...");
+			printlnStr(LOGGER_ERR_STR "'sFall1Enable' has a wrong value. Aborting sFall1 1.7.6 patches...");
 
 			ret_var = false;
 		}
 	} else {
-		printlnStr(LOGGER_ERR_STR "'sFall1Enable' not specified. Aborting sFall1 patches...");
+		printlnStr(LOGGER_ERR_STR "'sFall1Enable' not specified. Aborting sFall1 1.7.6 patches...");
 
 		ret_var = false;
 	}
@@ -190,7 +193,7 @@ bool realMain(void) {
 	return false;
 }
 
-void patchVerStr(void) {
+static void patchVerStr(void) {
 	// Remove the address of "FALLOUT %d.%d", put the string below, and push it a bit up so it doesn't overlap with the
 	// other text. I'm not just replacing the original string on the Data section because this way, it's perfectly fine
 	// to put a string with more characters than the original one.
@@ -199,4 +202,3 @@ void patchVerStr(void) {
 	writeMem32EXE(0x73373+1, 0x1BD); // Change the string height (445)
 	writeMem8EXE(0xA10F2+2, 0x8); // Correct what's added to ESP
 }
-

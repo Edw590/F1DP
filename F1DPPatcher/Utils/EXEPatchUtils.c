@@ -68,7 +68,7 @@ void MakeCallEXE(uint32_t addr, const void *func, bool jump) {
 	HookCallEXE(addr, func);
 }
 
-void BlockCallJmpEXE(uint32_t addr) {
+void BlockCallEXE(uint32_t addr) {
 	// 5 is the length of the CALL near instruction with opcode E8 or the JMP near instruction with opcode E9.
 	memset(getRealEXEAddr(addr), 0x90, 5);
 }

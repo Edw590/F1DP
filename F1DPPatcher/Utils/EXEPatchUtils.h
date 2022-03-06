@@ -28,7 +28,7 @@
 /**
  * @brief Calculates the real address of a game address got from IDA.
  *
- * It is done by checking if the given address is <= than CODE_SEC_EXE_IDA_END_ADDR. If it is, sum the code section
+ * It is done by checking if the given address is \<= than CODE_SEC_EXE_IDA_END_ADDR. If it is, sum the code section
  * address to it. Else, sum the data section address. This carries a warning...
  *
  * WARNING: PAY ATTENTION TO HOW MANY CALLS YOU DO TO THIS FUNCTION WITH THE SAME VARIABLE!!! You can't rely on it to
@@ -53,7 +53,7 @@ void HookCallEXE(uint32_t addr, const void * func);
 
 void MakeCallEXE(uint32_t addr, const void * func, bool jump);
 
-void BlockCallJmpEXE(uint32_t addr);
+void BlockCallEXE(uint32_t addr);
 
 
 

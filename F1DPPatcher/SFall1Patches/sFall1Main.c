@@ -28,11 +28,13 @@
 #include "../CLibs/stdio.h"
 #include "../CLibs/stdlib.h"
 #include "../CLibs/string.h"
+#include "../GameAddrs/CStdFuncs.h"
 #include "../OtherHeaders/General.h"
 #include "../OtherHeaders/GlobalEXEAddrs.h"
 #include "../Utils/BlockAddrUtils.h"
 #include "../Utils/EXEPatchUtils.h"
 #include "AmmoMod.h"
+#include "AnimationsAtOnceLimit.h"
 #include "Criticals.h"
 #include "Define.h"
 #include "FalloutEngine.h"
@@ -49,7 +51,7 @@
 
 /*
  * // ///////////////////////////////////////////////////////////////
- *             RULES TO FOLLOW IN THE PORTS!!!!!!!!!!!
+ *         RULES TO FOLLOW IN THE ASSEMBLY PORTS!!!!!!!!!!!
  *
  * - All absolute addresses must have added to them a Special Number corresponding to where that absolute address refers
  *   to:
@@ -119,7 +121,7 @@
  * - Ctrl+F all CALLs and pay attention to the stack (check the documentation of the macro to see if the "Args" are
  *   "regs" and/or "stack". Use the corresponding SN depending on the C_ or D_ prefix.
  * - Ctrl+F all "0x"s, check if they are addresses, and if they are, use the appropriate SN.
- * - Go check all the C_s and D_s that remained untouched and use the appropriate SN.
+ * - Go check all the C_s, D_s and F_s that remained untouched and use the appropriate SN.
  *
  * // ///////////////////////////////////////////////////////////////
  */
@@ -135,7 +137,7 @@ static char dmModelName[65] = {0};
 static char dfModelName[65] = {0};
 static char MovieNames[14 * 65] = {0};
 
-static const char *origMovieNames[] = {
+static const char *origMovieNames[14] = {
 		"iplogo.mve",
 		"mplogo.mve",
 		"intro.mve",
@@ -246,16 +248,126 @@ static void __declspec(naked) intface_item_reload_hook() {
 	}
 }
 
+static uint32_t RetryCombatMinAP = 0;
+
+static void __declspec(naked) combat_turn_hook() {
+	__asm {
+			xor     eax, eax
+		retry:
+			xchg    ebx, eax
+			mov     eax, esi
+			push    edx
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			add     edi, C_combat_ai_
+			call    edi
+			pop     edi
+			pop     edx
+		process:
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			cmp     dword ptr ds:[edi+D__combat_turn_running], 0
+			pop     edi
+			jle     next
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			add     edi, C_process_bk_
+			call    edi
+			pop     edi
+			jmp     process
+		next:
+			mov     eax, [esi+0x40]                      // curr_mp
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			cmp     eax, [edi+RetryCombatMinAP]
+			pop     edi
+			jl      end
+			cmp     eax, ebx
+			jne     retry
+		end:
+			retn
+	}
+}
+
+static void __declspec(naked) intface_rotate_numbers_hook() {
+	__asm {
+			push    edi
+			push    ebp
+			sub     esp, 0x54
+			// ebx=old value, ecx=new value
+			cmp     ebx, ecx
+			je      end
+			mov     ebx, ecx
+			jg      decrease
+			dec     ebx
+			jmp     end
+		decrease:
+			test    ecx, ecx
+			jl      negative
+			inc     ebx
+			jmp     end
+		negative:
+			xor     ebx, ebx
+		end:
+
+			sub     esp, 4 // [DADi590] Reserve space for the return address
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			add     edi, 0x563F6
+			mov     [esp+4], edi
+			pop     edi
+			retn
+	}
+}
+
+static void __declspec(naked) debugModeWrapper(void) {
+	__asm {
+			pusha
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			add     edi, C_debug_register_env_
+			call    edi
+			pop     edi
+			popa
+
+			mov     ecx, 1
+			ret
+	}
+}
+
+static void OnExit(void) {
+	//ConsoleExit();
+	AnimationsAtOnceExit();
+}
+
+static void __declspec(naked) _WinMain_hook(void) {
+	__asm {
+			call    OnExit
+
+			sub     esp, 4 // [DADi590] Reserve space for the return address
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			add     edi, F_exit_
+			mov     [esp+4], edi
+			pop     edi
+			retn
+	}
+}
+
 void DllMain2(void) {
 	uint32_t i = 0;
 	int temp_int = 0;
+	uint32_t temp_uint32 = 0;
 	char prop_value[MAX_PROP_VALUE_LEN];
 	memset(prop_value, 0, MAX_PROP_VALUE_LEN);
 
 
+	HookCallEXE(0xE1B8A, getRealBlockAddrCode((void *) &_WinMain_hook));
+
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Main", "TranslationsINI", "./Translations.ini", prop_value, &sfall1_ini_info_G);
 	// If it fails, the struct will have 0s and the file won't be read, so the default values will be used as sFall1 does.
 	readFile(prop_value, &translation_ini_info_G);
+
 
 	InventoryInit();
 
@@ -266,8 +378,9 @@ void DllMain2(void) {
 		writeMem32EXE(0x72995, (uint32_t) getRealBlockAddrData(mapName));
 	}
 
+	// Disabled
 	// I'm already replacing this string and moving it up. If it were on Windows, both could be there. On DOS, with the
-	// other things there too, only one can, and it's F1DP's mark (to know it's loaded and working).
+	// other things there too, only one can (F1DP in this case).
 	//getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "VersionString", "", versionString, &sfall1_ini_info_G);
 	//if (0 != strcmp(mapName, "")) {
 	//	writeMem32EXE(0xA10E7+1, (uint32_t) getRealBlockAddrData(versionString));
@@ -349,6 +462,129 @@ void DllMain2(void) {
 	if (0 != strcmp(prop_value, "0")) {
 		HookCallEXE(0x563D9, getRealBlockAddrCode((void *) &intface_item_reload_hook));
 	}
+
+	// Disabled
+	//idle = GetPrivateProfileIntA("Misc", "ProcessorIdle", -1, ini);
+
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "SkipOpeningMovies", "0", prop_value, &sfall1_ini_info_G);
+	if (0 != strcmp(prop_value, "0")) {
+		writeMem16EXE(0x728C3, 0x13EB);            // jmps 0x472A88
+	}
+
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "NPCsTryToSpendExtraAP", "0", prop_value, &sfall1_ini_info_G);
+	sscanf(prop_value, "%ud", (uint32_t *) getRealBlockAddrData(&RetryCombatMinAP));
+	if (*(uint32_t *) getRealBlockAddrData(&RetryCombatMinAP) > 0) {
+		// Apply retry combat patch
+		HookCallEXE(0x20ABA, getRealBlockAddrCode((void *) &combat_turn_hook));
+	}
+
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "RemoveWindowRounding", "0", prop_value, &sfall1_ini_info_G);
+	if (0 != strcmp(prop_value, "0")) {
+		writeMem16EXE(0xA4BD0, 0x04EB);// jmps 0x4A50C6
+	}
+
+	// Disabled
+	//ConsoleInit();
+
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "SpeedInterfaceCounterAnims", "0", prop_value, &sfall1_ini_info_G);
+	if (0 == strcmp(prop_value, "1")) {
+		MakeCallEXE(0x563F1, getRealBlockAddrCode((void *) &intface_rotate_numbers_hook), true);
+	} else if (0 == strcmp(prop_value, "2")) {
+		writeMem32EXE(0x56406, 0x90DB3190u);
+	}
+
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "SpeedInventoryPCRotation", "166", prop_value, &sfall1_ini_info_G);
+	sscanf(prop_value, "%d", &temp_int);
+	if ((temp_int != 166) && (temp_int <= 1000)) {
+		writeMem32EXE(0x6415A+1, temp_int);
+	}
+
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "RemoveCriticalTimelimits", "0", prop_value, &sfall1_ini_info_G);
+	if (0 == strcmp(prop_value, "0")) {
+		writeMem8EXE(0x91412+1, 0x0);
+		writeMem8EXE(0x91453+1, 0x0);
+	}
+
+	// Patch ereg call - I think this is only for Windows, so I've disabled it here
+	//BlockCallEXE(0x3B25F);
+
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "AnimationsAtOnceLimit", "21", prop_value, &sfall1_ini_info_G);
+	sscanf(prop_value, "%d", &AnimationsLimit);
+	if (*(int *) getRealBlockAddrData(&AnimationsLimit) > 21) {
+		AnimationsAtOnceInit();
+	}
+
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "CombatPanelAnimDelay", "1000", prop_value, &sfall1_ini_info_G);
+	sscanf(prop_value, "%d", &temp_int);
+	if ((temp_int >= 0) && (temp_int <= 65535)) {
+		writeMem32EXE(0x55385+1, (uint32_t) temp_int);
+		writeMem32EXE(0x554DA+1, (uint32_t) temp_int);
+	};
+
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "DialogPanelAnimDelay", "33", prop_value, &sfall1_ini_info_G);
+	sscanf(prop_value, "%d", &temp_int);
+	if ((temp_int >= 0) && (temp_int <= 255)) {
+		writeMem32EXE(0x400FF+1, (uint32_t) temp_int);
+		writeMem32EXE(0x401C1+1, (uint32_t) temp_int);
+	}
+
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Debugging", "DebugMode", "0", prop_value, &sfall1_ini_info_G);
+	sscanf(prop_value, "%d", &temp_int);
+	if (0 != strcmp(prop_value, "0")) {
+		uint32_t str_addr = 0;
+		// This is a modification of the patch (DADi590) - this one doesn't cut code
+		MakeCallEXE(0x728A7, getRealBlockAddrCode((void *) &debugModeWrapper), false);
+
+		writeMem8EXE(0xB308B, 0xB8);               // mov  eax, offset ???
+		if (1 == temp_int) {
+			str_addr = (uint32_t) getRealEXEAddr(0xFE1EC); // "gnw"
+		} else if (2 == temp_int) {
+			str_addr = (uint32_t) getRealEXEAddr(0xFE1D0); // "log"
+		} else if (3 == temp_int) {
+			str_addr = (uint32_t) getRealEXEAddr(0xFE1E4); // "screen"
+		} else if (4 == temp_int) {
+			str_addr = (uint32_t) getRealEXEAddr(0xFE1C8); // "mono"
+		}
+		writeMem32EXE(0xB308B+1, str_addr);
+	}
+
+	// I don't think this applies for MS-DOS...
+	//if (GetPrivateProfileIntA("Misc", "SingleCore", 1, ini)) {
+	//	dlog("Applying single core patch.", DL_INIT);
+	//	HANDLE process = GetCurrentProcess();
+	//	SetProcessAffinityMask(process, 1);
+	//	CloseHandle(process);
+	//	dlogr(" Done", DL_INIT);
+	//}
+
+	//Bodypart hit chances
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "BodyHit_Head", "0xFFFFFFD8", prop_value, &sfall1_ini_info_G);
+	sscanf(prop_value, "%ud", &temp_uint32);
+	*((uint32_t *) getRealEXEAddr(0xFEE84)) = temp_uint32;
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "BodyHit_Left_Arm", "0xFFFFFFE2", prop_value, &sfall1_ini_info_G);
+	sscanf(prop_value, "%ud", &temp_uint32);
+	*((uint32_t *) getRealEXEAddr(0xFEE88)) = temp_uint32;
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "BodyHit_Right_Arm", "0xFFFFFFE2", prop_value, &sfall1_ini_info_G);
+	sscanf(prop_value, "%ud", &temp_uint32);
+	*((uint32_t *) getRealEXEAddr(0xFEE8C)) = temp_uint32;
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "BodyHit_Torso", "0x00000000", prop_value, &sfall1_ini_info_G);
+	sscanf(prop_value, "%ud", &temp_uint32);
+	*((uint32_t *) getRealEXEAddr(0xFEE90)) = temp_uint32;
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "BodyHit_Right_Leg", "0xFFFFFFEC", prop_value, &sfall1_ini_info_G);
+	sscanf(prop_value, "%ud", &temp_uint32);
+	*((uint32_t *) getRealEXEAddr(0xFEE94)) = temp_uint32;
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "BodyHit_Left_Leg", "0xFFFFFFEC", prop_value, &sfall1_ini_info_G);
+	sscanf(prop_value, "%ud", &temp_uint32);
+	*((uint32_t *) getRealEXEAddr(0xFEE98)) = temp_uint32;
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "BodyHit_Eyes", "0xFFFFFFC4", prop_value, &sfall1_ini_info_G);
+	sscanf(prop_value, "%ud", &temp_uint32);
+	*((uint32_t *) getRealEXEAddr(0xFEE9C)) = temp_uint32;
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "BodyHit_Groin", "0xFFFFFFE2", prop_value, &sfall1_ini_info_G);
+	sscanf(prop_value, "%ud", &temp_uint32);
+	*((uint32_t *) getRealEXEAddr(0xFEEA0)) = temp_uint32;
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "BodyHit_Uncalled", "0x00000000", prop_value, &sfall1_ini_info_G);
+	sscanf(prop_value, "%ud", &temp_uint32);
+	*((uint32_t *) getRealEXEAddr(0xFEEA4)) = temp_uint32;
 
 
 	freeNew(((struct FileInfo *) getRealBlockAddrData(&translation_ini_info_G))->contents);
