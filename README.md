@@ -86,14 +86,14 @@ I'm letting GoLand take care of that, but for manual mode, go on the main.c fold
 Command I'm using to compile (use ONLY Open Watcom - I assume its Calling Convention in various things!): please see the `PROGRAM_PARAMS` attribute inside the file `F1DPPatcher/.idea/runConfigurations/Compile_with_Open_Watcom__for_C_.xml` (or a similar one in case I change its name).
 
 At the moment of writing this (02-03-2022), I don't have all the target C files in the compile command. With CLion, targets are automatically added to CMakeLists, which is then given to the compiler. As I haven't got CMake to work with Open Watcom, I can't have that automatic addition of files. So I'm including C files in other C files and just compiling main.c 😄...
-### - Compiling the Loader
-Command I'm using to compile: `C:\MASM615\BIN\ml_9.00.21022.08_x86.EXE /omf /Fl /Fm /FR /errorReport:send /Sf /W3 /WX "%BASE_FILE_NAME%.asm"`.
+### - Assemble the Loader
+Command I'm using to assemble: `C:\MASM615\BIN\ml_9.00.21022.08_x86.EXE /omf /Fl /Fm /FR /errorReport:send /Sf /W3 /WX "%BASE_FILE_NAME%.asm"`.
 
 ## About
 ### - Credits
-[Not sure what the order should be in this case, as it's all very important, so alphabetical order.]
+[Not sure what the order should be in this case, as it's all very important, so partial alphabetical order.]
 
-- DADi590 (me), for making the patcher and adapting all patches the DOS EXE
+- DADi590 (me), for making F1DP and adapting all patches the DOS EXE
 - Crafty for his sFall1 modifications
 - Timeslip for the original sFall1 mod
 - xttl on the Doomworld forums for his posted knowledge, which helped making my life MUCH easier while trying to figure out how to get the patcher to work on DOS
