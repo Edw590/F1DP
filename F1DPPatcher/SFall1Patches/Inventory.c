@@ -36,6 +36,7 @@
 #include "SFall1Patches.h"
 #include "sFall1Main.h"
 
+// Specifically initialized to true
 static bool UseScrollWheel = true;
 
 static char ReloadWeaponKey = '\0';
@@ -66,7 +67,7 @@ static void __declspec(naked) ReloadActiveHand(void) {
 			pop     edi
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_w_try_reload_
+			lea     edi, [edi+C_item_w_try_reload_]
 			call    edi
 			pop     edi
 			test    eax, eax
@@ -82,7 +83,7 @@ static void __declspec(naked) ReloadActiveHand(void) {
 			jne     skip_toggle_item_state
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_intface_toggle_item_state_
+			lea     edi, [edi+C_intface_toggle_item_state_]
 			call    edi
 			pop     edi
 		skip_toggle_item_state:
@@ -96,7 +97,7 @@ static void __declspec(naked) ReloadActiveHand(void) {
 			xor     eax, eax
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_intface_update_items_
+			lea     edi, [edi+C_intface_update_items_]
 			call    edi
 			pop     edi
 			pop     eax
@@ -111,10 +112,10 @@ static void __declspec(naked) ReloadActiveHand(void) {
 			mov     edx, ds:[edi+D__itemButtonItems][eax]
 			pop     edi
 
-			sub     esp, 4 // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, 0x563D2
+			lea     edi, [edi+0x563D2]
 			mov     [esp+4], edi
 			pop     edi
 			retn
@@ -143,14 +144,14 @@ static void __declspec(naked) ReloadWeaponHotKey(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_gmouse_is_scrolling_
+			lea     edi, [edi+C_gmouse_is_scrolling_]
 			call    edi
 			pop     edi
 			test    eax, eax
 			jnz     end
 			pushad
 			xchg    ebx, eax
-			call    wasReloadWeaponKeyPressed
+			call    wasReloadWeaponKeyPressed // EAX is the parameter
 			// [DADi590] If it's a bool, Watcom may/will xor AL with AL for false (it's either 0 or 1, so 8 bits is more than enough)
 			test    al, al
 			jnz     ourKey
@@ -182,7 +183,7 @@ static void __declspec(naked) ReloadWeaponHotKey(void) {
 			jne     itsWeapon                            // Äà
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_intface_use_item_
+			lea     edi, [edi+C_intface_use_item_]
 			call    edi
 			pop     edi
 			jmp     endReload
@@ -204,7 +205,7 @@ static void __declspec(naked) ReloadWeaponHotKey(void) {
 			push    eax
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_mp_cost_
+			lea     edi, [edi+C_item_mp_cost_]
 			call    edi
 			pop     edi
 			xchg    ecx, eax
@@ -222,7 +223,7 @@ static void __declspec(naked) ReloadWeaponHotKey(void) {
 			xchg    edx, eax
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_intface_update_move_points_
+			lea     edi, [edi+C_intface_update_move_points_]
 			call    edi
 			pop     edi
 		endReload:
@@ -237,7 +238,7 @@ static void __declspec(naked) AutoReloadWeapon(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_scr_exec_map_update_scripts_
+			lea     edi, [edi+C_scr_exec_map_update_scripts_]
 			call    edi
 			pop     edi
 			pushad
@@ -252,7 +253,7 @@ static void __declspec(naked) AutoReloadWeapon(void) {
 			pop     edi
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_critter_is_dead_                // An extra check wouldn't hurt
+			lea     edi, [edi+C_critter_is_dead_]                // An extra check wouldn't hurt
 			call    edi
 			pop     edi
 			test    eax, eax
@@ -294,7 +295,7 @@ static void __declspec(naked) AutoReloadWeapon(void) {
 			pop     edi
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_w_try_reload_
+			lea     edi, [edi+C_item_w_try_reload_]
 			call    edi
 			pop     edi
 			test    eax, eax
@@ -310,7 +311,7 @@ static void __declspec(naked) AutoReloadWeapon(void) {
 			jne     skip_toggle_item_state
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_intface_toggle_item_state_
+			lea     edi, [edi+C_intface_toggle_item_state_]
 			call    edi
 			pop     edi
 		skip_toggle_item_state:
@@ -340,7 +341,7 @@ static void __declspec(naked) SetDefaultAmmo(void) {
 			mov     ebx, eax
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_get_type_
+			lea     edi, [edi+C_item_get_type_]
 			call    edi
 			pop     edi
 			cmp     eax, item_type_weapon
@@ -352,7 +353,7 @@ static void __declspec(naked) SetDefaultAmmo(void) {
 			mov     eax, [ebx+0x64]                      // eax = pid weapons
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_proto_ptr_
+			lea     edi, [edi+C_proto_ptr_]
 			call    edi
 			pop     edi
 			mov     edx, [esp]
@@ -373,10 +374,10 @@ static void __declspec(naked) inven_action_cursor_hook(void) {
 			call    SetDefaultAmmo
 			cmp     dword ptr [esp+0x18], 0
 
-			sub     esp, 4 // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, 0x66B73
+			lea     edi, [edi+0x66B73]
 			mov     [esp+4], edi
 			pop     edi
 			retn
@@ -393,7 +394,7 @@ static void __declspec(naked) fontHeight(void) {
 			mov     eax, 101
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_text_font_
+			lea     edi, [edi+C_text_font_]
 			call    edi
 			pop     edi
 			push    edi
@@ -403,7 +404,7 @@ static void __declspec(naked) fontHeight(void) {
 			xchg    ebx, eax
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_text_font_
+			lea     edi, [edi+C_text_font_]
 			call    edi
 			pop     edi
 			xchg    ebx, eax
@@ -424,7 +425,7 @@ static void __declspec(naked) printFreeMaxWeight(void) {
 			mov     eax, 101
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_text_font_
+			lea     edi, [edi+C_text_font_]
 			call    edi
 			pop     edi
 			push    edi
@@ -433,7 +434,7 @@ static void __declspec(naked) printFreeMaxWeight(void) {
 			pop     edi
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_win_get_buf_                   // eax=ToSurface
+			lea     edi, [edi+C_win_get_buf_]                   // eax=ToSurface
 			call    edi
 			pop     edi
 			add     edi, eax                             // ToSurface+posOffset (Ypos*ToWidth+Xpos)
@@ -448,13 +449,13 @@ static void __declspec(naked) printFreeMaxWeight(void) {
 			mov     edx, STAT_carry_amt
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_stat_level_                     // eax = ìàêñ. âåñ ãðóçà
+			lea     edi, [edi+C_stat_level_]                     // eax = ìàêñ. âåñ ãðóçà
 			call    edi
 			pop     edi
 			xchg    ebx, eax                             // ebx = Max. cargo weight, eax = source
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_total_weight_              // eax = total weight of the cargo
+			lea     edi, [edi+C_item_total_weight_]              // eax = total weight of the cargo
 			call    edi
 			pop     edi
 			jmp     printFree
@@ -462,7 +463,7 @@ static void __declspec(naked) printFreeMaxWeight(void) {
 			mov     eax, ebx
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_get_type_
+			lea     edi, [edi+C_item_get_type_]
 			call    edi
 			pop     edi
 			dec     eax                                  // item_type_container?
@@ -470,7 +471,7 @@ static void __declspec(naked) printFreeMaxWeight(void) {
 			mov     eax, ebx
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_obj_top_environment_
+			lea     edi, [edi+C_obj_top_environment_]
 			call    edi
 			pop     edi
 			test    eax, eax                             // Is there an owner?
@@ -484,40 +485,40 @@ static void __declspec(naked) printFreeMaxWeight(void) {
 			mov     edx, STAT_carry_amt
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_stat_level_                     // eax = Max. character's weight
+			lea     edi, [edi+C_stat_level_]                     // eax = Max. character's weight
 			call    edi
 			pop     edi
 			xchg    ebx, eax                             // ebx = Max. character's weight, eax = source
 			push    eax
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_c_max_size_
+			lea     edi, [edi+C_item_c_max_size_]
 			call    edi
 			pop     edi
 			xchg    edx, eax                             // edx = Max. bag cargo size
 			pop     eax
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_c_curr_size_
+			lea     edi, [edi+C_item_c_curr_size_]
 			call    edi
 			pop     edi
 			sub     edx, eax                             // edx = free size
 			pop     eax
-			sub     esp, 4 // [DADi590: reserve space to "PUSH EDI"]
+			lea     esp, [esp-4] // [DADi590: reserve space to "PUSH EDI"]
 			push    edx
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_total_weight_             // eax = total weight of the cargo
+			lea     edi, [edi+C_item_total_weight_]             // eax = total weight of the cargo
 			call    edi
 			pop     edi
 			sub     ebx, esi
 			sub     ebx, eax                             // eax = free weight
 			push    ebx
 
-			sub     esp, 4 // [DADi590] Reserve space for the "PUSH"
+			lea     esp, [esp-4] // [DADi590] Reserve space for the "PUSH"
 			push    edi
 			mov     edi, SN_DATA_SEC_EXE_ADDR
-			add     edi, 0xF91D4                         // '%d/%d'
+			lea     edi, [edi+0xF91D4]                         // '%d/%d'
 			mov     [esp+4], edi // [DADi590: "PUSH"]
 			pop     edi
 
@@ -528,7 +529,7 @@ static void __declspec(naked) printFreeMaxWeight(void) {
 			push    esi
 			mov     [esp+4*4], edi // [DADi590: "PUSH EDI"]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, F_sprintf_
+			lea     edi, [edi+F_sprintf_]
 			call    edi
 			add     esp, 4*4
 			pop     edi
@@ -546,7 +547,7 @@ static void __declspec(naked) printFreeMaxWeight(void) {
 			mov     al, ds:[edi+D__RedColor]
 			pop     edi
 		noRed:
-			sub     esp, 4 // [DADi590: reserve space for "PUSH EDI" on 'print']
+			lea     esp, [esp-4] // [DADi590: reserve space for "PUSH EDI" on 'print']
 			push    eax
 			push    esi
 			xor     edx, edx
@@ -568,26 +569,26 @@ static void __declspec(naked) printFreeMaxWeight(void) {
 			mov     eax, ebx
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_c_max_size_                // eax = Max. cargo size
+			lea     edi, [edi+C_item_c_max_size_]                // eax = Max. cargo size
 			call    edi
 			pop     edi
 			xchg    ebx, eax                             // ebx = Max. cargo size, eax = source
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_c_curr_size_
+			lea     edi, [edi+C_item_c_curr_size_]
 			call    edi
 			pop     edi
 			xor     esi, esi
 		printFree:
 			sub     ebx, esi
 			sub     ebx, eax                             // ebx = free weight/size
-			sub     esp, 4 // [DADi590: reserve space to "PUSH EDI"]
+			lea     esp, [esp-4] // [DADi590: reserve space to "PUSH EDI"]
 			push    ebx
 
-			sub     esp, 4 // [DADi590] Reserve space for the "PUSH"
+			lea     esp, [esp-4] // [DADi590] Reserve space for the "PUSH"
 			push    edi
 			mov     edi, SN_DATA_SEC_EXE_ADDR
-			add     edi, 0xF91C8                         // '%d'
+			lea     edi, [edi+0xF91C8]                         // '%d'
 			mov     [esp+4], edi // [DADi590: "PUSH"]
 			pop     edi
 
@@ -598,7 +599,7 @@ static void __declspec(naked) printFreeMaxWeight(void) {
 			push    edx
 			mov     [esp+3*4], edi // [DADi590: "PUSH EDI"]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, F_sprintf_
+			lea     edi, [edi+F_sprintf_]
 			call    edi
 			add     esp, 3*4
 			pop     edi
@@ -613,7 +614,7 @@ static void __declspec(naked) printFreeMaxWeight(void) {
 			mov     al, ds:[edi+D__RedColor]
 			pop     edi
 		skipColor:
-			sub     esp, 4 // [DADi590: reserve space for "PUSH EDI" on 'print']
+			lea     esp, [esp-4] // [DADi590: reserve space for "PUSH EDI" on 'print']
 			push    eax
 			mov     eax, edx
 			push    edi
@@ -647,10 +648,10 @@ static void __declspec(naked) printFreeMaxWeight(void) {
 
 			// [DADi590: so, since I need to POP the used register... Let's do something that just came to my mind...]
 			//jmp     C_text_font_
-			sub     esp, 4 // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_text_font_
+			lea     edi, [edi+C_text_font_]
 			mov     [esp+4], edi
 			pop     edi
 			retn
@@ -666,12 +667,13 @@ static void __declspec(naked) display_inventory_hook(void) {
 			inc     eax
 			add     [esp+0x8], eax                       // height = height + text_height + 1
 
+			// DADi590:
 			// This mess below moves the stack 4 bytes down so that I can "PUSH" EDI. I can't, supposedly, because I'd
 			// mess the stack and all PUSHes that were made before the jump to this function. So I saw 2 options: either
 			// change where the jump to here is made and I put it to before all the PUSHes are done so that I can PUSH
 			// EDI before the others, or I try something interesting like moving all stack values down 4 bytes and that
 			// would be like I had PUSHed a value before all these PUSHes!
-			sub     esp, 4 // Reserve space on the stack for the last function PUSH
+			lea     esp, [esp-4] // Reserve space on the stack for the last function PUSH
 			push    edi
 			mov     edi, [(esp+4)+4]
 			mov     [(esp+4)+0], edi
@@ -688,17 +690,17 @@ static void __declspec(naked) display_inventory_hook(void) {
 			pop     edi
 			// After all the contents have been moved down, we can put EDI in the original place of the first function
 			// PUSH.
-			mov     [esp+24], edi
+			mov     [esp+6*4], edi
 
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_buf_to_buf_
+			lea     edi, [edi+C_buf_to_buf_]
 			call    edi
 			add     esp, 0x18
 			pop     edi
 			mov     eax, [esp+0x4]
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_art_ptr_unlock_
+			lea     edi, [edi+C_art_ptr_unlock_]
 			call    edi
 			pop     edi
 			pushad
@@ -713,10 +715,10 @@ static void __declspec(naked) display_inventory_hook(void) {
 			call    printFreeMaxWeight
 			popad
 
-			sub     esp, 4 // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, 0x63CB8
+			lea     edi, [edi+0x63CB8]
 			mov     [esp+4], edi
 			pop     edi
 			retn
@@ -731,7 +733,7 @@ static void __declspec(naked) display_target_inventory_hook(void) {
 			add     [esp+0x8], eax                       // height = height + text_height + 1
 
 			// For an explanation, see display_inventory_hook()
-			sub     esp, 4 // Reserve space on the stack for the last function PUSH
+			lea     esp, [esp-4] // Reserve space on the stack for the last function PUSH
 			push    edi
 			mov     edi, [(esp+4)+4]
 			mov     [(esp+4)+0], edi
@@ -746,17 +748,17 @@ static void __declspec(naked) display_target_inventory_hook(void) {
 			mov     edi, [(esp+4)+24]
 			mov     [(esp+4)+20], edi
 			pop     edi
-			mov     [esp+24], edi
+			mov     [esp+6*4], edi
 
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_buf_to_buf_
+			lea     edi, [edi+C_buf_to_buf_]
 			call    edi
 			add     esp, 0x18
 			pop     edi
 			mov     eax, [esp]
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_art_ptr_unlock_
+			lea     edi, [edi+C_art_ptr_unlock_]
 			call    edi
 			pop     edi
 			pushad
@@ -774,10 +776,10 @@ static void __declspec(naked) display_target_inventory_hook(void) {
 			call    printFreeMaxWeight
 			popad
 
-			sub     esp, 4 // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, 0x63FA4
+			lea     edi, [edi+0x63FA4]
 			mov     [esp+4], edi
 			pop     edi
 			retn
@@ -788,7 +790,7 @@ static void __declspec(naked) display_table_inventories_hook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_win_get_buf_
+			lea     edi, [edi+C_win_get_buf_]
 			call    edi
 			pop     edi
 			push    esi
@@ -811,7 +813,7 @@ static void __declspec(naked) display_table_inventories_hook1(void) {
 			sub     dword ptr [esp+16], 20*480
 
 			// For an explanation, see display_inventory_hook()
-			sub     esp, 4 // Reserve space on the stack for the last function PUSH
+			lea     esp, [esp-4] // Reserve space on the stack for the last function PUSH
 			push    edi
 			mov     edi, [(esp+4)+4]
 			mov     [(esp+4)+0], edi
@@ -826,10 +828,10 @@ static void __declspec(naked) display_table_inventories_hook1(void) {
 			mov     edi, [(esp+4)+24]
 			mov     [(esp+4)+20], edi
 			pop     edi
-			mov     [esp+24], edi
+			mov     [esp+6*4], edi
 
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_buf_to_buf_
+			lea     edi, [edi+C_buf_to_buf_]
 			call    edi
 			add     esp, 0x18
 			pop     edi
@@ -840,7 +842,7 @@ static void __declspec(naked) display_table_inventories_hook1(void) {
 			pop     edi
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_total_weight_              // eax = the weight of things of the target in the barter window
+			lea     edi, [edi+C_item_total_weight_]              // eax = the weight of things of the target in the barter window
 			call    edi
 			pop     edi
 			xchg    esi, eax
@@ -854,10 +856,10 @@ static void __declspec(naked) display_table_inventories_hook1(void) {
 			call    printFreeMaxWeight
 			popad
 
-			sub     esp, 4 // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, 0x68487
+			lea     edi, [edi+0x68487]
 			mov     [esp+4], edi
 			pop     edi
 			retn
@@ -870,7 +872,7 @@ static void __declspec(naked) display_table_inventories_hook2(void) {
 			mov     dword ptr [edx+4], 4                 // WinRect.y_start = 4
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_win_draw_rect_
+			lea     edi, [edi+C_win_draw_rect_]
 			call    edi
 			pop     edi
 	}
@@ -880,7 +882,7 @@ static void __declspec(naked) barter_inventory_hook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_win_draw_
+			lea     edi, [edi+C_win_draw_]
 			call    edi
 			pop     edi
 			xor     ecx, ecx
@@ -893,7 +895,7 @@ static void __declspec(naked) barter_inventory_hook(void) {
 			pop     edi
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_display_table_inventories_
+			lea     edi, [edi+C_display_table_inventories_]
 			call    edi
 			pop     edi
 	}
@@ -903,7 +905,7 @@ static void __declspec(naked) barter_inventory_hook1(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_container_exit_
+			lea     edi, [edi+C_container_exit_]
 			call    edi
 			pop     edi
 			xor     ecx, ecx
@@ -913,7 +915,7 @@ static void __declspec(naked) barter_inventory_hook1(void) {
 			mov     edx, [esp+0x2C+0x4]                  // source
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_display_table_inventories_
+			lea     edi, [edi+C_display_table_inventories_]
 			call    edi
 			pop     edi
 	}
@@ -927,7 +929,7 @@ static void __declspec(naked) inven_pickup_hook2(void) {
 			pop     edi
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_GNW_find_
+			lea     edi, [edi+C_GNW_find_]
 			call    edi
 			pop     edi
 			mov     ebx, [eax+0x8+0x0]                   // ebx = _i_wid.rect.x
@@ -940,7 +942,7 @@ static void __declspec(naked) inven_pickup_hook2(void) {
 			add     ecx, 37+100                          // y_end
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_mouse_click_in_
+			lea     edi, [edi+C_mouse_click_in_]
 			call    edi
 			pop     edi
 			test    eax, eax
@@ -957,7 +959,7 @@ static void __declspec(naked) inven_pickup_hook2(void) {
 			mov     edx, eax
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_get_type_
+			lea     edi, [edi+C_item_get_type_]
 			call    edi
 			pop     edi
 			cmp     eax, item_type_drug
@@ -970,7 +972,7 @@ static void __declspec(naked) inven_pickup_hook2(void) {
 			push    edx
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_d_take_drug_
+			lea     edi, [edi+C_item_d_take_drug_]
 			call    edi
 			pop     edi
 			pop     edx
@@ -983,7 +985,7 @@ static void __declspec(naked) inven_pickup_hook2(void) {
 			push    eax
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_remove_mult_
+			lea     edi, [edi+C_item_remove_mult_]
 			call    edi
 			pop     edi
 			inc     eax
@@ -996,13 +998,13 @@ static void __declspec(naked) inven_pickup_hook2(void) {
 			push    eax
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_obj_connect_
+			lea     edi, [edi+C_obj_connect_]
 			call    edi
 			pop     edi
 			pop     eax
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_obj_destroy_
+			lea     edi, [edi+C_obj_destroy_]
 			call    edi
 			pop     edi
 		notUsed:
@@ -1010,7 +1012,7 @@ static void __declspec(naked) inven_pickup_hook2(void) {
 			inc     eax
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_intface_update_hit_points_
+			lea     edi, [edi+C_intface_update_hit_points_]
 			call    edi
 			pop     edi
 		skip:
@@ -1039,7 +1041,7 @@ static void __declspec(naked) display_stats_hook(void) {
 
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_c_max_size_
+			lea     edi, [edi+C_item_c_max_size_]
 			call    edi
 			pop     edi
 			pop     edx
@@ -1047,30 +1049,30 @@ static void __declspec(naked) display_stats_hook(void) {
 			push    eax
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_c_curr_size_
+			lea     edi, [edi+C_item_c_curr_size_]
 			call    edi
 			pop     edi
 			sub     edx, eax                             // edx=free bag size
 			pop     eax
-			sub     esp, 4 // [DADi590: reserve space to "PUSH EDI"]
+			lea     esp, [esp-4] // [DADi590: reserve space to "PUSH EDI"]
 			push    edx
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_obj_top_environment_
+			lea     edi, [edi+C_obj_top_environment_]
 			call    edi
 			pop     edi
 			push    eax
 			mov     edx, STAT_carry_amt
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_stat_level_                     // Max. cargo
+			lea     edi, [edi+C_stat_level_]                     // Max. cargo
 			call    edi
 			pop     edi
 			pop     edx
 			xchg    edx, eax                             // edx=Max. cargo, eax=source
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_total_weight_
+			lea     edi, [edi+C_item_total_weight_]
 			call    edi
 			pop     edi
 			sub     edx, eax                             // edx=free weight
@@ -1082,7 +1084,7 @@ static void __declspec(naked) display_stats_hook(void) {
 			jz      noArmor                              // No
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_weight_
+			lea     edi, [edi+C_item_weight_]
 			call    edi
 			pop     edi
 			sub     edx, eax
@@ -1094,16 +1096,16 @@ static void __declspec(naked) display_stats_hook(void) {
 			mov     edx, STAT_carry_amt
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_stat_level_                    // Max. cargo
+			lea     edi, [edi+C_stat_level_]                    // Max. cargo
 			call    edi
 			pop     edi
 			pop     edi
-			sub     esp, 4 // [DADi590: reserve space to "PUSH EDI"]
+			lea     esp, [esp-4] // [DADi590: reserve space to "PUSH EDI"]
 			push    eax
 			xchg    edi, eax                             // eax=source, edi=Max. cargo
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_total_weight_
+			lea     edi, [edi+C_item_total_weight_]
 			call    edi
 			pop     edi
 			xchg    edx, eax                             // edx=the weight of things
@@ -1115,7 +1117,7 @@ static void __declspec(naked) display_stats_hook(void) {
 			jz      noHiddenArmor                        // No
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_weight_
+			lea     edi, [edi+C_item_weight_]
 			call    edi
 			pop     edi
 			add     edx, eax
@@ -1126,10 +1128,10 @@ static void __declspec(naked) display_stats_hook(void) {
 			mov     edx, [esp+0x94+0x4 + 4]
 			push    edx
 
-			sub     esp, 4 // [DADi590] Reserve space for the "PUSH"
+			lea     esp, [esp-4] // [DADi590] Reserve space for the "PUSH"
 			push    edi
 			mov     edi, SN_DATA_SEC_EXE_ADDR
-			add     edi, 0xF9210                         // '%s %d/%d'
+			lea     edi, [edi+0xF9210]                         // '%s %d/%d'
 			mov     [esp+4], edi // [DADi590: "PUSH"]
 			pop     edi
 
@@ -1137,7 +1139,7 @@ static void __declspec(naked) display_stats_hook(void) {
 			push    eax
 			mov     [esp+5*4], edi // [DADi590: "PUSH EDI"]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, F_sprintf_
+			lea     edi, [edi+F_sprintf_]
 			call    edi
 			add     esp, 5*4
 			pop     edi
@@ -1155,10 +1157,10 @@ static void __declspec(naked) display_stats_hook(void) {
 			mov     ecx, 499
 			mov     ebx, 120
 
-			sub     esp, 4 // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, 0x65D55
+			lea     edi, [edi+0x65D55]
 			mov     [esp+4], edi
 			pop     edi
 			retn
@@ -1181,7 +1183,7 @@ static void __declspec(naked) make_loot_drop_button(void) {
 			pop     edi
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_critter_body_type_
+			lea     edi, [edi+C_critter_body_type_]
 			call    edi
 			pop     edi
 			test    eax, eax                             // This Body_Type_Biped?
@@ -1192,13 +1194,13 @@ static void __declspec(naked) make_loot_drop_button(void) {
 			pop     esi
 			xor     ecx, ecx                             // ID1
 			xor     ebx, ebx                             // ID2
-			sub     esp, 4 // [DADi590: reserve space to "PUSH EDI"]
+			lea     esp, [esp-4] // [DADi590: reserve space to "PUSH EDI"]
 			push    ebx                                  // ID3
 			mov     edx, 265                             // Index (USEGETN.FRM (Action menu use/get normal))
 			mov     eax, ObjType_Intrface                // ObjType
 			mov     [esp+1*4], edi // [DADi590: "PUSH EDI"]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_art_id_
+			lea     edi, [edi+C_art_id_]
 			call    edi
 			pop     edi
 			xor     edx, edx
@@ -1209,7 +1211,7 @@ static void __declspec(naked) make_loot_drop_button(void) {
 			xor     ebx, ebx
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_art_ptr_lock_data_
+			lea     edi, [edi+C_art_ptr_lock_data_]
 			call    edi
 			pop     edi
 			test    eax, eax
@@ -1217,13 +1219,13 @@ static void __declspec(naked) make_loot_drop_button(void) {
 			xchg    esi, eax
 			xor     ecx, ecx                             // ID1
 			xor     ebx, ebx                             // ID2
-			sub     esp, 4 // [DADi590: reserve space to "PUSH EDI"]
+			lea     esp, [esp-4] // [DADi590: reserve space to "PUSH EDI"]
 			push    ebx                                  // ID3
 			mov     edx, 264                             // Index (USEGETH.FRM (Action menu use/get highlighted))
 			mov     eax, ObjType_Intrface                // ObjType
 			mov     [esp+1*4], edi // [DADi590: "PUSH EDI"]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_art_id_
+			lea     edi, [edi+C_art_id_]
 			call    edi
 			pop     edi
 			xor     edx, edx
@@ -1234,12 +1236,12 @@ static void __declspec(naked) make_loot_drop_button(void) {
 			xor     ebx, ebx
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_art_ptr_lock_data_
+			lea     edi, [edi+C_art_ptr_lock_data_]
 			call    edi
 			pop     edi
 			test    eax, eax
 			jz      noLootButton
-			sub     esp, 4 // [DADi590: reserve space to "PUSH EDI"]
+			lea     esp, [esp-4] // [DADi590: reserve space to "PUSH EDI"]
 			push    ebp                                  // ButType
 			push    ebp
 			push    eax                                  // PicDown
@@ -1256,7 +1258,7 @@ static void __declspec(naked) make_loot_drop_button(void) {
 			mov     eax, edi                             // GNWID
 			mov     [esp+9*4], edi // [DADi590: "PUSH EDI"]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_win_register_button_
+			lea     edi, [edi+C_win_register_button_]
 			call    edi
 			pop     edi
 			inc     ebp
@@ -1270,7 +1272,7 @@ static void __declspec(naked) make_loot_drop_button(void) {
 			xchg    ebx, eax
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_get_type_
+			lea     edi, [edi+C_item_get_type_]
 			call    edi
 			pop     edi
 			dec     eax                                  // item_type_container?
@@ -1282,7 +1284,7 @@ static void __declspec(naked) make_loot_drop_button(void) {
 			xchg    ebx, eax
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_critter_body_type_
+			lea     edi, [edi+C_critter_body_type_]
 			call    edi
 			pop     edi
 			test    eax, eax                             // This Body_Type_Biped?
@@ -1290,13 +1292,13 @@ static void __declspec(naked) make_loot_drop_button(void) {
 		goodTarget:
 			xor     ecx, ecx                             // ID1
 			xor     ebx, ebx                             // ID2
-			sub     esp, 4 // [DADi590: reserve space to "PUSH EDI"]
+			lea     esp, [esp-4] // [DADi590: reserve space to "PUSH EDI"]
 			push    ebx                                  // ID3
 			mov     edx, 255                             // Index (DROPN.FRM (Action menu drop normal))
 			mov     eax, ObjType_Intrface                // ObjType
 			mov     [esp+1*4], edi // [DADi590: "PUSH EDI"]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_art_id_
+			lea     edi, [edi+C_art_id_]
 			call    edi
 			pop     edi
 			xor     edx, edx
@@ -1307,7 +1309,7 @@ static void __declspec(naked) make_loot_drop_button(void) {
 			xor     ebx, ebx
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_art_ptr_lock_data_
+			lea     edi, [edi+C_art_ptr_lock_data_]
 			call    edi
 			pop     edi
 			test    eax, eax
@@ -1315,13 +1317,13 @@ static void __declspec(naked) make_loot_drop_button(void) {
 			xchg    esi, eax
 			xor     ecx, ecx                             // ID1
 			xor     ebx, ebx                             // ID2
-			sub     esp, 4 // [DADi590: reserve space to "PUSH EDI"]
+			lea     esp, [esp-4] // [DADi590: reserve space to "PUSH EDI"]
 			push    ebx                                  // ID3
 			mov     edx, 254                             // Index (DROPH.FRM (Action menu drop highlighted))
 			mov     eax, ObjType_Intrface                // ObjType
 			mov     [esp+1*4], edi // [DADi590: "PUSH EDI"]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_art_id_
+			lea     edi, [edi+C_art_id_]
 			call    edi
 			pop     edi
 			xor     edx, edx
@@ -1332,12 +1334,12 @@ static void __declspec(naked) make_loot_drop_button(void) {
 			xor     ebx, ebx
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_art_ptr_lock_data_
+			lea     edi, [edi+C_art_ptr_lock_data_]
 			call    edi
 			pop     edi
 			test    eax, eax
 			jz      end
-			sub     esp, 4 // [DADi590: reserve space to "PUSH EDI"]
+			lea     esp, [esp-4] // [DADi590: reserve space to "PUSH EDI"]
 			push    ebp                                  // ButType
 			push    ebp
 			push    eax                                  // PicDown
@@ -1354,7 +1356,7 @@ static void __declspec(naked) make_loot_drop_button(void) {
 			xchg    edi, eax                             // GNWID
 			mov     [esp+9*4], edi // [DADi590: "PUSH EDI"]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_win_register_button_
+			lea     edi, [edi+C_win_register_button_]
 			call    edi
 			pop     edi
 		end:
@@ -1390,7 +1392,7 @@ static void __declspec(naked) loot_drop_all(void) {
 			mov     eax, ecx
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_critter_body_type_
+			lea     edi, [edi+C_critter_body_type_]
 			call    edi
 			pop     edi
 			test    eax, eax                             // This Body_Type_Biped?
@@ -1399,21 +1401,21 @@ static void __declspec(naked) loot_drop_all(void) {
 			mov     eax, ecx
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_stat_level_
+			lea     edi, [edi+C_stat_level_]
 			call    edi
 			pop     edi
 			xchg    edx, eax
 			mov     eax, ecx
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_total_weight_
+			lea     edi, [edi+C_item_total_weight_]
 			call    edi
 			pop     edi
 			sub     edx, eax
 			mov     eax, ebp
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_total_weight_
+			lea     edi, [edi+C_item_total_weight_]
 			call    edi
 			pop     edi
 			cmp     eax, edx
@@ -1440,7 +1442,7 @@ static void __declspec(naked) loot_drop_all(void) {
 			mov     eax, ecx
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_critter_body_type_
+			lea     edi, [edi+C_critter_body_type_]
 			call    edi
 			pop     edi
 			test    eax, eax                             // This Body_Type_Biped?
@@ -1455,7 +1457,7 @@ static void __declspec(naked) loot_drop_all(void) {
 			mov     eax, esi
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_critter_body_type_
+			lea     edi, [edi+C_critter_body_type_]
 			call    edi
 			pop     edi
 			test    eax, eax                             // This Body_Type_Biped?
@@ -1465,7 +1467,7 @@ static void __declspec(naked) loot_drop_all(void) {
 			mov     eax, esi
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_stat_level_
+			lea     edi, [edi+C_stat_level_]
 			call    edi
 			pop     edi
 			xchg    edx, eax                             // edx = Max. target cargo weight
@@ -1476,14 +1478,14 @@ static void __declspec(naked) loot_drop_all(void) {
 			mov     eax, esi
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_total_weight_              // eax = total weight of target cargo
+			lea     edi, [edi+C_item_total_weight_]              // eax = total weight of target cargo
 			call    edi
 			pop     edi
 			sub     edx, eax
 			mov     eax, ecx
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_total_weight_
+			lea     edi, [edi+C_item_total_weight_]
 			call    edi
 			pop     edi
 			xchg    edi, eax                             // edi = the total weight of the player's cargo
@@ -1495,7 +1497,7 @@ static void __declspec(naked) loot_drop_all(void) {
 			jz      noRight
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_weight_
+			lea     edi, [edi+C_item_weight_]
 			call    edi
 			pop     edi
 			sub     edi, eax
@@ -1508,7 +1510,7 @@ static void __declspec(naked) loot_drop_all(void) {
 			jz      noLeft
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_weight_
+			lea     edi, [edi+C_item_weight_]
 			call    edi
 			pop     edi
 			sub     edi, eax
@@ -1521,7 +1523,7 @@ static void __declspec(naked) loot_drop_all(void) {
 			jz      noArmor
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_weight_
+			lea     edi, [edi+C_item_weight_]
 			call    edi
 			pop     edi
 			sub     edi, eax
@@ -1532,7 +1534,7 @@ static void __declspec(naked) loot_drop_all(void) {
 			mov     eax, esi
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_get_type_
+			lea     edi, [edi+C_item_get_type_]
 			call    edi
 			pop     edi
 			dec     eax                                  // Is it a bag/backpack?
@@ -1540,7 +1542,7 @@ static void __declspec(naked) loot_drop_all(void) {
 			mov     eax, esi
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_obj_top_environment_
+			lea     edi, [edi+C_obj_top_environment_]
 			call    edi
 			pop     edi
 			test    eax, eax                             // Is there an owner?
@@ -1555,21 +1557,21 @@ static void __declspec(naked) loot_drop_all(void) {
 			mov     eax, esi
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_c_max_size_
+			lea     edi, [edi+C_item_c_max_size_]
 			call    edi
 			pop     edi
 			xchg    edx, eax
 			mov     eax, esi
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_c_curr_size_
+			lea     edi, [edi+C_item_c_curr_size_]
 			call    edi
 			pop     edi
 			sub     edx, eax
 			mov     eax, ecx
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_c_curr_size_
+			lea     edi, [edi+C_item_c_curr_size_]
 			call    edi
 			pop     edi
 		compareSizeWeight:
@@ -1582,13 +1584,13 @@ static void __declspec(naked) loot_drop_all(void) {
 			push    eax
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_gsound_red_butt_press_
+			lea     edi, [edi+C_gsound_red_butt_press_]
 			call    edi
 			pop     edi
 			pop     eax
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_move_all_
+			lea     edi, [edi+C_item_move_all_]
 			call    edi
 			pop     edi
 			xor     edx, edx
@@ -1612,7 +1614,7 @@ static void __declspec(naked) loot_drop_all(void) {
 			xchg    esi, eax                             // eax = 2501, esi = -1
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_container_exit_
+			lea     edi, [edi+C_container_exit_]
 			call    edi
 			pop     edi
 			push    edi
@@ -1624,7 +1626,7 @@ static void __declspec(naked) loot_drop_all(void) {
 			pop     ebx                                  // 2 (mode)
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_display_inventory_
+			lea     edi, [edi+C_display_inventory_]
 			call    edi
 			pop     edi
 			jmp     end
@@ -1639,7 +1641,7 @@ static void __declspec(naked) loot_drop_all(void) {
 			xchg    esi, eax                             // eax = 2500, esi = -1
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_container_exit_
+			lea     edi, [edi+C_container_exit_]
 			call    edi
 			pop     edi
 			push    edi
@@ -1655,7 +1657,7 @@ static void __declspec(naked) loot_drop_all(void) {
 			pop     edi
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_display_target_inventory_
+			lea     edi, [edi+C_display_target_inventory_]
 			call    edi
 			pop     edi
 			push    edi
@@ -1664,7 +1666,7 @@ static void __declspec(naked) loot_drop_all(void) {
 			pop     edi
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_win_draw_
+			lea     edi, [edi+C_win_draw_]
 			call    edi
 			pop     edi
 			jmp     end
@@ -1676,10 +1678,10 @@ static void __declspec(naked) loot_drop_all(void) {
 		printError:
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_gsound_red_butt_press_
+			lea     edi, [edi+C_gsound_red_butt_press_]
 			call    edi
 			pop     edi
-			sub     esp, 4 // [DADi590: reserve space to "PUSH EDI"]
+			lea     esp, [esp-4] // [DADi590: reserve space to "PUSH EDI"]
 			xor     eax, eax
 			push    eax
 			push    edi
@@ -1696,17 +1698,17 @@ static void __declspec(naked) loot_drop_all(void) {
 			xchg    edx, eax
 			mov     [esp+5*4], edi // [DADi590: "PUSH EDI"]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_dialog_out_
+			lea     edi, [edi+C_dialog_out_]
 			call    edi
 			pop     edi
 		end:
 			popad
 			pop     ebx                                  // Destroying the return address
 
-			sub     esp, 4 // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, 0x6770E
+			lea     edi, [edi+0x6770E]
 			mov     [esp+4], edi
 			pop     edi
 			retn
@@ -1729,7 +1731,7 @@ static void __declspec(naked) protinst_use_item_on_hook(void) {
 			mov     edx, STAT_max_hit_points
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_stat_level_
+			lea     edi, [edi+C_stat_level_]
 			call    edi
 			pop     edi
 			cmp     eax, [edi+0x58]                      // max_hp == curr_hp?
@@ -1742,10 +1744,10 @@ static void __declspec(naked) protinst_use_item_on_hook(void) {
 			lea     eax, [edi+SuperStimMsg]
 			pop     edi
 
-			sub     esp, 4 // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, 0x8B38D
+			lea     edi, [edi+0x8B38D]
 			mov     [esp+4], edi
 			pop     edi
 			retn
@@ -1772,7 +1774,7 @@ static void __declspec(naked) loot_container_hook(void) {
 			pop     edi
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_GNW_find_
+			lea     edi, [edi+C_GNW_find_]
 			call    edi
 			pop     edi
 			mov     ebx, [eax+0x8+0x0]                   // ebx = _i_wid.rect.x
@@ -1785,7 +1787,7 @@ static void __declspec(naked) loot_container_hook(void) {
 			add     ecx, 35+6*48                         // y_end
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_mouse_click_in_
+			lea     edi, [edi+C_mouse_click_in_]
 			call    edi
 			pop     edi
 			pop     ebx
@@ -1823,7 +1825,7 @@ static void __declspec(naked) barter_inventory_hook2(void) {
 			pop     edi
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_GNW_find_
+			lea     edi, [edi+C_GNW_find_]
 			call    edi
 			pop     edi
 			mov     ebx, [eax+0x8+0x0]                   // ebx = _i_wid.rect.x
@@ -1838,7 +1840,7 @@ static void __declspec(naked) barter_inventory_hook2(void) {
 			add     ecx, 35+3*48                         // y_end
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_mouse_click_in_
+			lea     edi, [edi+C_mouse_click_in_]
 			call    edi
 			pop     edi
 			pop     ecx
@@ -1863,7 +1865,7 @@ static void __declspec(naked) barter_inventory_hook2(void) {
 			add     ecx, 20+3*48                         // y_end
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_mouse_click_in_
+			lea     edi, [edi+C_mouse_click_in_]
 			call    edi
 			pop     edi
 			pop     ecx
@@ -1886,7 +1888,7 @@ static void __declspec(naked) barter_inventory_hook2(void) {
 			add     ecx, 20+3*48                         // y_end
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_mouse_click_in_
+			lea     edi, [edi+C_mouse_click_in_]
 			call    edi
 			pop     edi
 			test    eax, eax
@@ -1911,14 +1913,14 @@ static void __declspec(naked) handle_inventory_hook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_container_exit_
+			lea     edi, [edi+C_container_exit_]
 			call    edi
 			pop     edi
 
-			sub     esp, 4 // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_display_stats_
+			lea     edi, [edi+C_display_stats_]
 			mov     [esp+4], edi
 			pop     edi
 			ret
@@ -1944,7 +1946,7 @@ static void __declspec(naked) item_add_check(void) {
 			mov     eax, esi
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_critter_body_type_
+			lea     edi, [edi+C_critter_body_type_]
 			call    edi
 			pop     edi
 			test    eax, eax                             // Body_Type_Biped?
@@ -1956,7 +1958,7 @@ static void __declspec(naked) item_add_check(void) {
 			mov     eax, edi
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_weight_
+			lea     edi, [edi+C_item_weight_]
 			call    edi
 			pop     edi
 			imul    eax, ebx                             // eax = item weight * quantity
@@ -1964,7 +1966,7 @@ static void __declspec(naked) item_add_check(void) {
 			mov     eax, esi
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_total_weight_
+			lea     edi, [edi+C_item_total_weight_]
 			call    edi
 			pop     edi
 			add     ecx, eax
@@ -1984,7 +1986,7 @@ static void __declspec(naked) item_add_check(void) {
 			mov     eax, esi
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_stat_level_
+			lea     edi, [edi+C_stat_level_]
 			call    edi
 			pop     edi
 			cmp     ecx, eax                             // total weight <= max weight?
@@ -1997,7 +1999,7 @@ static void __declspec(naked) item_add_check(void) {
 			mov     eax, esi
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_get_type_
+			lea     edi, [edi+C_item_get_type_]
 			call    edi
 			pop     edi
 			cmp     eax, item_type_container
@@ -2005,7 +2007,7 @@ static void __declspec(naked) item_add_check(void) {
 			xchg    edx, eax                             // eax = item
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_size_
+			lea     edi, [edi+C_item_size_]
 			call    edi
 			pop     edi
 			xchg    edx, eax                             // edx = item size
@@ -2013,14 +2015,14 @@ static void __declspec(naked) item_add_check(void) {
 			mov     eax, esi
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_c_curr_size_
+			lea     edi, [edi+C_item_c_curr_size_]
 			call    edi
 			pop     edi
 			add     edx, eax
 			mov     eax, esi
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_c_max_size_
+			lea     edi, [edi+C_item_c_max_size_]
 			call    edi
 			pop     edi
 			cmp     edx, eax                             // overall size <= max. size?
@@ -2033,7 +2035,7 @@ static void __declspec(naked) item_add_check(void) {
 			mov     eax, esi
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_obj_top_environment_
+			lea     edi, [edi+C_obj_top_environment_]
 			call    edi
 			pop     edi
 			test    eax, eax                             // Is there an owner?
@@ -2080,7 +2082,7 @@ static void __declspec(naked) item_add_check(void) {
 			mov     eax, edi                             // Found a thing
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_weight_
+			lea     edi, [edi+C_item_weight_]
 			call    edi
 			pop     edi
 			imul    eax, ebx                             // eax = item weight * quantity
@@ -2094,7 +2096,7 @@ static void __declspec(naked) item_add_check(void) {
 			jz      noHiddenArmor
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_weight_
+			lea     edi, [edi+C_item_weight_]
 			call    edi
 			pop     edi
 		noHiddenArmor:
@@ -2106,7 +2108,7 @@ static void __declspec(naked) item_add_check(void) {
 			mov     eax, esi
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_m_cell_pid_
+			lea     edi, [edi+C_item_m_cell_pid_]
 			call    edi
 			pop     edi
 			cmp     eax, [edi+0x64]
@@ -2143,7 +2145,7 @@ static void __declspec(naked) item_add_mult(void) {
 		skip:
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_add_force_
+			lea     edi, [edi+C_item_add_force_]
 			call    edi
 			pop     edi
 		end:
@@ -2167,10 +2169,10 @@ static void __declspec(naked) drop_into_container_hook(void) {
 			inc     eax
 			retn
 		end:
-			sub     esp, 4 // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_add_force_
+			lea     edi, [edi+C_item_add_force_]
 			mov     [esp+4], edi
 			pop     edi
 			retn
@@ -2187,10 +2189,10 @@ static void __declspec(naked) item_add_force_call(void) {
 			// Was there an unsuccessful attempt to place in a bag or load a weapon?
 			call    drop_into_container_hook
 		force:
-			sub     esp, 4 // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_add_force_
+			lea     edi, [edi+C_item_add_force_]
 			mov     [esp+4], edi
 			pop     edi
 			retn
@@ -2211,10 +2213,10 @@ static void __declspec(naked) move_table_source() {
 			xchg    ebx, eax                             // ebx = item, eax = count
 			xchg    ecx, eax                             // ecx = count, eax = source
 
-			sub     esp, 4 // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_move_force_
+			lea     edi, [edi+C_item_move_force_]
 			mov     [esp+4], edi
 			pop     edi
 			retn
@@ -2240,10 +2242,10 @@ static void __declspec(naked) checkContainerSize() {
 			pop     eax
 			je      end                                  // Äà
 
-			sub     esp, 4 // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_item_add_force_
+			lea     edi, [edi+C_item_add_force_]
 			mov     [esp+4], edi
 			pop     edi
 			retn
@@ -2259,7 +2261,7 @@ static void __declspec(naked) proto_ptr_call() {
 	__asm {
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_proto_ptr_
+			lea     edi, [edi+C_proto_ptr_]
 			call    edi
 			pop     edi
 			mov     edx, [esp+0x4]

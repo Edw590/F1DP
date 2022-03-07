@@ -26,8 +26,8 @@
 #include "dinput.h"
 #include "timer.hNOTDONE"
 
-static bool Enabled = true;
-static bool Toggled = true;
+static bool Enabled = false;
+static bool Toggled = false;
 
 static uint32_t Slideshow = 0;
 

@@ -30,7 +30,7 @@ __declspec(noreturn) void exit(int status) {
 
 			mov     eax, [status]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, F_exit_
+			lea     edi, [edi+F_exit_]
 			call    edi
 
 			popa
@@ -51,7 +51,7 @@ char *itoa(int value, char *str, int base) {
 			mov     edx, [string]
 			mov     ebx, [base]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, F_itoa_
+			lea     edi, [edi+F_itoa_]
 			call    edi
 			mov     [ret_var], eax
 
@@ -72,7 +72,7 @@ void free(void *ptr) {
 
 			mov     eax, [pointer]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, F__nfree_
+			lea     edi, [edi+F__nfree_]
 			call    edi
 
 			popa
@@ -86,7 +86,7 @@ void *malloc(size_t size) {
 
 			mov     eax, [size]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, F__nmalloc_
+			lea     edi, [edi+F__nmalloc_]
 			call    edi
 			mov     [ret_var], eax
 

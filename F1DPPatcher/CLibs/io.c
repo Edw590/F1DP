@@ -28,7 +28,7 @@ long filelength(int handle) {
 
 			mov     eax, [handle]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, F_filelength_
+			lea     edi, [edi+F_filelength_]
 			call    edi
 			mov     [ret_var], eax
 

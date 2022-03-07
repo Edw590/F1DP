@@ -30,7 +30,7 @@ int tolower(int c) {
 
 			mov     eax, [c]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, F_tolower_
+			lea     edi, [edi+F_tolower_]
 			call    edi
 			mov     [ret_var], eax
 
@@ -48,7 +48,7 @@ int toupper(int c) {
 
 			mov     eax, [c]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, F_toupper_
+			lea     edi, [edi+F_toupper_]
 			call    edi
 			mov     [ret_var], eax
 

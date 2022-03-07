@@ -36,7 +36,9 @@
 #include "CLibs/stdio.h"
 #include "CLibs/stdlib.h"
 #include "CLibs/string.h"
+#include "GameAddrs/CStdFuncs.h"
 #include "OtherHeaders/General.h"
+#include "OtherHeaders/GlobalEXEAddrs.h"
 #include "OtherHeaders/PatcherPatcher.h"
 #include "SFall1Patches/SFall1Patches.h"
 #include "Utils/BlockAddrUtils.h"
@@ -48,6 +50,8 @@
 
 bool prop_logPatcher_G = true;
 struct FileInfo dospatch_ini_info_G = {0};
+
+static char version_str[] = "F1DOSPatcher "F1DP_VER_STR;
 
 bool realMain(void);
 static void patchVerStr(void);
@@ -103,7 +107,7 @@ bool realMain(void) {
 
 	((struct FileInfo *) getRealBlockAddrData(&dospatch_ini_info_G))->is_main_ini = true;
 
-	printlnStr("  ----- F1DP Patcher "F1DP_VER_STR" -----");
+	printlnStr("  /---- F1DP Patcher "F1DP_VER_STR" ----\\");
 
 	// Open the main INI file
 	if (!readFile(F1DP_MAIN_INI, &dospatch_ini_info_G)) {
@@ -188,17 +192,44 @@ bool realMain(void) {
 	freeNew(((struct FileInfo *) getRealBlockAddrData(&dospatch_ini_info_G))->contents);
 
 	printlnStr(ret_var ? NL LOGGER_STR "true" : NL LOGGER_STR "false");
-	printlnStr("  ----- F1DP Patcher "F1DP_VER_STR" -----");
+	printlnStr("  \\---- F1DP Patcher "F1DP_VER_STR" ----/");
 
 	return false;
 }
 
+static __declspec(naked) void getverstr_hook(void) {
+	__asm {
+			push    edx
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			lea     edx, [edi+version_str]
+			pop     edi
+
+			lea     esp, [esp-4] // [DADi590: reserve space to "PUSH EDI"]
+			push    edx
+			mov     edx, eax
+			push    eax
+			mov     [esp+5*4], edi // [DADi590: "PUSH EDI"]
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+F_sprintf_]
+			call    edi
+			add     esp, 2*4
+			pop     edi
+
+			mov     eax, edx
+			pop     edx
+			ret
+	}
+}
+
 static void patchVerStr(void) {
-	// Remove the address of "FALLOUT %d.%d", put the string below, and push it a bit up so it doesn't overlap with the
-	// other text. I'm not just replacing the original string on the Data section because this way, it's perfectly fine
-	// to put a string with more characters than the original one.
-	writeMem32EXE(0xA10E3, 0x90909090); // Remove the 2 pushes
-	writeMem32EXE(0xA10E7+1, (uint32_t) getRealBlockAddrData("F1DOSPatcher "F1DP_VER_STR)); // Change the string address
+	// This replaces a call to the original getverstr_ function by the one above. The other call to that function
+	// remains untouched, which is used when Ctrl+V is pressed in-game and the version will appear on the Pip-Boy.
+	// The function above just replaces the original string with a custom one from inside the Patcher and adjusts
+	// whatever is necessary for that to happen (like the stack).
+	// Also, below I'm changing the height of the string so that it doesn't overlap with the rest of the bottom strings.
+
 	writeMem32EXE(0x73373+1, 0x1BD); // Change the string height (445)
-	writeMem8EXE(0xA10F2+2, 0x8); // Correct what's added to ESP
+
+	HookCallEXE(0x73358, getRealBlockAddrCode((void *) &getverstr_hook));
 }

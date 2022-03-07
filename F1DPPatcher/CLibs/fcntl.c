@@ -35,9 +35,9 @@ int open(const char *path, int oflag, int mode) {
 			push    dword ptr [oflag]
 			push    dword ptr [path]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, F_open_
+			lea     edi, [edi+F_open_]
 			call    edi
-			add     esp, 0Ch
+			lea     esp, [esp+12]
 			mov     [ret_var], eax
 
 			popa

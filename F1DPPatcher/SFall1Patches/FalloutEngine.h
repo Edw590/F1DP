@@ -47,7 +47,9 @@
 //   function and there's no prototype, I think one must assume it can point to different functions at different parts
 //   of the program, so don't put the number of stack parameters there. Those cases must be analyzed on a case-by-case
 //   basis (:suicide:).
-//   If there is no prototype, write "No prototype" after the forward slash.
+// - If there is no prototype, write "No prototype" after the forward slash.
+// - And also if there's no prototype, check if the function cleans up the stack at exit or not, and if it does, write
+//   "(__cdecl)" before the first forward slash.
 //
 // Why have the prototype if we don't want to know how to use the function? Because it says the calling convention,
 // which is useful to know sometimes (like with a function which I think has the prototype calling convention written
@@ -122,7 +124,7 @@
 #define C_game_get_global_var_               0x3C750 // Args: non-stack / int __usercall game_get_global_var_@<eax>(int GVAR@<eax>)
 #define C_game_set_global_var_               0x3C780 // Args: non-stack / int __usercall game_set_global_var_@<eax>(int GVAR@<eax>, int Value@<edx>)
 #define C_gdialog_display_msg_               0x3E694 // Args: non-stack / No prototype
-#define C_get_input_                         x
+#define C_get_input_                         0xB35E8 // Args: non-stack / No prototype
 #define C_get_time_                          x
 #define C_getmsg_                            x
 #define C_GetSlotList_                       x
@@ -185,11 +187,11 @@
 #define C_obj_connect_                       0x7BB40 // Args: non-stack / No prototype
 #define C_obj_destroy_                       0x8ACE8 // Args: non-stack / No prototype
 #define C_obj_dist_                          x
-#define C_obj_find_first_at_                 x
-#define C_obj_find_next_at_                  x
+#define C_obj_find_first_at_                 0x7CF9C // Args: non-stack / int __usercall obj_find_first_at_@<eax>(int elev@<eax>)
+#define C_obj_find_next_at_                  0x7D020 // Args: non-stack / No prototype
 #define C_obj_is_a_portal_                   x
-#define C_obj_outline_object_                x
-#define C_obj_remove_outline_                x
+#define C_obj_outline_object_                0x7D954 // Args: non-stack / No prototype
+#define C_obj_remove_outline_                0x7D990 // Args: non-stack / No prototype
 #define C_obj_save_dude_                     x
 #define C_obj_top_environment_               0x7CE14 // Args: non-stack / pobj *__usercall obj_top_environment_@<eax>(pobj *source@<eax>)
 #define C_obj_turn_off_outline_              x
@@ -239,8 +241,8 @@
 //#define C_strncpy_                         x - already in CStdFuncs.h
 #define C_switch_hand_                       x
 #define C_text_font_                         0xC191C // Args: non-stack / int __usercall text_font_@<eax>(int fontnum@<eax>)
-#define C_tile_refresh_display_              x
-#define C_tile_refresh_rect_                 x
+#define C_tile_refresh_display_              0x9DEDC // Args: non-stack / No prototype
+#define C_tile_refresh_rect_                 0x9DEC4 // Args: non-stack / No prototype
 #define C_tile_scroll_to_                    x
 #define C_trait_get_                         x
 #define C_trait_set_                         x
@@ -252,8 +254,8 @@
 #define C_win_get_buf_                       0xC3890 // Args: non-stack / int __usercall win_get_buf_@<eax>(int WinRef@<eax>)
 #define C_win_get_num_i_                     x
 #define C_win_line_                          x
-#define C_win_print_                         x
-#define C_win_register_button_               0xC4180 // Args: +stack / signed int __userpurge win_register_button_@<eax>(DWORD GNWID@<eax>, int Ypos@<ebx>, int Width@<ecx>, int Xpos@<edx>, int Height, int HovOn, int HovOff, int ButtDown, int ButtUp, int PicUp, int PicDown, int Unk, int flags)
+#define C_win_print_                         0xC2830 // Args: +stack (__cdecl) / No prototype
+#define C_win_register_button_               0xC4180 // Args: +stack (__cdecl) / signed int __userpurge win_register_button_@<eax>(DWORD GNWID@<eax>, int Ypos@<ebx>, int Width@<ecx>, int Xpos@<edx>, int Height, int HovOn, int HovOff, int ButtDown, int ButtUp, int PicUp, int PicDown, int Unk, int flags)
 #define C_win_register_text_button_          x
 #define C_win_width_                         x
 
@@ -325,8 +327,8 @@
 #define D__LSData                  x
 #define D__lsgmesg                 x
 #define D__lsgwin                  x
-#define D__main_window             x
-#define D__map_elevation           x
+#define D__main_window             0x105C1C
+#define D__map_elevation           0x105C90
 #define D__max_ptr                 0x16CE70
 #define D__mesg                    x
 #define D__msg_path                x
@@ -336,7 +338,7 @@
 #define D__obj_dude                0x25DCA8
 #define D__old_fid1                x
 #define D__old_str1                x
-#define D__outlined_object         x
+#define D__outlined_object         0x1055E4
 #define D__patches                 x
 #define D__pc_name                 x
 #define D__pc_proto                x

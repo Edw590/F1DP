@@ -41,7 +41,7 @@ static void __declspec(naked) item_w_damage_hook(void) {
 			mov     eax, PERK_bonus_hth_damage
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_perk_level_
+			lea     edi, [edi+C_perk_level_]
 			call    edi
 			pop     edi
 			shl     eax, 1
@@ -56,7 +56,7 @@ static void __declspec(naked) item_w_damage_hook1(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_stat_level_
+			lea     edi, [edi+C_stat_level_]
 			call    edi
 			pop     edi
 			push    edi
@@ -68,7 +68,7 @@ static void __declspec(naked) item_w_damage_hook1(void) {
 			mov     eax, PERK_bonus_hth_damage
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_perk_level_
+			lea     edi, [edi+C_perk_level_]
 			call    edi
 			pop     edi
 			shl     eax, 1
@@ -84,16 +84,16 @@ static void __declspec(naked) display_stats_hook(void) {
 			mov     eax, PERK_bonus_hth_damage
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_perk_level_
+			lea     edi, [edi+C_perk_level_]
 			call    edi
 			pop     edi
 			shl     eax, 1
 			add     [esp+4*4], eax                       // min_dmg
 
-			sub     esp, 4 // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, F_sprintf_
+			lea     edi, [edi+F_sprintf_]
 			mov     [esp+4], edi
 			pop     edi
 			retn
@@ -104,16 +104,16 @@ static void __declspec(naked) display_stats_hook1(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_stat_level_
+			lea     edi, [edi+C_stat_level_]
 			call    edi
 			pop     edi
 			add     eax, 2
-			sub     esp, 4 // [DADi590: reserve space to "PUSH EDI"]
+			lea     esp, [esp-4] // [DADi590: reserve space to "PUSH EDI"]
 			push    eax
 			mov     eax, PERK_bonus_hth_damage
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_perk_level_
+			lea     edi, [edi+C_perk_level_]
 			call    edi
 			pop     edi
 			shl     eax, 1
@@ -122,10 +122,10 @@ static void __declspec(naked) display_stats_hook1(void) {
 			mov     eax, [esp+0x94+0x4 + 4]
 			push    eax
 
-			sub     esp, 4 // [DADi590] Reserve space for the "PUSH"
+			lea     esp, [esp-4] // [DADi590] Reserve space for the "PUSH"
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, 0xF91F8                         // '%s %d-%d'
+			lea     edi, [edi+0xF91F8]                         // '%s %d-%d'
 			mov     [esp+4], edi // "PUSH"
 			pop     edi
 
@@ -133,15 +133,15 @@ static void __declspec(naked) display_stats_hook1(void) {
 			push    eax
 			mov     [esp+5*4], edi // [DADi590: "PUSH EDI"]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, F_sprintf_
+			lea     edi, [edi+F_sprintf_]
 			call    edi
 			add     esp, 4*5
 			pop     edi
 
-			sub     esp, 4 // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, 0x65CC4
+			lea     edi, [edi+0x65CC4]
 			mov     [esp+4], edi
 			pop     edi
 			retn
@@ -153,17 +153,17 @@ static void __declspec(naked) display_stats_hook2(void) {
 			mov     eax, PERK_bonus_ranged_damage
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_perk_level_
+			lea     edi, [edi+C_perk_level_]
 			call    edi
 			pop     edi
 			shl     eax, 1
 			add     [esp+4*4], eax                       // min_dmg
 			add     [esp+4*5], eax                       // max_dmg
 
-			sub     esp, 4 // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, F_sprintf_
+			lea     edi, [edi+F_sprintf_]
 			mov     [esp+4], edi
 			pop     edi
 			retn

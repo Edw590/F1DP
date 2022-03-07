@@ -41,6 +41,8 @@
 #include "Inventory.h"
 #include "SFall1Patches.h"
 #include "sFall1Main.h"
+#include "../CLibs/ctype.h"
+#include "MainMenu.h"
 
 
 // ADVICE: don't try to understand the functions in each patch... Infinite EDI register uses there to be able to have
@@ -73,7 +75,7 @@
  *   If the function requires parameters on the stack and you don't want to make the jump or CALL sooner in code before
  *   all function PUSHes (you want to replace a CALL right there), you can move all the parameters for the function on
  *   the stack down 4 bytes, and put EDI on the 4 bytes that are now free. Example on how to do that, for 6 parameters:
- * 			sub     esp, 4 // Reserve space on the stack for the last function PUSH
+ * 			lea     esp, [esp-4] // Reserve space on the stack for the last function PUSH
  * 			push    edi
  * 			mov     edi, [(esp+4)+4]
  * 			mov     [(esp+4)+0], edi
@@ -99,10 +101,10 @@
  * 	 time!!!
  *
  * - If you need to PUSH an absolute address to the stack:
- *			sub     esp, 4 // Reserve space for the address
+ *			lea     esp, [esp-4] // Reserve space for the address
  *			push    edi
  *			mov     edi, SN_CODE_SEC_EXE_ADDR
- *			add     edi, C_text_font_
+ *			lea     edi, [edi+C_text_font_]
  *			mov     [esp+4], edi
  *			pop     edi
  * - If you need to JMP to an absolute address --> do the above and add RET at the end, which will behave exactly like
@@ -113,6 +115,9 @@
  *   Ctrl+F ALL CALLs).
  * - Don't forget near CALLs or near jumps to the Patcher functions can NOT have an SN added to them, because they're
  *   an offset, not an address!!!
+ * - Do NOT use ANY instruction that changes the FLAGS registers!!! For example, ADD is one of them. Instead, use LEA.
+ *   The SUB instruction is has the same treatment. Do the same for any others required. The flags must not be changed
+ *   when porting the code!
  *
  * --> Steps to have to do the above:
  * - Find all references to the macros and put C_ or D_ on them.
@@ -154,6 +159,10 @@ static const char *origMovieNames[14] = {
 		"raekills.mve",
 };
 
+static uint32_t objItemOutlineState = 0;
+static char toggleHighlightsKey = '\0';
+static uint32_t TurnHighlightContainers = 0;
+
 static char KarmaGainMsg[128] = {0};
 static char KarmaLossMsg[128] = {0};
 
@@ -168,7 +177,7 @@ static void __stdcall SetKarma(int value) {
 			lea     eax, [buf]
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_display_print_
+			lea     edi, [edi+C_display_print_]
 			call    edi
 			pop     edi
 	}
@@ -181,7 +190,7 @@ static void __declspec(naked) op_set_global_var_hook() {
 			pushad
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_game_get_global_var_
+			lea     edi, [edi+C_game_get_global_var_]
 			call    edi
 			pop     edi
 			sub     edx, eax
@@ -192,10 +201,10 @@ static void __declspec(naked) op_set_global_var_hook() {
 		skip:
 			popad
 		end:
-			sub     esp, 4 // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_game_set_global_var_
+			lea     edi, [edi+C_game_set_global_var_]
 			mov     [esp+4], edi
 			pop     edi
 			retn
@@ -212,14 +221,14 @@ static void __declspec(naked) intface_item_reload_hook() {
 			push    eax
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_register_clear_
+			lea     edi, [edi+C_register_clear_]
 			call    edi
 			pop     edi
 			xor     eax, eax
 			inc     eax
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_register_begin_
+			lea     edi, [edi+C_register_begin_]
 			call    edi
 			pop     edi
 			xor     edx, edx
@@ -228,20 +237,20 @@ static void __declspec(naked) intface_item_reload_hook() {
 			pop     eax                                  // _obj_dude
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_register_object_animate_
+			lea     edi, [edi+C_register_object_animate_]
 			call    edi
 			pop     edi
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_register_end_
+			lea     edi, [edi+C_register_end_]
 			call    edi
 			pop     edi
 			popad
 
-			sub     esp, 4 // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_gsound_play_sfx_file_
+			lea     edi, [edi+C_gsound_play_sfx_file_]
 			mov     [esp+4], edi
 			pop     edi
 			retn
@@ -259,7 +268,7 @@ static void __declspec(naked) combat_turn_hook() {
 			push    edx
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_combat_ai_
+			lea     edi, [edi+C_combat_ai_]
 			call    edi
 			pop     edi
 			pop     edx
@@ -271,7 +280,7 @@ static void __declspec(naked) combat_turn_hook() {
 			jle     next
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_process_bk_
+			lea     edi, [edi+C_process_bk_]
 			call    edi
 			pop     edi
 			jmp     process
@@ -310,28 +319,232 @@ static void __declspec(naked) intface_rotate_numbers_hook() {
 			xor     ebx, ebx
 		end:
 
-			sub     esp, 4 // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, 0x563F6
+			lea     edi, [edi+0x563F6]
 			mov     [esp+4], edi
 			pop     edi
 			retn
 	}
 }
 
-static void __declspec(naked) debugModeWrapper(void) {
+static void __declspec(naked) DebugMode(void) {
 	__asm {
 			pusha
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, C_debug_register_env_
+			lea     edi, [edi+C_debug_register_env_]
 			call    edi
 			pop     edi
 			popa
 
 			mov     ecx, 1
 			ret
+	}
+}
+
+static void __declspec(naked) obj_outline_all_items_on() {
+	__asm {
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			mov     eax, ds:[edi+D__map_elevation]
+			pop     edi
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_obj_find_first_at_]
+			call    edi
+			pop     edi
+		loopObject:
+			test    eax, eax
+			jz      end
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			cmp     eax, ds:[edi+D__outlined_object]
+			pop     edi
+			je      nextObject
+			xchg    ecx, eax
+			mov     eax,[ecx+0x20]
+			and     eax, 0xF000000
+			sar     eax, 0x18
+			test    eax, eax                             // This ObjType_Item?
+			jnz     nextObject                           // No
+			cmp     [ecx+0x7C], eax                      // Does it belong to someone?
+			jnz     nextObject                           // Yes
+			test    [ecx+0x74], eax                      // Already illuminated?
+			jnz     nextObject                           // Yes
+			mov     edx, 0x10                            // yellow
+			test    [ecx+0x25], dl                       // Is NoHighlight_ set (is it a container)?
+			jz      NoHighlight                          // No
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			cmp     [edi+TurnHighlightContainers], eax   // Highlight containers?
+			pop     edi
+			je      nextObject                           // No
+			mov     edx, 0x4                             // Gray
+		NoHighlight:
+			mov     [ecx+0x74], edx
+		nextObject:
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_obj_find_next_at_]
+			call    edi
+			pop     edi
+			jmp     loopObject
+		end:
+			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_tile_refresh_display_]
+			mov     [esp+4], edi
+			pop     edi
+			retn
+	}
+}
+
+static void __declspec(naked) obj_outline_all_items_off() {
+	__asm {
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			mov     eax, ds:[edi+D__map_elevation]
+			pop     edi
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_obj_find_first_at_]
+			call    edi
+			pop     edi
+		loopObject:
+			test    eax, eax
+			jz      end
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			cmp     eax, ds:[edi+D__outlined_object]
+			pop     edi
+			je      nextObject
+			xchg    ecx, eax
+			mov     eax,[ecx+0x20]
+			and     eax, 0xF000000
+			sar     eax, 0x18
+			test    eax, eax                             // This ObjType_Item?
+			jnz     nextObject                           // No
+			cmp     [ecx+0x7C], eax                      // Does it belong to someone?
+			jnz     nextObject                           // Yes
+			mov     [ecx+0x74], eax
+		nextObject:
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_obj_find_next_at_]
+			call    edi
+			pop     edi
+			jmp     loopObject
+		end:
+			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_tile_refresh_display_]
+			mov     [esp+4], edi
+			pop     edi
+			retn
+	}
+}
+
+static void __declspec(naked) gmouse_bk_process_hook() {
+	__asm {
+			test    eax, eax
+			jz      end
+			test    byte ptr[eax+0x25], 0x10            // NoHighlight_
+			jnz     end
+			mov     dword ptr[eax+0x74], 0
+		end:
+			mov     edx, 0x40
+
+			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_obj_outline_object_]
+			mov     [esp+4], edi
+			pop     edi
+			retn
+	}
+}
+
+static void __declspec(naked) obj_remove_outline_hook() {
+	__asm {
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_obj_remove_outline_]
+			call    edi
+			pop     edi
+			test    eax, eax
+			jnz     end
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			cmp     eax, [edi+objItemOutlineState]
+			pop     edi
+			je      end
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			mov     ds:[edi+D__outlined_object], eax
+			pop     edi
+			pushad
+			call    obj_outline_all_items_on
+			popad
+		end:
+			retn
+	}
+}
+
+static bool wasToggleHighlightsKeyPressed(char c) {
+	// I was checking if the wanted key was in the BIOS keyboard buffer. And that works. But not in this case, as it
+	// seems the game first removes the key from the buffer before ReloadWeaponHotKey() is called. So my second thought
+	// was to go check the key where it is still in the buffer and put that in a global variable which would be checked
+	// in ReloadWeaponHotKey().
+	// Until I realized the key is on EBX on the call to the mentioned function. It's not a key code - it's the
+	// character. So a character must now be checked and not a key code - less options, but it's the easiest without
+	// having to go to some place where the key is still in the buffer, check that and put in a global variable.
+
+	return (toupper(c) == toupper(*(char *) getRealBlockAddrData(&toggleHighlightsKey)));
+}
+
+static void __declspec(naked) get_input_hook() {
+	__asm {
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_get_input_]
+			call    edi
+			pop     edi
+			pushad
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			mov     bl, byte ptr [edi+toggleHighlightsKey]
+			pop     edi
+			test    bl, bl
+			jz      end
+			call    wasToggleHighlightsKeyPressed // EAX is the parameter
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			mov     ebx, [edi+objItemOutlineState]
+			pop     edi
+			test    al, al
+			jz      notOurKey
+			test    ebx, ebx
+			jnz     end
+			inc     ebx
+			call    obj_outline_all_items_on
+			jmp     setState
+		notOurKey:
+			test    ebx, ebx
+			jz      end
+			dec     ebx
+			call    obj_outline_all_items_off
+		setState:
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			mov     [edi+objItemOutlineState], ebx
+			pop     edi
+		end:
+			popad
+			retn
 	}
 }
 
@@ -530,7 +743,7 @@ void DllMain2(void) {
 	if (0 != strcmp(prop_value, "0")) {
 		uint32_t str_addr = 0;
 		// This is a modification of the patch (DADi590) - this one doesn't cut code
-		MakeCallEXE(0x728A7, getRealBlockAddrCode((void *) &debugModeWrapper), false);
+		MakeCallEXE(0x728A7, getRealBlockAddrCode((void *) &DebugMode), false);
 
 		writeMem8EXE(0xB308B, 0xB8);               // mov  eax, offset ???
 		if (1 == temp_int) {
@@ -582,6 +795,21 @@ void DllMain2(void) {
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "BodyHit_Uncalled", "0x00000000", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%ud", &temp_uint32);
 	*((uint32_t *) getRealEXEAddr(0xFEEA4)) = temp_uint32;
+
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Input", "ToggleItemHighlightsKey", "0", prop_value, &sfall1_ini_info_G);
+	*(char *) getRealBlockAddrData(&toggleHighlightsKey) = (char) (0 == strcmp(prop_value, "NONE") ? '\0' : prop_value[0]);
+	if ('\0' != *(char *) getRealBlockAddrData(&toggleHighlightsKey)) {
+		HookCallEXE(0x43715, getRealBlockAddrCode((void *) &gmouse_bk_process_hook));
+		HookCallEXE(0x4398A, getRealBlockAddrCode((void *) &obj_remove_outline_hook));
+		HookCallEXE(0x46155, getRealBlockAddrCode((void *) &obj_remove_outline_hook));
+		getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Input", "TurnHighlightContainers", "0", prop_value, &sfall1_ini_info_G);
+		sscanf(prop_value, "%ud", (uint32_t *) getRealBlockAddrData(&TurnHighlightContainers));
+	}
+
+	HookCallEXE(0x72D37, getRealBlockAddrCode((void *) &get_input_hook));       //hook the main game loop
+	HookCallEXE(0x2082E, getRealBlockAddrCode((void *) &get_input_hook));       //hook the combat loop
+
+	MainMenuInit();
 
 
 	freeNew(((struct FileInfo *) getRealBlockAddrData(&translation_ini_info_G))->contents);

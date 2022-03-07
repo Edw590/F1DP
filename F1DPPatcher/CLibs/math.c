@@ -34,7 +34,7 @@ double modf(double x, double *iptr) {
 			push    [iptr]
 			push    [x]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, F_modf_
+			lea     edi, [edi+F_modf_]
 			call    edi
 			mov     dword ptr [ret_var], eax
 

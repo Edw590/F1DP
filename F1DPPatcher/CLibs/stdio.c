@@ -50,7 +50,7 @@ __declspec(naked) int printf(const char *format, ...) {
 			mov     [eax], edi
 
 			pop     edi
-			add     esp, 4 // Remove the return address from the stack (so the stack can be what it was before calling printf())
+			lea     esp, [esp+4] // Remove the return address from the stack (so the stack can be what it was before calling printf())
 
 			// Now we call printf_() with the arguments passed to printf() and nothing else on the stack - it's like we had
 			// jumped to printf_() and not called a wrapper at all.
@@ -58,15 +58,15 @@ __declspec(naked) int printf(const char *format, ...) {
 			add     eax, F_printf_
 			call    eax
 
-			sub     esp, 4 // Get space on the stack to put the return address back on
+			lea     esp, [esp-4] // Get space on the stack to put the return address back on
 			push    edi
 			lea     edi, [ret_addr]
-			add     edi, SN_DATA_SEC_BLOCK_ADDR
+			lea     edi, [edi+SN_DATA_SEC_BLOCK_ADDR]
 			mov     edi, [edi]
 			mov     [esp+4], edi // Store the return address on the stack again
 
 			lea     edi, [ret_addr]
-			add     edi, SN_DATA_SEC_BLOCK_ADDR
+			lea     edi, [edi+SN_DATA_SEC_BLOCK_ADDR]
 			mov     [edi], 0 // Empty ret_addr just in case I ever use it elsewhere and check its value(?)
 
 			pop     edi
@@ -97,21 +97,21 @@ __declspec(naked) int sprintf(const char* s, const char *format, ...) {
 			mov     [eax], edi
 
 			pop     edi
-			add     esp, 4 // Remove the return address from the stack
+			lea     esp, [esp+4] // Remove the return address from the stack
 
 			mov     eax, SN_CODE_SEC_EXE_ADDR
 			add     eax, F_sprintf_
 			call    eax
 
-			sub     esp, 4 // Get space on the stack to put the return address back on
+			lea     esp, [esp-4] // Get space on the stack to put the return address back on
 			push    edi
 			lea     edi, [ret_addr]
-			add     edi, SN_DATA_SEC_BLOCK_ADDR
+			lea     edi, [edi+SN_DATA_SEC_BLOCK_ADDR]
 			mov     edi, [edi]
 			mov     [esp+4], edi // Store the return address on the stack again
 
 			lea     edi, [ret_addr]
-			add     edi, SN_DATA_SEC_BLOCK_ADDR
+			lea     edi, [edi+SN_DATA_SEC_BLOCK_ADDR]
 			mov     [edi], 0 // Empty ret_addr just in case I ever use it elsewhere and check its value(?)
 
 			pop     edi
@@ -148,15 +148,15 @@ __declspec(naked) int sscanf(const char* s, const char *format, ...) {
 			add     eax, F_sscanf_
 			call    eax
 
-			sub     esp, 4 // Get space on the stack to put the return address back on
+			lea     esp, [esp-4] // Get space on the stack to put the return address back on
 			push    edi
 			lea     edi, [ret_addr]
-			add     edi, SN_DATA_SEC_BLOCK_ADDR
+			lea     edi, [edi+SN_DATA_SEC_BLOCK_ADDR]
 			mov     edi, [edi]
 			mov     [esp+4], edi // Store the return address on the stack again
 
 			lea     edi, [ret_addr]
-			add     edi, SN_DATA_SEC_BLOCK_ADDR
+			lea     edi, [edi+SN_DATA_SEC_BLOCK_ADDR]
 			mov     [edi], 0 // Empty ret_addr just in case I ever use it elsewhere and check its value(?)
 
 			pop     edi

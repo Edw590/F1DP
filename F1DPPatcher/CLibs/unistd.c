@@ -30,7 +30,7 @@ int close(int fildes) {
 
 			mov     eax, [fildes]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, F_close_
+			lea     edi, [edi+F_close_]
 			call    edi
 			mov     [ret_var], eax
 
@@ -53,7 +53,7 @@ ssize_t read(int fildes, void *buf, size_t nbyte) {
 			mov     edx, [buf]
 			mov     ebx, [nbyte]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, F_read_
+			lea     edi, [edi+F_read_]
 			call    edi
 			mov     [ret_var], eax
 

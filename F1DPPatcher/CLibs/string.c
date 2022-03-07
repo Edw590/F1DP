@@ -36,7 +36,7 @@ void *memset(void *s, int c, size_t n) {
 			mov     edx, [c]
 			mov     ebx, [n]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, F_memset_
+			lea     edi, [edi+F_memset_]
 			call    edi
 			mov     [ret_var], eax
 
@@ -61,7 +61,7 @@ int strcmp(const char *s1, const char *s2) {
 			mov     eax, [s1]
 			mov     edx, [s2]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, F_strcmp_
+			lea     edi, [edi+F_strcmp_]
 			call    edi
 			mov     [ret_var], eax
 
@@ -84,7 +84,7 @@ char *strcpy(char *s1, const char *s2) {
 			mov     eax, [s1]
 			mov     edx, [s2]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, F_strcpy_
+			lea     edi, [edi+F_strcpy_]
 			call    edi
 			mov     [ret_var], eax
 
@@ -123,7 +123,7 @@ int strncmp(const char *s1, const char *s2, size_t n) {
 			mov     edx, [s2]
 			mov     ebx, [n]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, F_strncmp_
+			lea     edi, [edi+F_strncmp_]
 			call    edi
 			mov     [ret_var], eax
 
@@ -147,7 +147,7 @@ char *strncpy(char *s1, const char *s2, size_t n) {
 			mov     edx, [s2]
 			mov     ebx, [n]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, F_strncpy_
+			lea     edi, [edi+F_strncpy_]
 			call    edi
 			mov     [ret_var], eax
 
@@ -191,7 +191,7 @@ char *strrchr(const char *s, int c) {
 			mov     eax, [s]
 			mov     edx, [c]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			add     edi, F_strrchr_
+			lea     edi, [edi+F_strrchr_]
 			call    edi
 			mov     [ret_var], eax
 
