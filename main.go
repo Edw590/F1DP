@@ -37,7 +37,7 @@ func showInitialScreen() {
 		"will be no longer necessary and you may delete it if you want.")
 	fmt.Println()
 	fmt.Println("-----Credits-----")
-	fmt.Println("[Not sure what the order should be in this case, as it's all very important, so alphabetical order.]")
+	fmt.Println("[Not sure what the order should be in this case, as it's all very important, so partial alphabetical order.]")
 	fmt.Println()
 	fmt.Println("- DADi590 (me), for making F1DP and adapting all patches to the DOS EXE")
 	fmt.Println("- Crafty for his sFall1 modifications")
