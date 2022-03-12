@@ -20,13 +20,13 @@
 // NOTE: I don't see mention to Crafty in the copyright notices, but I'll just say here that this code was taken from
 // his modification of the original sFall1.
 
-#ifndef F1DPPATCHER_CRITICALS_H
-#define F1DPPATCHER_CRITICALS_H
+#ifndef F1DPPATCHER_CREDITS_H
+#define F1DPPATCHER_CREDITS_H
 
 
 
-void CritInit(void);
+void CreditsInit(void);
 
 
 
-#endif //F1DPPATCHER_CRITICALS_H
+#endif //F1DPPATCHER_CREDITS_H

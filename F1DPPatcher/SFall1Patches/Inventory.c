@@ -18,13 +18,13 @@
 
 // Original code modified by me, DADi590, to adapt it to this project, starting on 2022-03-02.
 // NOTE: I don't see mention to Crafty in the copyright notices, but I'll just say here that this code was taken from
-// his modification of the original sFall1 by Timeslip.
+// his modification of the original sFall1.
 
 #include "../CLibs/ctype.h"
 #include "../CLibs/stdio.h"
 #include "../CLibs/string.h"
 #include "../GameAddrs/CStdFuncs.h"
-#include "../OtherHeaders/GlobalEXEAddrs.h"
+#include "../Utils/GlobalEXEAddrs.h"
 #include "../Utils/BlockAddrUtils.h"
 #include "../Utils/EXEPatchUtils.h"
 #include "Bugs.h"
@@ -34,7 +34,7 @@
 #include "LoadGameHook.h"
 #include "PartyControl.h"
 #include "SFall1Patches.h"
-#include "sFall1Main.h"
+#include "SFall1Main.h"
 
 // Specifically initialized to true
 static bool UseScrollWheel = true;
@@ -112,7 +112,7 @@ static void __declspec(naked) ReloadActiveHand(void) {
 			mov     edx, ds:[edi+D__itemButtonItems][eax]
 			pop     edi
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+0x563D2]
@@ -374,7 +374,7 @@ static void __declspec(naked) inven_action_cursor_hook(void) {
 			call    SetDefaultAmmo
 			cmp     dword ptr [esp+0x18], 0
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+0x66B73]
@@ -648,7 +648,7 @@ static void __declspec(naked) printFreeMaxWeight(void) {
 
 			// [DADi590: so, since I need to POP the used register... Let's do something that just came to my mind...]
 			//jmp     C_text_font_
-			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_text_font_]
@@ -715,7 +715,7 @@ static void __declspec(naked) display_inventory_hook(void) {
 			call    printFreeMaxWeight
 			popad
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+0x63CB8]
@@ -776,7 +776,7 @@ static void __declspec(naked) display_target_inventory_hook(void) {
 			call    printFreeMaxWeight
 			popad
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+0x63FA4]
@@ -856,7 +856,7 @@ static void __declspec(naked) display_table_inventories_hook1(void) {
 			call    printFreeMaxWeight
 			popad
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+0x68487]
@@ -1157,7 +1157,7 @@ static void __declspec(naked) display_stats_hook(void) {
 			mov     ecx, 499
 			mov     ebx, 120
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+0x65D55]
@@ -1705,7 +1705,7 @@ static void __declspec(naked) loot_drop_all(void) {
 			popad
 			pop     ebx                                  // Destroying the return address
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+0x6770E]
@@ -1744,7 +1744,7 @@ static void __declspec(naked) protinst_use_item_on_hook(void) {
 			lea     eax, [edi+SuperStimMsg]
 			pop     edi
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+0x8B38D]
@@ -1917,7 +1917,7 @@ static void __declspec(naked) handle_inventory_hook(void) {
 			call    edi
 			pop     edi
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_display_stats_]
@@ -1970,7 +1970,10 @@ static void __declspec(naked) item_add_check(void) {
 			call    edi
 			pop     edi
 			add     ecx, eax
-			test    InLoop, 0x30000                      // INTFACELOOT + BARTER
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			test    [edi+InLoop], 0x30000                // INTFACELOOT + BARTER
+			pop     edi
 			jz      noExtraWeightTarget
 			push    edi
 			mov     edi, SN_DATA_SEC_EXE_ADDR
@@ -2169,7 +2172,7 @@ static void __declspec(naked) drop_into_container_hook(void) {
 			inc     eax
 			retn
 		end:
-			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_item_add_force_]
@@ -2189,7 +2192,7 @@ static void __declspec(naked) item_add_force_call(void) {
 			// Was there an unsuccessful attempt to place in a bag or load a weapon?
 			call    drop_into_container_hook
 		force:
-			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_item_add_force_]
@@ -2199,7 +2202,7 @@ static void __declspec(naked) item_add_force_call(void) {
 	}
 }
 
-static void __declspec(naked) move_table_source() {
+static void __declspec(naked) move_table_source(void) {
 	__asm {
 			xchg    ecx, eax                             // ecx = source, eax = count
 			xchg    ebx, eax                             // ebx = count, eax = item
@@ -2213,7 +2216,7 @@ static void __declspec(naked) move_table_source() {
 			xchg    ebx, eax                             // ebx = item, eax = count
 			xchg    ecx, eax                             // ecx = count, eax = source
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_item_move_force_]
@@ -2226,7 +2229,7 @@ static void __declspec(naked) move_table_source() {
 	}
 }
 
-static void __declspec(naked) move_table_target() {
+static void __declspec(naked) move_table_target(void) {
 	__asm {
 			mov     edx, ds:[D__target_curr_stack]
 			mov     edx, ds:[D__target_stack][edx*4]
@@ -2234,7 +2237,7 @@ static void __declspec(naked) move_table_target() {
 	}
 }
 
-static void __declspec(naked) checkContainerSize() {
+static void __declspec(naked) checkContainerSize(void) {
 	__asm {
 			push    eax
 			call    item_add_check
@@ -2242,7 +2245,7 @@ static void __declspec(naked) checkContainerSize() {
 			pop     eax
 			je      end                                  // Äà
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_item_add_force_]
@@ -2257,7 +2260,7 @@ static void __declspec(naked) checkContainerSize() {
 	}
 }
 
-static void __declspec(naked) proto_ptr_call() {
+static void __declspec(naked) proto_ptr_call(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -2291,7 +2294,8 @@ void InventoryInit(void) {
 	}
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "AutoReloadWeapon", "0", prop_value, &sfall1_ini_info_G);
-	if (0 != strcmp(prop_value, "0")) {
+	sscanf(prop_value, "%d", &temp_int);
+	if (0 != temp_int) {
 		HookCallEXE(0x20D56, getRealBlockAddrCode((void *) &AutoReloadWeapon));
 	}
 
@@ -2299,7 +2303,7 @@ void InventoryInit(void) {
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "ReloadReserve", "1", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if (temp_int >= 0) {
-		// Note here: I didn't have to change anything, because the jumps are short jumps.
+		// Note here: I didn't have to change anything, because the jumps are relative jumps.
 		writeMem8EXE(0x6940D, 0xB8);
 		writeMem32EXE(0x6940E, (uint32_t) temp_int);      // "mov  eax, ReloadReserve"
 		writeMem32EXE(0x69412, 0x057FC139u);              // "cmp  ecx, eax; jg   0x6941B"
@@ -2314,7 +2318,8 @@ void InventoryInit(void) {
 	}
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "FreeWeight", "0", prop_value, &sfall1_ini_info_G);
-	if (0 != strcmp(prop_value, "0")) {
+	sscanf(prop_value, "%d", &temp_int);
+	if (0 != temp_int) {
 		MakeCallEXE(0x63C20, getRealBlockAddrCode((void *) &display_inventory_hook), true);
 		MakeCallEXE(0x63F1B, getRealBlockAddrCode((void *) &display_target_inventory_hook), true);
 
@@ -2343,14 +2348,16 @@ void InventoryInit(void) {
 					OverloadedDrop, &translation_ini_info_G);
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "SuperStimExploitFix", "0", prop_value, &sfall1_ini_info_G);
-	if (0 != strcmp(prop_value, "0")) {
+	sscanf(prop_value, "%d", &temp_int);
+	if (0 != temp_int) {
 		getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "sfall", "SuperStimExploitMsg",
 						"You cannot use a super stim on someone who is not injured!", SuperStimMsg, &translation_ini_info_G);
 		MakeCallEXE(0x8B34F, getRealBlockAddrCode((void *) &protinst_use_item_on_hook), false);
 	}
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Input", "UseScrollWheel", "1", prop_value, &sfall1_ini_info_G);
-	*(bool *) getRealBlockAddrData(&UseScrollWheel) = (0 == strcmp(prop_value, "1"));
+	sscanf(prop_value, "%d", &temp_int);
+	*(bool *) getRealBlockAddrData(&UseScrollWheel) = (1 == temp_int);
 	if (*(bool *) getRealBlockAddrData(&UseScrollWheel)) {
 		MakeCallEXE(0x67251, getRealBlockAddrCode((void *) &loot_container_hook), false);
 		MakeCallEXE(0x6896B, getRealBlockAddrCode((void *) &barter_inventory_hook2), false);
@@ -2387,7 +2394,8 @@ void InventoryInit(void) {
 	HookCallEXE(0x64DD2, getRealBlockAddrCode((void *) &checkContainerSize));
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "ContainerSizeFix", "0", prop_value, &sfall1_ini_info_G);
-	if (0 != strcmp(prop_value, "0")) {
+	sscanf(prop_value, "%d", &temp_int);
+	if (0 != temp_int) {
 		HookCallEXE(0x6A729, getRealBlockAddrCode((void *) &proto_ptr_call));
 		HookCallEXE(0x6C073, getRealBlockAddrCode((void *) &proto_ptr_call));
 	}

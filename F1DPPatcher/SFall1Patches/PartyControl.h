@@ -18,7 +18,7 @@
 
 // Original code modified by me, DADi590, to adapt it to this project, starting on 2022-03-02.
 // NOTE: I don't see mention to Crafty in the copyright notices, but I'll just say here that this code was taken from
-// his modification of the original sFall1 by Timeslip.
+// his modification of the original sFall1.
 
 #ifndef F1DPPATCHER_PARTYCONTROL_H
 #define F1DPPATCHER_PARTYCONTROL_H
@@ -27,7 +27,11 @@
 
 #include <stdint.h>
 
+extern uint32_t IsControllingNPC;
 extern uint32_t HiddenArmor;
+
+void PartyControlInit(void);
+void __stdcall PartyControlReset(void);
 
 
 

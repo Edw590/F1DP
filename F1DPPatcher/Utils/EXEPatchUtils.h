@@ -47,11 +47,9 @@ uint32_t readMem32EXE(uint32_t addr);
 uint16_t readMem16EXE(uint32_t addr);
 uint8_t readMem8EXE(uint32_t addr);
 
-__declspec(noreturn) void strcpy_sEXE(uint32_t addr, const char * s2, int n);
+void HookCallEXE(uint32_t addr, void const *func);
 
-void HookCallEXE(uint32_t addr, const void * func);
-
-void MakeCallEXE(uint32_t addr, const void * func, bool jump);
+void MakeCallEXE(uint32_t addr, void const *func, bool jump);
 
 void BlockCallEXE(uint32_t addr);
 

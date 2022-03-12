@@ -26,7 +26,7 @@
 // 80 includes everything (even the NULL character)
 #define MAX_PATH_DOS 80
 // 4 chars exactly or change the initial strings with the dashes
-#define F1DP_VER_STR "v1.0"
+#define F1DP_VER_STR "1.0"
 
 #define freeNew(ptr) free(ptr); ptr = NULL
 

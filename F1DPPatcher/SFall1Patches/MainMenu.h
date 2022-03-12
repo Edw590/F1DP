@@ -1,6 +1,6 @@
 /*
  *    sfall
- *    Copyright (C) 2012  The sfall team
+ *    Copyright (C) 2012  The sfall team, 2022 DADi590
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 
 // Original code modified by me, DADi590, to adapt it to this project, starting on 2022-03-02.
 // NOTE: I don't see mention to Crafty in the copyright notices, but I'll just say here that this code was taken from
-// his modification of the original sFall1 by Timeslip.
+// his modification of the original sFall1.
 
 #ifndef F1DPPATCHER_MAINMENU_H
 #define F1DPPATCHER_MAINMENU_H

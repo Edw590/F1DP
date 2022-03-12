@@ -17,7 +17,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-#include "../OtherHeaders/GlobalEXEAddrs.h"
+#include "GlobalEXEAddrs.h"
 #include "BlockAddrUtils.h"
 #include <stddef.h>
 #include <stdint.h>
@@ -51,7 +51,7 @@
 // others if it is an obvious things that "should" be optimized --> except there can be no optimizations here, or the
 // patcherPatcher() won't replace them because the Special Number is gone.
 
-void *getRealBlockAddrCode(volatile const void *addr) {
+void *getRealBlockAddrCode(volatile void const *addr) {
 	// Inside the EXE segments address space already, or it's a NULL pointer? Then return the original. Else, correct it.
 	// A more in-depth explanation is in the text above.
 	if (((uint32_t) addr >= SN_CODE_SEC_EXE_ADDR) || (NULL == addr)) {
@@ -61,7 +61,7 @@ void *getRealBlockAddrCode(volatile const void *addr) {
 	return (void *) ((uint32_t) addr + SN_CODE_SEC_BLOCK_ADDR);
 }
 
-void *getRealBlockAddrData(volatile const void *addr) {
+void *getRealBlockAddrData(volatile void const *addr) {
 	if (((uint32_t) addr >= SN_CODE_SEC_EXE_ADDR) || (NULL == addr)) {
 		return (void *) addr;
 	}

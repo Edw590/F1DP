@@ -18,7 +18,7 @@
 // under the License.
 
 #include "../GameAddrs/CStdFuncs.h"
-#include "../OtherHeaders/GlobalEXEAddrs.h"
+#include "../Utils/GlobalEXEAddrs.h"
 #include "io.h"
 
 long filelength(int handle) {

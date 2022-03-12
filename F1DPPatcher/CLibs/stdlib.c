@@ -18,8 +18,8 @@
 // under the License.
 
 #include "../GameAddrs/CStdFuncs.h"
-#include "../OtherHeaders/General.h"
-#include "../OtherHeaders/GlobalEXEAddrs.h"
+#include "../Utils/General.h"
+#include "../Utils/GlobalEXEAddrs.h"
 #include "../Utils/BlockAddrUtils.h"
 #include "stdlib.h"
 

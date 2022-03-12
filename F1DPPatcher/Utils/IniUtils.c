@@ -23,11 +23,11 @@
 #include "../CLibs/stdlib.h"
 #include "../CLibs/string.h"
 #include "../CLibs/unistd.h"
-#include "../OtherHeaders/General.h"
+#include "General.h"
 #include "BlockAddrUtils.h"
 #include "IniUtils.h"
 
-bool readFile(const char *file_path, struct FileInfo *file) {
+bool readFile(char const *file_path, struct FileInfo *file) {
 	char *file_contents = NULL;
 	unsigned long file_size = 0;
 	unsigned file_descriptor = 0;
@@ -71,11 +71,11 @@ bool readFile(const char *file_path, struct FileInfo *file) {
 	return true;
 }
 
-bool getPropValueIni(const char *prop_spec_section_name, const char *prop_section_name, const char *prop_key,
-					 const char *def_value, char *prop_value, const struct FileInfo *ini_info) {
+bool getPropValueIni(char const *prop_spec_section_name, char const *prop_section_name, char const *prop_key,
+					 char const *def_value, char *prop_value, struct FileInfo const *ini_info) {
 	unsigned long i = 0;
 	size_t temp = 0;
-	const char *ini_contents = NULL;
+	char const *ini_contents = NULL;
 	unsigned long ini_len = 0;
 	char curr_section_name[MAX_SEC_NAME_LEN];
 	char curr_spec_section_name[MAX_SEC_NAME_LEN];

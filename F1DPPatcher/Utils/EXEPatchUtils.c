@@ -18,7 +18,7 @@
 // under the License.
 
 #include "../CLibs/string.h"
-#include "../OtherHeaders/GlobalEXEAddrs.h"
+#include "GlobalEXEAddrs.h"
 #include "EXEPatchUtils.h"
 
 // And right after, the Data section begins
@@ -50,20 +50,11 @@ uint8_t readMem8EXE(uint32_t addr) {
 }
 
 
-// AFTER you test if the last line of the function is being removed (optimizations), and AFTER you test if this actually
-// works, remove noreturn thing. This is just here as a reminder.
-__declspec(noreturn) void strcpy_sEXE(uint32_t addr, const char *s2, int n) {
-	uint32_t *real_addr = getRealEXEAddr(addr);
-
-	strncpy((char *) real_addr, s2, (size_t) n);
-	((char *) real_addr)[n] = '\0';
-}
-
-void HookCallEXE(uint32_t addr, const void *func) {
+void HookCallEXE(uint32_t addr, void const *func) {
 	writeMem32EXE(addr + 1, (uint32_t) func - ((uint32_t) getRealEXEAddr(addr) + 5));
 }
 
-void MakeCallEXE(uint32_t addr, const void *func, bool jump) {
+void MakeCallEXE(uint32_t addr, void const *func, bool jump) {
 	writeMem8EXE(addr, jump ? 0xE9 : 0xE8);
 	HookCallEXE(addr, func);
 }

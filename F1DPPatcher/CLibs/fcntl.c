@@ -18,11 +18,11 @@
 // under the License.
 
 #include "../GameAddrs/CStdFuncs.h"
-#include "../OtherHeaders/GlobalEXEAddrs.h"
+#include "../Utils/GlobalEXEAddrs.h"
 #include "../Utils/BlockAddrUtils.h"
 #include "fcntl.h"
 
-int open(const char *path, int oflag, int mode) {
+int open(char const *path, int oflag, int mode) {
 	int ret_var = 0;
 
 	// Pointer correction
@@ -37,7 +37,7 @@ int open(const char *path, int oflag, int mode) {
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+F_open_]
 			call    edi
-			lea     esp, [esp+12]
+			add     esp, 12
 			mov     [ret_var], eax
 
 			popa

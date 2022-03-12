@@ -20,7 +20,7 @@
 #include <sys/types.h>
 #include "../Utils/BlockAddrUtils.h"
 #include "../GameAddrs/CStdFuncs.h"
-#include "../OtherHeaders/GlobalEXEAddrs.h"
+#include "../Utils/GlobalEXEAddrs.h"
 #include "unistd.h"
 
 int close(int fildes) {

@@ -18,12 +18,12 @@
 
 // Original code modified by me, DADi590, to adapt it to this project, starting on 2022-03-02.
 // NOTE: I don't see mention to Crafty in the copyright notices, but I'll just say here that this code was taken from
-// his modification of the original sFall1 by Timeslip.
+// his modification of the original sFall1.
 
 #include "../CLibs/stdlib.h"
-#include "../OtherHeaders/General.h"
 #include "../Utils/BlockAddrUtils.h"
 #include "../Utils/EXEPatchUtils.h"
+#include "../Utils/General.h"
 #include "AnimationsAtOnceLimit.h"
 #include <stdint.h>
 
@@ -33,23 +33,23 @@ int AnimationsLimit = 21;
 static uint8_t *anim_set;
 static uint8_t *sad;
 
-const uint32_t AnimPCMove[5] = {
-		0x41678D, 0x4168E0, 0x416ABF, 0x416BD8, 0x417334,
+static uint32_t const AnimPCMove[5] = {
+		0x1673B+2, 0x1688E+2, 0x16A6D+2, 0x16B82+6, 0x172E2+2,
 };
 
-const uint32_t AnimMaxCheck[7] = {
+static uint32_t const AnimMaxCheck[7] = {
 		0x413500, 0x41356D, 0x41368D, 0x413998, 0x413A2E, 0x418029,
 };
 
-const uint32_t AnimMaxSizeCheck[4] = {
+static uint32_t const AnimMaxSizeCheck[4] = {
 		0x413539, 0x413773, 0x4138A2, 0x4178A2,
 };
 
-const uint32_t fake_anim_set_C[2] = {
+static uint32_t const fake_anim_set_C[2] = {
 		0x413534, 0x41389C,
 };
 
-const uint32_t anim_set_0[46] = {
+static uint32_t const anim_set_0[46] = {
 		0x413646, 0x413716, 0x4137B7, 0x4138C1, 0x413946, 0x4139D3, 0x413A8A,
 		0x413BA3, 0x413D23, 0x413E30, 0x413FA3, 0x4140A3, 0x4141D5, 0x4142CA,
 		0x4143B0, 0x414492, 0x414576, 0x41465A, 0x4146DC, 0x41475C, 0x4147DC,
@@ -59,76 +59,76 @@ const uint32_t anim_set_0[46] = {
 		0x4156AF, 0x41578E, 0x4157B3, 0x4158DF,
 };
 
-const uint32_t anim_set_4[9] = {
+static uint32_t const anim_set_4[9] = {
 		0x4137CE, 0x4151CF, 0x415652, 0x41565F, 0x415734, 0x415848, 0x415866,
 		0x415873, 0x4158F4,
 };
 
-const uint32_t anim_set_8[14] = {
+static uint32_t const anim_set_8[14] = {
 		0x413726, 0x41375F, 0x4137BD, 0x413956, 0x413984, 0x4139E3, 0x413A00,
 		0x413A1A, 0x4151C3, 0x415659, 0x41571F, 0x41575F, 0x41577F, 0x4158CE,
 };
 
-const uint32_t anim_set_C[25] = {
+static uint32_t const anim_set_C[25] = {
 		0x4135C6, 0x4135CF, 0x4135DF, 0x4135F9, 0x413614, 0x413652, 0x41365B,
 		0x413670, 0x41367D, 0x4136F5, 0x413743, 0x4137C8, 0x4137D7, 0x413808,
 		0x413829, 0x41388D, 0x413973, 0x41508D, 0x4155BC, 0x4158AA, 0x4158EE,
 		0x415921, 0x41592D, 0x41788D, 0x417898,
 };
 
-const uint32_t anim_set_10[6] = {
+static uint32_t const anim_set_10[6] = {
 		0x41373A, 0x41396A, 0x4139F7, 0x41572B, 0x415826, 0x415854,
 };
 
-const uint32_t anim_set_14[6] = {
+static uint32_t const anim_set_14[6] = {
 		0x413732, 0x413962, 0x4139EF, 0x415745, 0x41581E, 0x41585D,
 };
 
-const uint32_t anim_set_28[3] = {
+static uint32_t const anim_set_28[3] = {
 		0x4137E3, 0x4151DC, 0x4151EF,
 };
 
-const uint32_t sad_0[23] = {
+static uint32_t const sad_0[23] = {
 		0x4167C6, 0x4167D2, 0x416839, 0x416914, 0x416928, 0x416A41, 0x416AE3,
 		0x416B72, 0x416C21, 0x416EFF, 0x4171BE, 0x417216, 0x41729F, 0x417362,
 		0x4173EE, 0x41751F, 0x417639, 0x4176BC, 0x41777C, 0x4177A4, 0x417919,
 		0x41791F, 0x417934,
 };
 
-const uint32_t sad_4[10] = {
+static uint32_t const sad_4[10] = {
 		0x41588D, 0x4167BC, 0x41690B, 0x416D07, 0x4170EF, 0x41714F, 0x4172EB,
 		0x417429, 0x4174D8, 0x417575,
 };
 
-const uint32_t sad_8[10] = {
+static uint32_t const sad_8[10] = {
 		0x416834, 0x416847, 0x416922, 0x41697B, 0x4169AB, 0x417161, 0x41742F,
 		0x417443, 0x4175CB, 0x41760B,
 };
 
-const uint32_t sad_C[2] = {
+static uint32_t const sad_C[2] = {
 		0x416874, 0x416D6A,
 };
 
-const uint32_t sad_10[5] = {
+static uint32_t const sad_10[5] = {
 		0x41683F, 0x4169B1, 0x41743D, 0x4174E3, 0x417502,
 };
 
-const uint32_t sad_14[4] = {
+static uint32_t const sad_14[4] = {
 		0x416854, 0x4169E2, 0x417470, 0x4174F0,
 };
 
-const uint32_t sad_18[10] = {
+static uint32_t const sad_18[10] = {
 		0x4156F2, 0x416868, 0x4169E8, 0x417114, 0x41730C, 0x417437, 0x4174FC,
 		0x417598, 0x4176DB, 0x4177E0,
 };
 
-const uint32_t sad_1C[15] = {
+static uint32_t const sad_1C[15] = {
 		0x4162C6, 0x4162CE, 0x41630D, 0x416355, 0x41639B, 0x4163A3, 0x416884,
 		0x4168B2, 0x416A78, 0x416F19, 0x417057, 0x41720F, 0x417297, 0x417482,
 		0x417516,
 };
 
-const uint32_t sad_20[35] = {
+static uint32_t const sad_20[35] = {
 		0x4156FA, 0x415895, 0x4162DF, 0x4167F6, 0x41688E, 0x41699F, 0x416A82,
 		0x416D01, 0x416DB0, 0x416E36, 0x416F23, 0x416F89, 0x417050, 0x41705D,
 		0x417087, 0x417103, 0x417149, 0x41716E, 0x417209, 0x41721C, 0x417273,
@@ -136,11 +136,11 @@ const uint32_t sad_20[35] = {
 		0x417589, 0x4175B3, 0x4176E1, 0x417799, 0x4178C0, 0x4178E9, 0x41792E,
 };
 
-const uint32_t sad_24[5] = {
+static uint32_t const sad_24[5] = {
 		0x416332, 0x41636D, 0x416378, 0x41685D, 0x416F0B,
 };
 
-const uint32_t sad_28[4] = {
+static uint32_t const sad_28[4] = {
 		0x416D4A, 0x416E3D, 0x416F6D, 0x417099,
 };
 

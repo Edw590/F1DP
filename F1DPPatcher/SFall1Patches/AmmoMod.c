@@ -18,11 +18,12 @@
 
 // Original code modified by me, DADi590, to adapt it to this project, starting on 2022-03-02.
 // NOTE: I don't see mention to Crafty in the copyright notices, but I'll just say here that this code was taken from
-// his modification of the original sFall1 by Timeslip.
+// his modification of the original sFall1.
 
 #include "../CLibs/string.h"
+#include "../CLibs/stdio.h"
 #include "../GameAddrs/CStdFuncs.h"
-#include "../OtherHeaders/GlobalEXEAddrs.h"
+#include "../Utils/GlobalEXEAddrs.h"
 #include "../Utils/BlockAddrUtils.h"
 #include "../Utils/EXEPatchUtils.h"
 #include "../Utils/IniUtils.h"
@@ -90,7 +91,7 @@ static void __declspec(naked) display_stats_hook(void) {
 			shl     eax, 1
 			add     [esp+4*4], eax                       // min_dmg
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+F_sprintf_]
@@ -138,7 +139,7 @@ static void __declspec(naked) display_stats_hook1(void) {
 			add     esp, 4*5
 			pop     edi
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+0x65CC4]
@@ -160,7 +161,7 @@ static void __declspec(naked) display_stats_hook2(void) {
 			add     [esp+4*4], eax                       // min_dmg
 			add     [esp+4*5], eax                       // max_dmg
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+F_sprintf_]
@@ -171,11 +172,13 @@ static void __declspec(naked) display_stats_hook2(void) {
 }
 
 void AmmoModInit(void) {
+	int temp_int = 0;
 	char prop_value[MAX_PROP_VALUE_LEN];
 	memset(prop_value, 0, MAX_PROP_VALUE_LEN);
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "BonusHtHDamageFix", "1", prop_value, &sfall1_ini_info_G);
-	if (0 != strcmp(prop_value, "0")) {
+	sscanf(prop_value, "%d", &temp_int);
+	if (0 != temp_int) {
 		// Bonus HtH Damage Perk fix
 		MakeCallEXE(0x6AF56, getRealBlockAddrCode((void *) &item_w_damage_hook), false);
 		HookCallEXE(0x6AFA8, getRealBlockAddrCode((void *) &item_w_damage_hook1));
@@ -185,5 +188,4 @@ void AmmoModInit(void) {
 
 	// "Show changes min./max. damage to the weapon if the perk "Bonus damage at distance" is taken."
 	HookCallEXE(0x65A75, getRealBlockAddrCode((void *) &display_stats_hook2));
-
 }

@@ -48,7 +48,7 @@ struct FileInfo {
  *
  * @return true if the file was read successfully, false otherwise
  */
-bool readFile(const char *file_path, struct FileInfo *file);
+bool readFile(char const *file_path, struct FileInfo *file);
 
 /**
  * @brief Looks for a property value in an INI file given a key, possibly a given section name, and possible a given
@@ -79,8 +79,8 @@ bool readFile(const char *file_path, struct FileInfo *file);
  * @return true if the property key was found (and hence, its value returned), false otherwise (which will mean the
  *         default value was returned, if there was any)
  */
-bool getPropValueIni(const char *prop_spec_section_name, const char *prop_section_name, const char *prop_key,
-					 const char *def_value, char *prop_value, const struct FileInfo *ini_info);
+bool getPropValueIni(char const *prop_spec_section_name, char const *prop_section_name, char const *prop_key,
+					 char const *def_value, char *prop_value, struct FileInfo const *ini_info);
 
 
 

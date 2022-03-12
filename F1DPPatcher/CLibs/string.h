@@ -25,13 +25,15 @@
 #include <sys/types.h>
 
 void * memset(void *s, int c, size_t n);
-int strcmp(const char * s1, const char * s2);
-char * strcpy(char * s1, const char * s2);
-size_t strlen(const char *s);
-int strncmp(const char * s1, const char * s2, size_t n);
-char * strncpy(char * s1, const char * s2, size_t n);
-size_t strnlen(const char * s, size_t maxlen);
-char * strrchr(const char * s, int c);
+char *strchr(char const *s, int c);
+int strcmp(char const *s1, char const *s2);
+char * strcpy(char * s1, char const *s2);
+int strcpy_s(char *dest, size_t dest_size, char const *src);
+size_t strlen(char const *s);
+int strncmp(char const *s1, char const *s2, size_t n);
+char * strncpy(char *s1, char const *s2, size_t n);
+size_t strnlen(char const *s, size_t maxlen);
+char * strrchr(char const *s, int c);
 
 
 

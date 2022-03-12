@@ -18,7 +18,7 @@
 // under the License.
 
 #include "../GameAddrs/CStdFuncs.h"
-#include "../OtherHeaders/GlobalEXEAddrs.h"
+#include "../Utils/GlobalEXEAddrs.h"
 #include "../Utils/BlockAddrUtils.h"
 #include "math.h"
 

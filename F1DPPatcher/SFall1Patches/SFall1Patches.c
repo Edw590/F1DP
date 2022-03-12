@@ -20,11 +20,11 @@
 #include "../CLibs/stdio.h"
 #include "../CLibs/stdlib.h"
 #include "../CLibs/string.h"
-#include "../OtherHeaders/General.h"
-#include "../OtherHeaders/GlobalVars.h"
 #include "../Utils/BlockAddrUtils.h"
+#include "../Utils/General.h"
+#include "../Utils/GlobalVars.h"
+#include "SFall1Main.h"
 #include "SFall1Patches.h"
-#include "sFall1Main.h"
 
 struct FileInfo sfall1_ini_info_G = {0};
 

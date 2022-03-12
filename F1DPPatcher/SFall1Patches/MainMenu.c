@@ -1,6 +1,6 @@
 /*
  *    sfall
- *    Copyright (C) 2012  The sfall team
+ *    Copyright (C) 2012  The sfall team, 2022 DADi590
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -18,11 +18,11 @@
 
 // Original code modified by me, DADi590, to adapt it to this project, starting on 2022-03-02.
 // NOTE: I don't see mention to Crafty in the copyright notices, but I'll just say here that this code was taken from
-// his modification of the original sFall1 by Timeslip.
+// his modification of the original sFall1.
 
 #include "../CLibs/stdio.h"
 #include "../CLibs/string.h"
-#include "../OtherHeaders/GlobalEXEAddrs.h"
+#include "../Utils/GlobalEXEAddrs.h"
 #include "../Utils/BlockAddrUtils.h"
 #include "../Utils/EXEPatchUtils.h"
 #include "../Utils/IniUtils.h"
@@ -55,7 +55,7 @@ static void __declspec(naked) MainMenuTextYHook(void) {
 			add     eax, [edi+MainMenuTextOffset]
 			pop     edi
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_DATA_SEC_EXE_ADDR
 			mov     edi, ds:[edi+D__text_to_buf]
@@ -88,7 +88,7 @@ static void __declspec(naked) FontColour(void) {
 	}
 }
 
-static void __declspec(naked) MainMenuTextHook() {
+static void __declspec(naked) MainMenuTextHook(void) {
 	__asm {
 			// [DADi590: I've changed the implementation here - now it's here only to fix the color for the user chosen one]
 
@@ -111,7 +111,7 @@ static void __declspec(naked) MainMenuTextHook() {
 			call    edi
 			pop     edi
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the return address
+			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, ds:[edi+0x73390]
@@ -163,7 +163,7 @@ void MainMenuInit(void) {
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "MainMenuFontColour", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%X", (uint32_t *) getRealBlockAddrData(&OverrideColour));
-	if (0 != strcmp(prop_value, "0")) {
+	if (0 != *(uint32_t *) getRealBlockAddrData(&OverrideColour)) {
 		MakeCallEXE(0x7332C, getRealBlockAddrCode((void *) &FontColour), false);
 	}
 }

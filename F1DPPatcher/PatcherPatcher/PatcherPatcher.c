@@ -17,7 +17,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-#include "OtherHeaders/PatcherPatcher.h"
+#include "PatcherPatcher.h"
 
 #define CODE_SEC_EXE_ADDR_OFFSET 4
 #define DATA_SEC_EXE_ADDR_OFFSET 8
@@ -35,7 +35,7 @@
 #define CODE_SEC_BLOCK_ADDR_OFFSET 0x10
 // The data segment begins some pages (each of 0x1000 bytes) after the code segment. This number can change and must be
 // updated manually each time the code needs one more page in the EXE.
-#define DATA_SEC_BLOCK_ADDR_OFFSET (0xB000 + CODE_SEC_BLOCK_ADDR_OFFSET)
+#define DATA_SEC_BLOCK_ADDR_OFFSET (0xD000 + CODE_SEC_BLOCK_ADDR_OFFSET)
 
 // Explanation of this file and all the SN_ constants thing around the project files
 //

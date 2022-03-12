@@ -28,7 +28,7 @@
 
 #define S_IRUSR 000400
 
-int open(const char * path, int oflag, int mode);
+int open(char const * path, int oflag, int mode);
 
 
 

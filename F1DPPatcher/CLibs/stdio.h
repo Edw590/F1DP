@@ -27,20 +27,20 @@
 // 8 chars
 #define LOGGER_ERR_STR "  - [X] "
 
-__declspec(naked) int printf(const char * format, ...);
-__declspec(naked) int sscanf(const char* s, const char *format, ...);
-__declspec(naked) int sprintf(const char* s, const char *format, ...);
+__declspec(naked) int printf(char const *format, ...);
+__declspec(naked) int sscanf(char const *s, char const *format, ...);
+__declspec(naked) int sprintf(char const *s, char const *format, ...);
 
 // //////////////////////////////////////////////////////////////
 // Non-standard functions
 
 // Print a string and add newline characters to it (for one without them, use printf)
-int printlnStr(const char * string);
+int printlnStr(char const *string);
 
 // Use exactly like printf. Will only print if the logger is enabled on the INI like the other log functions.
-__declspec(naked) int logf(const char *format, ...);
+__declspec(naked) int logf(char const *format, ...);
 // Log a string (if the logger is enabled on the INI) and add newline characters to it
-int loglnStr(const char *string);
+int loglnStr(char const *string);
 
 
 

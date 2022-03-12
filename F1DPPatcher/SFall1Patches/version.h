@@ -17,20 +17,21 @@
 // specific language governing permissions and limitations
 // under the License.
 
-#ifndef F1DPPATCHER_GLOBALVARS_H
-#define F1DPPATCHER_GLOBALVARS_H
+// This had no copyright notice on it. Hopefully, the author doesn't mind me using it. I'm keeping
+// the same license as in the other files of the project on it though (I'm just licensing it only
+// to myself because I can't put the original authors there, whoever they were - no notice).
+//
+// Original code modified by me, DADi590, to adapt it to this project, starting on 2022-03-02.
+// NOTE: I don't see mention to Crafty in the copyright notices, but I'll just say here that this code was taken from
+// his modification of the original sFall1.
+
+#ifndef F1DPPATCHER_VERSION_H
+#define F1DPPATCHER_VERSION_H
 
 
 
-#include "../Utils/IniUtils.h"
-#include <stdbool.h>
-
-// Don't forget EVERY variable you put here, to get it you'll have to go through getRealBlockAddrData(), so put only
-// things that won't be used that much or that will be used only in one place or something.
-
-extern bool prop_logPatcher_G;
-extern struct FileInfo dospatch_ini_info_G;
+#define VERSION_STRING "v1.7.6"
 
 
 
-#endif //F1DPPATCHER_GLOBALVARS_H
+#endif //F1DPPATCHER_VERSION_H

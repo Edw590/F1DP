@@ -18,18 +18,18 @@
 // under the License.
 
 #include "../GameAddrs/CStdFuncs.h"
-#include "../OtherHeaders/General.h"
-#include "../OtherHeaders/GlobalEXEAddrs.h"
-#include "../OtherHeaders/GlobalVars.h"
+#include "../Utils/General.h"
+#include "../Utils/GlobalEXEAddrs.h"
+#include "../Utils/GlobalVars.h"
 #include "../Utils/BlockAddrUtils.h"
 #include "stdio.h"
 #include <stdint.h>
 
 uint32_t ret_addr = 0;
 
-const char fmt_strln[] = "%s"NL;
+char const fmt_strln[] = "%s"NL;
 
-__declspec(naked) int printf(const char *format, ...) {
+__declspec(naked) int printf(char const *format, ...) {
 	(void) format; // To ignore the unused parameter warning
 	__asm {
 			// Pointer correction (only on the first argument though - aside from not knowing how many others, one could be
@@ -50,7 +50,7 @@ __declspec(naked) int printf(const char *format, ...) {
 			mov     [eax], edi
 
 			pop     edi
-			lea     esp, [esp+4] // Remove the return address from the stack (so the stack can be what it was before calling printf())
+			add     esp, 4 // Remove the return address from the stack (so the stack can be what it was before calling printf())
 
 			// Now we call printf_() with the arguments passed to printf() and nothing else on the stack - it's like we had
 			// jumped to printf_() and not called a wrapper at all.
@@ -75,7 +75,7 @@ __declspec(naked) int printf(const char *format, ...) {
 	}
 }
 
-__declspec(naked) int sprintf(const char* s, const char *format, ...) {
+__declspec(naked) int sprintf(char const * s, char const *format, ...) {
 	(void) s; // To ignore the unused parameter warning
 	(void) format; // To ignore the unused parameter warning
 	__asm {
@@ -97,7 +97,7 @@ __declspec(naked) int sprintf(const char* s, const char *format, ...) {
 			mov     [eax], edi
 
 			pop     edi
-			lea     esp, [esp+4] // Remove the return address from the stack
+			add     esp, 4 // Remove the return address from the stack
 
 			mov     eax, SN_CODE_SEC_EXE_ADDR
 			add     eax, F_sprintf_
@@ -120,7 +120,7 @@ __declspec(naked) int sprintf(const char* s, const char *format, ...) {
 	}
 }
 
-__declspec(naked) int sscanf(const char* s, const char *format, ...) {
+__declspec(naked) int sscanf(char const *s, char const *format, ...) {
 	(void) s; // To ignore the unused parameter warning
 	(void) format; // To ignore the unused parameter warning
 	__asm {
@@ -168,7 +168,7 @@ __declspec(naked) int sscanf(const char* s, const char *format, ...) {
 // ////////////////////////////////////////////////////////////////////////////////
 // Non-standard functions
 
-int printlnStr(const char *string) {
+int printlnStr(char const *string) {
 	int ret_var = 0;
 
 	// Pointer correction
@@ -195,7 +195,7 @@ int printlnStr(const char *string) {
 	return ret_var;
 }
 
-__declspec(naked) int logf(const char *format, ...) {
+__declspec(naked) int logf(char const *format, ...) {
 	(void) format;
 	__asm {
 			lea     eax, [prop_logPatcher_G]
@@ -217,7 +217,7 @@ __declspec(naked) int logf(const char *format, ...) {
 	}
 }
 
-int loglnStr(const char *string) {
+int loglnStr(char const *string) {
 	if (!(*(bool *) getRealBlockAddrData(&prop_logPatcher_G))) {
 		return -3234;
 	}

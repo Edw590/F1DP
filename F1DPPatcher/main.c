@@ -37,9 +37,9 @@
 #include "CLibs/stdlib.h"
 #include "CLibs/string.h"
 #include "GameAddrs/CStdFuncs.h"
-#include "OtherHeaders/General.h"
-#include "OtherHeaders/GlobalEXEAddrs.h"
-#include "OtherHeaders/PatcherPatcher.h"
+#include "Utils/General.h"
+#include "Utils/GlobalEXEAddrs.h"
+#include "PatcherPatcher/PatcherPatcher.h"
 #include "SFall1Patches/SFall1Patches.h"
 #include "Utils/BlockAddrUtils.h"
 #include "Utils/EXEPatchUtils.h"
@@ -51,7 +51,7 @@
 bool prop_logPatcher_G = true;
 struct FileInfo dospatch_ini_info_G = {0};
 
-static char version_str[] = "F1DOSPatcher "F1DP_VER_STR;
+static char version_str[] = "F1DP v"F1DP_VER_STR" by DADi590";
 
 bool realMain(void);
 static void patchVerStr(void);
@@ -100,14 +100,15 @@ bool realMain(void) {
 	// because it's automatic.
 	// So ONLY initialize if it can be initialized with "= number", OR if it can't, ask for memset()'s help.
 	bool ret_var = true;
-	char ini_prop_value[MAX_PROP_VALUE_LEN];
+	int temp_int = 0;
+	char prop_value[MAX_PROP_VALUE_LEN];
 
 	memset(&dospatch_ini_info_G, 0, sizeof(dospatch_ini_info_G));
-	memset(ini_prop_value, 0, MAX_PROP_VALUE_LEN);
+	memset(prop_value, 0, MAX_PROP_VALUE_LEN);
 
 	((struct FileInfo *) getRealBlockAddrData(&dospatch_ini_info_G))->is_main_ini = true;
 
-	printlnStr("  /---- F1DP Patcher "F1DP_VER_STR" ----\\");
+	printlnStr("  /---- F1DP v"F1DP_VER_STR" Patcher ----\\");
 
 	// Open the main INI file
 	if (!readFile(F1DP_MAIN_INI, &dospatch_ini_info_G)) {
@@ -124,8 +125,16 @@ bool realMain(void) {
 	logf(LOGGER_STR "Code section at: 0x%X; Data section at: 0x%X."NL, SN_CODE_SEC_BLOCK_ADDR, SN_DATA_SEC_BLOCK_ADDR);
 
 	// Check if the version of the INI file is the same as of the Patcher
-	if (getPropValueIni(MAIN_INI_SPEC_SEC_MAIN, NULL, "F1DPVersion", NULL, ini_prop_value, &dospatch_ini_info_G)) {
-		if (0 != strcmp(ini_prop_value, F1DP_VER_STR)) {
+	if (getPropValueIni(MAIN_INI_SPEC_SEC_MAIN, NULL, "F1DPVersion", NULL, prop_value, &dospatch_ini_info_G)) {
+		float temp_float = 0;
+		float temp_float2 = 0;
+		sscanf(prop_value, "%f", &temp_float);
+		sscanf(F1DP_VER_STR, "%f", &temp_float2);
+		if (temp_float != temp_float2) {
+			// Ignore floating-point comparision errors. It's the same value, no operations are made in different orders
+			// or something like that. It's just convert the version number and again, that same version number. And
+			// then compare both. Must be equal, I guess (I'm not doing math here to influence the precision of the
+			// result).
 			printlnStr(LOGGER_ERR_STR "Wrong INI settings file version. Aborting the Patcher...");
 
 			ret_var = false;
@@ -143,16 +152,14 @@ bool realMain(void) {
 	patchVerStr();
 
 	// Enable or disable the logger
-	if (getPropValueIni(MAIN_INI_SPEC_SEC_MAIN, NULL, "logPatcher", NULL, ini_prop_value, &dospatch_ini_info_G)) {
-		*(bool *) getRealBlockAddrData(&prop_logPatcher_G) = (0 == strcmp(ini_prop_value, "0")) ? false : true;
-		if (0 == strcmp(ini_prop_value, "0")) {
-			*(bool *) getRealBlockAddrData(&prop_logPatcher_G) = false;
+	if (getPropValueIni(MAIN_INI_SPEC_SEC_MAIN, NULL, "logPatcher", NULL, prop_value, &dospatch_ini_info_G)) {
+		sscanf(prop_value, "%d", &temp_int);
+		*(bool *) getRealBlockAddrData(&prop_logPatcher_G) = (0 == temp_int ? false : true);
+		if (0 == temp_int) {
 			loglnStr(LOGGER_STR "Patcher logger disabled."); // Will never print (logger = false), but anyway.
-		} else if (0 == strcmp(ini_prop_value, "1")) {
-			*(bool *) getRealBlockAddrData(&prop_logPatcher_G) = true;
+		} else if (1 == temp_int) {
 			loglnStr(LOGGER_STR "Patcher logger enabled.");
 		} else {
-			*(bool *) getRealBlockAddrData(&prop_logPatcher_G) = true;
 			printlnStr(LOGGER_ERR_STR "'logPatcher' has a wrong value. Using 1 as default...");
 
 			ret_var = false;
@@ -165,13 +172,14 @@ bool realMain(void) {
 	}
 
 	// Enable or disable the sFall1 patches
-	if (getPropValueIni(MAIN_INI_SPEC_SEC_MAIN, NULL, "sFall1Enable", NULL, ini_prop_value, &dospatch_ini_info_G)) {
+	if (getPropValueIni(MAIN_INI_SPEC_SEC_MAIN, NULL, "sFall1Enable", NULL, prop_value, &dospatch_ini_info_G)) {
 		// Clang-Tidy is complaining of "Comparison length is too long and might lead to a buffer overflow" with the 2
 		// below, but both are null-terminated strings, so ignore that - and I need to check if the string starts and
 		// ends with "1", so I need to check the NULL character too (2 characters total).
-		if (0 == strcmp(ini_prop_value, "0")) {
+		sscanf(prop_value, "%d", &temp_int);
+		if (0 == temp_int) {
 			loglnStr(LOGGER_STR "sFall1 1.7.6 patches disabled.");
-		} else if (0 == strcmp(ini_prop_value, "1")) {
+		} else if (1 == temp_int) {
 			loglnStr(LOGGER_STR "sFall1 1.7.6 patches enabled.");
 
 			ret_var = ret_var && initSfall1Patcher();
@@ -192,7 +200,7 @@ bool realMain(void) {
 	freeNew(((struct FileInfo *) getRealBlockAddrData(&dospatch_ini_info_G))->contents);
 
 	printlnStr(ret_var ? NL LOGGER_STR "true" : NL LOGGER_STR "false");
-	printlnStr("  \\---- F1DP Patcher "F1DP_VER_STR" ----/");
+	printlnStr("  \\---- F1DP v"F1DP_VER_STR" Patcher ----/");
 
 	return false;
 }

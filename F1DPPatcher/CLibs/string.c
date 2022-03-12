@@ -18,7 +18,7 @@
 // under the License.
 
 #include "../GameAddrs/CStdFuncs.h"
-#include "../OtherHeaders/GlobalEXEAddrs.h"
+#include "../Utils/GlobalEXEAddrs.h"
 #include "../Utils/BlockAddrUtils.h"
 #include "string.h"
 #include <stddef.h>
@@ -48,7 +48,7 @@ void *memset(void *s, int c, size_t n) {
 	return ret_var;
 }
 
-int strcmp(const char *s1, const char *s2) {
+int strcmp(char const *s1, char const *s2) {
 	int ret_var = 0;
 
 	// Pointer correction
@@ -71,45 +71,7 @@ int strcmp(const char *s1, const char *s2) {
 	return ret_var;
 }
 
-char *strcpy(char *s1, const char *s2) {
-	char *ret_var = NULL;
-
-	// Pointer correction
-	s1 = getRealBlockAddrData(s1);
-	s2 = getRealBlockAddrData(s2);
-
-	__asm {
-			pusha
-
-			mov     eax, [s1]
-			mov     edx, [s2]
-			mov     edi, SN_CODE_SEC_EXE_ADDR
-			lea     edi, [edi+F_strcpy_]
-			call    edi
-			mov     [ret_var], eax
-
-			popa
-	}
-
-	ret_var = getRealBlockAddrData(ret_var);
-
-	return ret_var;
-}
-
-size_t strlen(const char *s) {
-	size_t len = 0;
-
-	// Pointer correction
-	s = getRealBlockAddrData(s);
-
-	while ('\0' != s[len]) {
-		++len;
-	}
-
-	return len;
-}
-
-int strncmp(const char *s1, const char *s2, size_t n) {
+int strncmp(char const *s1, char const *s2, size_t n) {
 	int ret_var = 0;
 
 	// Pointer correction
@@ -133,7 +95,32 @@ int strncmp(const char *s1, const char *s2, size_t n) {
 	return ret_var;
 }
 
-char *strncpy(char *s1, const char *s2, size_t n) {
+char *strcpy(char *s1, char const *s2) {
+	char *ret_var = NULL;
+
+	// Pointer correction
+	s1 = getRealBlockAddrData(s1);
+	s2 = getRealBlockAddrData(s2);
+
+	__asm {
+	pusha
+
+	mov     eax, [s1]
+	mov     edx, [s2]
+	mov     edi, SN_CODE_SEC_EXE_ADDR
+	lea     edi, [edi+F_strcpy_]
+	call    edi
+	mov     [ret_var], eax
+
+	popa
+	}
+
+	ret_var = getRealBlockAddrData(ret_var);
+
+	return ret_var;
+}
+
+char *strncpy(char *s1, char const *s2, size_t n) {
 	char *ret_var = NULL;
 
 	// Pointer correction
@@ -159,7 +146,33 @@ char *strncpy(char *s1, const char *s2, size_t n) {
 	return ret_var;
 }
 
-size_t strnlen(const char *s, size_t maxlen) {
+int strcpy_s(char *dest, size_t dest_size, char const *src) {
+	int ret_var = 0;
+
+	// Pointer correction
+	dest = getRealBlockAddrData(dest);
+	src = getRealBlockAddrData(src);
+
+	ret_var = NULL != strncpy(dest, src, dest_size);
+	dest[strnlen(src, dest_size) - 1] = '\0';
+
+	return ret_var;
+}
+
+size_t strlen(char const *s) {
+	size_t len = 0;
+
+	// Pointer correction
+	s = getRealBlockAddrData(s);
+
+	while ('\0' != s[len]) {
+		++len;
+	}
+
+	return len;
+}
+
+size_t strnlen(char const *s, size_t maxlen) {
 	size_t len = 0;
 
 	// I don't find the function on the EXE. I only find __far_strlen, but I don't like the "far" part there. That's
@@ -179,7 +192,24 @@ size_t strnlen(const char *s, size_t maxlen) {
 	return len;
 }
 
-char *strrchr(const char *s, int c) {
+char *strchr(char const *s, int c) {
+	size_t s_len = 0;
+	size_t i = 0;
+
+	// Pointer correction
+	s = getRealBlockAddrData(s);
+
+	s_len = strlen(s);
+	for (i = 0; i < s_len; ++i) {
+		if (s[i] == c) {
+			return (char *) ((size_t) s + i);
+		}
+	}
+
+	return NULL;
+}
+
+char *strrchr(char const *s, int c) {
 	char *ret_var = NULL;
 
 	// Pointer correction
