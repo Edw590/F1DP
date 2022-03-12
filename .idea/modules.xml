@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Fallout1DOSPatcherInstaller.iml" filepath="$PROJECT_DIR$/.idea/Fallout1DOSPatcherInstaller.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/F1DP.iml" filepath="$PROJECT_DIR$/.idea/F1DP.iml" />
     </modules>
   </component>
 </project>
