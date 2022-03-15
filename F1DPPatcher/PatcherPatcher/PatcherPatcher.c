@@ -35,7 +35,7 @@
 #define CODE_SEC_BLOCK_ADDR_OFFSET 0x10
 // The data segment begins some pages (each of 0x1000 bytes) after the code segment. This number can change and must be
 // updated manually each time the code needs one more page in the EXE.
-#define DATA_SEC_BLOCK_ADDR_OFFSET (0xD000 + CODE_SEC_BLOCK_ADDR_OFFSET)
+#define DATA_SEC_BLOCK_ADDR_OFFSET (0xF000 + CODE_SEC_BLOCK_ADDR_OFFSET)
 
 // Explanation of this file and all the SN_ constants thing around the project files
 //
@@ -52,12 +52,12 @@
 // would patch something else. So I've chosen (in little endian - important): 12345678h and small variants of those.
 // This also means there can be no opimizations ANYwhere where these values are. Volatile helps on that on PatchUtils,
 // for example.
-// How does the program not patch itself when comparing values? Because I'm putting the patchPatcher() function with a
+// How does the program not patch itself when comparing values? Because I'm putting the patcherPatcher() function with a
 // constant parameter (a base value, SN_BASE) which it then sums to macros to get the final value to compare, every time
 // it wants to compare values. It's not a decent idea, but it works, because Open Watcom doesn't optimize it, so I guess
 // it's good enough.
 // EDIT: thinking a bit more, I think the idea is the same as relocations ("dynamic relocations"? xD). I just don't have
-// a table nor I want to make one xD - my way is kind of simpler, I just have to hope (😂) that the special numbers are
+// a table nor I want to make one xD - my way is kind of simpler, I just have to hope (😂) that the Special Numbers are
 // never used anywhere else than where I put them.
 
 // This function must NOT use ANY other function from this project to achieve its goal. It must be all internal to this
@@ -66,7 +66,7 @@
 
 // The sn_base parameter MUST be SN_BASE. Constant parameter ALWAYS. This is to disable sum optimizations. I need the
 // function to not have any of the SN_ constants on it, else it will replace them (not good to replace the replacer...).
-void patchPatcher(uint32_t sn_base) {
+void patcherPatcher(uint32_t sn_base) {
 	uint32_t offset = 0;
 	uint32_t block_addr = 0;
 	uint32_t code_sec_exe_addr = 0;
@@ -74,6 +74,11 @@ void patchPatcher(uint32_t sn_base) {
 	uint32_t bin_file_len = 0;
 	uint32_t code_sec_block_addr = 0;
 	uint32_t data_sec_block_addr = 0;
+	int temp1 = 0;
+	int temp2 = 0;
+	int temp3 = 0;
+	int temp4 = 0;
+	int temp5 = 0;
 	// NO ASSIGNMENTS ABOVE THE __asm DECLARATION!!!!! THE EDI REGISTER MUST BE INTACT INSIDE IT!!!!
 	__asm {
 			mov     [block_addr], edi // Now the block address is decently stored before any code messes with EDI
@@ -93,18 +98,25 @@ void patchPatcher(uint32_t sn_base) {
 
 		if (curr_value == (sn_base + SNO_CODE_SEC_EXE_ADDR)) {
 			*(uint32_t *) curr_addr = code_sec_exe_addr;
+			++temp1;
 		} else if (curr_value == (sn_base + SNO_DATA_SEC_EXE_ADDR)) {
 			*(uint32_t *) curr_addr = data_sec_exe_addr;
+			++temp2;
 		} else if (curr_value == (sn_base + SNO_CODE_SEC_BLOCK_ADDR)) {
 			*(uint32_t *) curr_addr = code_sec_block_addr;
+			++temp3;
 		} else if (curr_value == (sn_base + SNO_DATA_SEC_BLOCK_ADDR)) {
 			*(uint32_t *) curr_addr = data_sec_block_addr;
+			++temp4;
 		} else if (curr_value == (sn_base + SNO_BLOCK_ADDR)) {
 			*(uint32_t *) curr_addr = block_addr;
+			++temp5;
 		} else {
 			// Do nothing if none of the special numbers are found
 		}
 
 		++offset;
 	}
+
+	//printf(LOGGER_STR"- Number of Special Numbers replaced: %d + %d + %d + %d + %d\r\n", temp1, temp2, temp3, temp4, temp5);
 }

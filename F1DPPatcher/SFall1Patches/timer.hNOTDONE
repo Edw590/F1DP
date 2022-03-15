@@ -28,6 +28,10 @@
 
 #include <stdint.h>
 
+uint32_t __stdcall FakeGetTickCount(void);
+void __stdcall FakeGetLocalTime(LPSYSTEMTIME);
+void TimerInit(void);
+
 
 
 #endif //F1DPPATCHER_TIMER_HNOTDONE

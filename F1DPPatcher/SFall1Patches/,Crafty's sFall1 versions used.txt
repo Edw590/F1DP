@@ -1,0 +1,11 @@
+This is a mixture of sFall1 1.7.6 with other versions I find around without source. I'm asking for IDA's help on those
+and putting the changes here, always having version 1.7.6 in mind, which is the latest one for which I found the source.
+
+I've got version 1.7.17 as a DLL, still coded in C++, so the code is understood by IDA and it can disassemble it
+normally - meaning it's easier to port.
+All the other versions I find are all pure Assembly versions, and the code is a mess such that IDA cannot disassemble it
+decently. I can more or less still understand parts of it, so it's more or less possible to port somethings from those
+versions.
+
+For now though, only up to 1.7.17, as I need to get back to study-mode. I'll leave the other newer versions for some
+other time, as those will need deeper analysis with IDA then 1.7.17 requires, which is almost no analysis.

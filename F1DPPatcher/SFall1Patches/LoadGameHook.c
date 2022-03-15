@@ -23,9 +23,9 @@
 
 #include "../CLibs/stdio.h"
 #include "../CLibs/string.h"
-#include "../Utils/GlobalEXEAddrs.h"
 #include "../Utils/BlockAddrUtils.h"
 #include "../Utils/EXEPatchUtils.h"
+#include "../Utils/GlobalEXEAddrs.h"
 #include "../Utils/IniUtils.h"
 #include "Define.h"
 #include "FalloutEngine.h"
@@ -204,7 +204,7 @@ static void __declspec(naked) setup_inventory_hook(void) {
 }
 
 void LoadGameHookInit(void) {
-	uint32_t temp_uint32 = 0;
+	int temp_int = 0;
 	char prop_value[MAX_PROP_VALUE_LEN];
 	memset(prop_value, 0, MAX_PROP_VALUE_LEN);
 
@@ -218,8 +218,8 @@ void LoadGameHookInit(void) {
 	MakeCallEXE(0x6DC87, getRealBlockAddrCode((void *) &SaveGame_hook), false);
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "SaveInCombatFix", "1", prop_value, &sfall1_ini_info_G);
-	sscanf(prop_value, "%ud", &temp_uint32);
-	*(uint32_t *) getRealBlockAddrData(&SaveInCombatFix) = temp_uint32 <= 2 ? temp_uint32 : 0;
+	sscanf(prop_value, "%d", &temp_int);
+	*(uint32_t *) getRealBlockAddrData(&SaveInCombatFix) = (uint32_t) (temp_int <= 2 ? temp_int : 0);
 
 	MakeCallEXE(0x62AB5, getRealBlockAddrCode((void *) &setup_inventory_hook), false);// INVENTORY + INTFACEUSE + INTFACELOOT + BARTER
 }

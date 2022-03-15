@@ -441,9 +441,9 @@ static void __declspec(naked) printFreeMaxWeight(void) {
 			mov     eax, [ebx+0x20]
 			and     eax, 0xF000000
 			sar     eax, 0x18
-			test    eax, eax                             // This ObjType_Item?
+			test    eax, eax                             // Is it ObjType_Item?
 			jz      itsItem                              // Yes
-			dec     eax                                  // This ObjType_Critter?
+			dec     eax                                  // Is it ObjType_Critter?
 			jnz     noWeight                             // No
 			mov     eax, ebx
 			mov     edx, STAT_carry_amt
@@ -786,24 +786,56 @@ static void __declspec(naked) display_target_inventory_hook(void) {
 	}
 }
 
-static void __declspec(naked) display_table_inventories_hook(void) {
+uint32_t Dadi590_NewUnk1_var = 0;
+
+static void __declspec(naked) dadi590_newUnk1_hook(void) {
 	__asm {
+			xor     eax, eax
+			test    edx, edx
+			jz      dadi590_newUnk1
+			inc     eax
+			test    ebx, ebx
+			jz      dadi590_newUnk1
+			inc     eax
+		dadi590_newUnk1:
 			push    edi
-			mov     edi, SN_CODE_SEC_EXE_ADDR
-			lea     edi, [edi+C_win_get_buf_]
-			call    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			mov     [edi+Dadi590_NewUnk1_var], eax
 			pop     edi
-			push    esi
-			mov     esi, SN_DATA_SEC_EXE_ADDR
-			mov     edi, ds:[esi+D__btable]
-			pop     esi
-			mov     [esp+0x6C+4], edi
-			push    esi
-			mov     esi, SN_DATA_SEC_EXE_ADDR
-			mov     edi, ds:[esi+D__ptable]
-			pop     esi
-			mov     [esp+0x74+4], edi
-			retn
+			mov     eax, ds:[0x59CEF8]
+			mov     [esp+0x70], eax
+			mov     eax, ds:[0x59CEE4]
+			mov     [esp+0x78], eax
+			mov     eax, ds:[0x59CF18]
+			ret
+	}
+}
+
+static void __declspec(naked) dadi590_newUnk2_hook(void) {
+	__asm {
+			and     eax, 0xFF
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			cmp     [edi+Dadi590_NewUnk1_var], 0
+			pop     edi
+			jnz     end
+			xor     eax, eax
+		end:
+			ret
+	}
+}
+
+static void __declspec(naked) dadi590_newUnk3_hook(void) {
+	__asm {
+			and     eax, 0xFF
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			cmp     [edi+Dadi590_NewUnk1_var], 1
+			pop     edi
+			jnz     end
+			xor     eax, eax
+		end:
+			ret
 	}
 }
 
@@ -1186,7 +1218,7 @@ static void __declspec(naked) make_loot_drop_button(void) {
 			lea     edi, [edi+C_critter_body_type_]
 			call    edi
 			pop     edi
-			test    eax, eax                             // This Body_Type_Biped?
+			test    eax, eax                             // Is it Body_Type_Biped?
 			jnz     end                                  // No
 			push    esi
 			mov     esi, SN_DATA_SEC_EXE_ADDR
@@ -1267,7 +1299,7 @@ static void __declspec(naked) make_loot_drop_button(void) {
 			mov     eax, [ebx+0x20]
 			and     eax, 0xF000000
 			sar     eax, 0x18
-			test    eax, eax                             // This ObjType_Item?
+			test    eax, eax                             // Is it ObjType_Item?
 			jnz     skip                                 // No
 			xchg    ebx, eax
 			push    edi
@@ -1287,7 +1319,7 @@ static void __declspec(naked) make_loot_drop_button(void) {
 			lea     edi, [edi+C_critter_body_type_]
 			call    edi
 			pop     edi
-			test    eax, eax                             // This Body_Type_Biped?
+			test    eax, eax                             // Is it Body_Type_Biped?
 			jnz     end                                  // No
 		goodTarget:
 			xor     ecx, ecx                             // ID1
@@ -1395,7 +1427,7 @@ static void __declspec(naked) loot_drop_all(void) {
 			lea     edi, [edi+C_critter_body_type_]
 			call    edi
 			pop     edi
-			test    eax, eax                             // This Body_Type_Biped?
+			test    eax, eax                             // Is it Body_Type_Biped?
 			jnz     end                                  // No
 			mov     edx, STAT_carry_amt
 			mov     eax, ecx
@@ -1445,12 +1477,12 @@ static void __declspec(naked) loot_drop_all(void) {
 			lea     edi, [edi+C_critter_body_type_]
 			call    edi
 			pop     edi
-			test    eax, eax                             // This Body_Type_Biped?
+			test    eax, eax                             // Is it Body_Type_Biped?
 			jnz     end                                  // No
 			mov     eax, [esi+0x20]
 			and     eax, 0xF000000
 			sar     eax, 0x18
-			test    eax, eax                             // This ObjType_Item?
+			test    eax, eax                             // Is it ObjType_Item?
 			jz      itsItem                              // Yes
 			cmp     eax, ObjType_Critter
 			jne     end                                  // No
@@ -1460,7 +1492,7 @@ static void __declspec(naked) loot_drop_all(void) {
 			lea     edi, [edi+C_critter_body_type_]
 			call    edi
 			pop     edi
-			test    eax, eax                             // This Body_Type_Biped?
+			test    eax, eax                             // Is it Body_Type_Biped?
 			jnz     end                                  // No
 		itsCritter:
 			mov     edx, STAT_carry_amt
@@ -2323,14 +2355,21 @@ void InventoryInit(void) {
 		MakeCallEXE(0x63C20, getRealBlockAddrCode((void *) &display_inventory_hook), true);
 		MakeCallEXE(0x63F1B, getRealBlockAddrCode((void *) &display_target_inventory_hook), true);
 
-		HookCallEXE(0x683E6, getRealBlockAddrCode((void *) &display_table_inventories_hook));
+		MakeCallEXE(0x683E1, getRealBlockAddrCode((void *) &dadi590_newUnk1_hook), false);
 
 		writeMem16EXE(0x6844A, 0xD231);
 		MakeCallEXE(0x6847F, getRealBlockAddrCode((void *) &display_table_inventories_hook1), true);
 		HookCallEXE(0x685A2, getRealBlockAddrCode((void *) &display_table_inventories_hook2));
 
-		HookCallEXE(0x688BB, getRealBlockAddrCode((void *) &barter_inventory_hook));
-		HookCallEXE(0x68CB9, getRealBlockAddrCode((void *) &barter_inventory_hook1));
+		MakeCallEXE(0x684C7, getRealBlockAddrCode((void *) &dadi590_newUnk2_hook), false);
+		MakeCallEXE(0x6867E, getRealBlockAddrCode((void *) &dadi590_newUnk3_hook), false);
+
+		getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "F1DPWeightOnBarter", "1", prop_value, &sfall1_ini_info_G);
+		sscanf(prop_value, "%d", &temp_int);
+		if (0 != temp_int) {
+			HookCallEXE(0x688BB, getRealBlockAddrCode((void *) &barter_inventory_hook));
+			HookCallEXE(0x68CB9, getRealBlockAddrCode((void *) &barter_inventory_hook1));
+		}
 	}
 
 	// "Using chemistry from the inventory on the player's picture"

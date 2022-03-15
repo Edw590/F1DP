@@ -21,8 +21,11 @@
 // NOTE: I don't see mention to Crafty in the copyright notices, but I'll just say here that this code was taken from
 // his modification of the original sFall1.
 
+#include "../CLibs/stdlib.h"
+#include "../CLibs/string.h"
 #include "../CLibs/math.h"
 #include "../Utils/BlockAddrUtils.h"
+#include "FalloutEngine.h"
 #include "dinput.h"
 #include "timer.hNOTDONE"
 
@@ -43,7 +46,26 @@ static uint16_t Keys[10] = {0};
 static int ModKey = 0;
 static int ToggleKey = 0;
 
-uint32_t GetTickCount() {
+static void __declspec(naked) scripts_check_state_hook(void) {
+	__asm {
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			inc     [edi+Slideshow]
+			pop     edi
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_endgame_slideshow_]
+			call    edi
+			pop     edi
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			dec     [edi+Slideshow]
+			pop     edi
+			retn
+	}
+}
+
+static uint32_t GetTickCount(void) {
 	uint32_t ret_var = 0;
 	__asm {
 		push    eax
@@ -63,7 +85,7 @@ uint32_t GetTickCount() {
 	return ret_var;
 }
 
-uint32_t __stdcall FakeGetTickCount() {
+uint32_t __stdcall FakeGetTickCount(void) {
 	uint32_t *Slideshow_local = getRealBlockAddrData(&Slideshow);
 
 	double *Multi_local = getRealBlockAddrData(&Multi);
@@ -124,4 +146,32 @@ void __stdcall FakeGetLocalTime(LPSYSTEMTIME time) {
 	int32_t CurrentTime = *(uint32_t *) getRealBlockAddrData(&StartTime) + *(uint32_t *) getRealBlockAddrData(&StoredTickCount) * (uint32_t) 10000;
 
 	FileTimeToSystemTime((FILETIME*) & CurrentTime, time);
+}
+
+void TimerInit(void) {
+	StoredTickCount = 0;
+	LastTickCount = GetTickCount();
+	TickCountFraction = 0;
+	Multi = (double) GetPrivateProfileInt("Speed", "SpeedMultiInitial", 100, ini) / 100.0;
+	Enabled = true;
+	Toggled = false;
+
+	SYSTEMTIME time;
+	GetLocalTime(&time);
+	SystemTimeToFileTime(&time, (FILETIME *) &StartTime);
+
+	ModKey = GetPrivateProfileInt("Input", "SpeedModKey", -1, ini);
+	ToggleKey = GetPrivateProfileInt("Input", "SpeedToggleKey", 0, ini);
+	char c[2];
+	char key[12];
+	for (int i = 0; i < 10; ++i) {
+		itoa(i, c, 10);
+		strcpy_s(key, "SpeedKey");
+		strcat_s(key, c);
+		Keys[i] = GetPrivateProfileInt("Input", key, 0, ini);
+		strcpy_s(key, "SpeedMulti");
+		strcat_s(key, c);
+		Multipliers[i] = GetPrivateProfileInt("Speed", key, 0x00, ini) / 100.0;
+	}
+	HookCall(0x492A01, &scripts_check_state_hook);
 }

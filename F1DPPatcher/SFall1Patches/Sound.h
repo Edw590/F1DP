@@ -21,13 +21,13 @@
 // NOTE: I don't see mention to Crafty in the copyright notices, but I'll just say here that this code was taken from
 // his modification of the original sFall1.
 
-#ifndef F1DPPATCHER_VERSION_H
-#define F1DPPATCHER_VERSION_H
+#ifndef F1DPPATCHER_SOUND_H
+#define F1DPPATCHER_SOUND_H
 
 
 
-#define VERSION_STRING "v1.7.6+"
+void SoundInit(void);
 
 
 
-#endif //F1DPPATCHER_VERSION_H
+#endif //F1DPPATCHER_SOUND_H

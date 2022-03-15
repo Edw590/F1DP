@@ -61,7 +61,7 @@
 #define C_action_get_an_object_              0x11F98 // Args: non-stack / No prototype
 #define C_action_loot_container_             0x12254 // Args: non-stack / No prototype
 #define C_action_use_an_item_on_object_      0x11DA8 // Args: non-stack / int __usercall action_use_an_item_on_object_@<eax>(pobj *source@<eax>, pobj *target@<edx>, iobj *item@<ebx>)
-#define C_AddHotLines_                       x
+#define C_AddHotLines_                       0x891DC // Args: non-stack / No prototype
 #define C_adjust_ac_                         0x98FA4 // Args: non-stack / int __usercall adjust_ac_@<eax>(pobj *source@<eax>, iobj *newarmor@<ebx>, iobj *oldarmor@<edx>)
 #define C_adjust_fid_                        x
 #define C_art_alias_num_                     x
@@ -87,7 +87,7 @@
 #define C_credits_get_next_line_             0x27998 // Args: non-stack / No prototype
 #define C_critter_body_type_                 0x28778 // Args: non-stack / int __usercall critter_body_type_@<eax>(pobj *source@<eax>)
 #define C_critter_is_dead_                   0x286CC // Args: non-stack / No prototype
-#define C_critter_kill_                      x
+#define C_critter_kill_                      0x28440 // Args: non-stack / void __usercall critter_kill_(pobj *source@<eax>, _BOOL4 refresh@<ebx>, int death_frame@<edx>)
 #define C_critter_name_                      0x27BD8 // Args: non-stack / No prototype
 #define C_critter_pc_set_name_               0x27C68 // Args: non-stack / No prototype
 #define C_db_close_                          x
@@ -114,13 +114,14 @@
 #define C_draw_box_                          x
 #define C_DrawFolder_                        x
 #define C_DrawInfoWin_                       x
-#define C_dude_stand_                        x
+#define C_dude_stand_                        0x17C60 // Args: non-stack / No prototype
+#define C_can_see_                           0x12974 // Args: non-stack / _BOOL4 __usercall can_see_@<eax>(pobj *source@<eax>, pobj *target@<edx>)
 #define C_editor_design_                     x
 #define C_elapsed_time_                      x
 #define C_EndLoad_                           x
-#define C_endgame_movie_                     x
-#define C_endgame_slideshow_                 x
-#define C_exec_script_proc_                  x
+#define C_endgame_movie_                     0x38C6C // Args: non-stack / No prototype
+#define C_endgame_slideshow_                 0x38890 // Args: non-stack / No prototype
+#define C_exec_script_proc_                  0x92904 // Args: non-stack / No prototype
 #define C_game_get_global_var_               0x3C750 // Args: non-stack / int __usercall game_get_global_var_@<eax>(int GVAR@<eax>)
 #define C_game_set_global_var_               0x3C780 // Args: non-stack / int __usercall game_set_global_var_@<eax>(int GVAR@<eax>, int Value@<edx>)
 #define C_gdialog_display_msg_               0x3E694 // Args: non-stack / No prototype
@@ -142,7 +143,7 @@
 #define C_intface_update_items_              0x54BA8 // Args: non-stack / int __usercall intface_update_items_@<eax>(int flag@<eax>)
 #define C_intface_update_move_points_        0x54A64 // Args: non-stack / No prototype
 #define C_intface_use_item_                  0x54FB0 // Args: non-stack / No prototype
-#define C_inven_display_msg_                 x
+#define C_inven_display_msg_                 0x66204 // Args: non-stack / No prototype
 #define C_inven_left_hand_                   0x653B8 // Args: non-stack / No prototype
 #define C_inven_right_hand_                  0x65378 // Args: non-stack / int __usercall inven_right_hand_@<eax>(pobj *source@<eax>)
 #define C_inven_worn_                        0x653F8 // Args: non-stack / No prototype
@@ -155,7 +156,7 @@
 #define C_item_d_take_drug_                  0x6C32C // Args: non-stack / signed int __usercall item_d_take_drug_@<eax>(pobj *source@<eax>, iobj *item@<edx>)
 #define C_item_get_type_                     0x6A6E8 // Args: non-stack / item_type_ __usercall item_get_type_@<eax>(int item@<eax>)
 #define C_item_m_cell_pid_                   0x6BA8C // Args: non-stack / No prototype
-#define C_item_m_turn_off_                   x
+#define C_item_m_turn_off_                   0x6BED0 // Args: non-stack / No prototype
 #define C_item_move_all_                     0x6A47C // Args: non-stack / int __usercall item_move_all_@<eax>(pobj *source@<eax>, pobj *target@<edx>)
 #define C_item_move_force_                   0x6A474 // Args: non-stack / int __usercall item_move_force_@<eax>(pobj *source@<eax>, iobj *item@<ebx>, int count@<ecx>, pobj *target@<edx>)
 #define C_item_mp_cost_                      0x6AB48 // Args: non-stack / No prototype
@@ -167,6 +168,8 @@
 #define C_item_w_is_2handed_                 x
 #define C_item_w_try_reload_                 0x6B1BC // Args: non-stack / No prototype
 #define C_item_weight_                       0x6A73C // Args: non-stack / int __usercall item_weight_@<eax>(iobj *item@<eax>)
+#define C_is_within_perception_              0x264C0 // Args: non-stack / _BOOL4 __usercall is_within_perception_@<eax>(pobj *source@<eax>, pobj *target@<edx>)
+#define C_is_pc_sneak_working_               0x28D0C // Args: non-stack / _BOOL4 __usercall is_pc_sneak_working_@<eax>()
 #define C_ListDrvdStats_                     x
 #define C_ListSkills_                        0x303A4 // Args: non-stack / No prototype
 #define C_ListTraits_                        x
@@ -174,7 +177,8 @@
 #define C_LoadSlot_                          0x6FF7C // Args: non-stack / No prototype
 #define C_main_game_loop_                    0x72D04 // Args: non-stack / No prototype
 #define C_main_menu_loop_                    0x736CC // Args: non-stack / No prototype
-#define C_mem_free_                          x
+#define C_make_path_func_                    0x15998 // Args: +stack (auto-clean) / int __userpurge make_path_func_@<eax>(pobj *source@<eax>, int target_tile@<ebx>, void *sad_rotation_ptr@<ecx>, int source_tile@<edx>, int a5, void *func)
+#define C_mem_free_                          0xAED88 // Args: non-stack / No prototype
 #define C_mem_malloc_                        x
 #define C_memmove_                           x
 //#define C_memset_                          x - already in CStdFuncs.h
@@ -193,17 +197,18 @@
 #define C_obj_outline_object_                0x7D954 // Args: non-stack / No prototype
 #define C_obj_remove_outline_                0x7D990 // Args: non-stack / No prototype
 #define C_obj_save_dude_                     x
+#define C_obj_sight_blocking_at_             0x7D3CC // Args: non-stack / No prototype
 #define C_obj_top_environment_               0x7CE14 // Args: non-stack / pobj *__usercall obj_top_environment_@<eax>(pobj *source@<eax>)
 #define C_obj_turn_off_outline_              0x7CA98 // Args: non-stack / No prototype
 #define C_obj_turn_on_outline_               0x7CA7C // Args: non-stack / No prototype
-#define C_obj_use_book_                      x
+#define C_obj_use_book_                      0x8AD38 // Args: non-stack / No prototype
 #define C_opendir_                           x
 #define C_pc_flag_off_                       0x28B7C // Args: non-stack / No prototype
 #define C_pc_flag_on_                        0x28BC8 // Args: non-stack / No prototype
 #define C_pc_flag_toggle_                    0x28C3C // Args: non-stack / No prototype
 #define C_perk_level_                        0x86804 // Args: non-stack / int __usercall perk_level_@<eax>(int perk@<eax>)
-#define C_perks_dialog_                      x
-#define C_PipStatus_                         x
+#define C_perks_dialog_                      0x36398 // Args: non-stack / No prototype
+#define C_PipStatus_                         0x875AC // Args: non-stack / No prototype
 #define C_PrintBasicStat_                    x
 #define C_PrintLevelWin_                     x
 #define C_process_bk_                        0xB3638 // Args: non-stack / No prototype
@@ -217,13 +222,13 @@
 #define C_register_clear_                    0x136B8 // Args: non-stack / No prototype
 #define C_register_end_                      0x13738 // Args: non-stack / No prototype
 #define C_register_object_animate_           0x14330 // Args: non-stack / No prototype
-#define C_register_object_change_fid_        x
+#define C_register_object_change_fid_        0x14BA4 // Args: non-stack / No prototype
 #define C_RestorePlayer_                     0x34AB8 // Args: non-stack / No prototype
 #define C_SaveGame_                          x
 #define C_SavePlayer_                        0x349E0 // Args: non-stack / No prototype
 #define C_scr_exec_map_update_scripts_       0x94A50 // Args: non-stack / No prototype
-#define C_scr_write_ScriptNode_              x
-#define C_set_game_time_                     x
+#define C_scr_write_ScriptNode_              0x93880 // Args: non-stack / No prototype
+#define C_set_game_time_                     0x9186C // Args: non-stack / void __usercall set_game_time_(int time_in_ticks@<eax>)
 #define C_SexWindow_                         x
 #define C_skill_dec_point_                   0x98608 // Args: non-stack / int __usercall skill_dec_point_@<eax>(pobj *source@<eax>, int skill@<edx>)
 #define C_skill_get_tags_                    0x983E4 // Args: non-stack / No prototype
@@ -232,7 +237,7 @@
 #define C_skill_set_tags_                    0x983C0 // Args: non-stack / No prototype
 //#define C_sprintf_                         x - already in CStdFuncs.h
 #define C_srcCopy_                           x
-#define C_stat_get_bonus_                    x
+#define C_stat_get_bonus_                    0x9C66C // Args: non-stack / No prototype
 #define C_stat_level_                        0x9C4E8 // Args: non-stack / int __usercall stat_level_@<eax>(pobj *source@<eax>, int stat@<edx>)
 #define C_stat_pc_add_experience_            0x9CC5C // Args: non-stack / No prototype
 #define C_stat_pc_get_                       0x9CAF4 // Args: non-stack / No prototype
@@ -277,7 +282,7 @@
 #define D__combat_turn_running     0xFEE74
 #define D__crit_succ_eff           0xFEEA8
 #define D__critter_db_handle       x
-#define D__crnt_func               x
+#define D__crnt_func               0x2612A4
 #define D__curr_font_num           0x13A374
 #define D__curr_pc_stat            0x263CA0
 #define D__curr_rot                x
@@ -296,7 +301,7 @@
 #define D__frstc_draw1             x
 #define D__game_global_vars        0x1051BC
 #define D__game_user_wants_to_quit 0x1051C8
-#define D__gdNumOptions            x
+#define D__gdNumOptions            0x10538C
 #define D__GInfo                   x
 #define D__gIsSteal                0x107EE0
 #define D__glblmode                x
@@ -304,8 +309,8 @@
 #define D__GreenColor              0x2A1DF0
 #define D__grphbmp                 x
 #define D__hash_is_on              x
-#define D__holo_flag               x
-#define D__hot_line_count          x
+#define D__holo_flag               0x261335
+#define D__hot_line_count          0x261290
 #define D__i_lhand                 0x19B840
 #define D__i_rhand                 0x19B84C
 #define D__i_wid                   0x19B848
@@ -341,12 +346,12 @@
 #define D__outlined_object         0x1055E4
 #define D__patches                 x
 #define D__pc_name                 0x16AA8C
-#define D__pc_proto                x
+#define D__pc_proto                0x10764C
 #define D__PeanutButter            x
 #define D__perk_lev                0x260FF4
 #define D__proto_main_msg_file     0x261428
 #define D__ptable                  0x19B814
-#define D__pud                     x
+#define D__pud                     0x19B780
 #define D__queue                   0x2615DC
 #define D__quick_done              x
 #define D__RedColor                0x2A9610
@@ -354,7 +359,7 @@
 #define D__sneak_working           0x16AAAC
 #define D__stack                   0x19B71C
 #define D__stack_offset            0x19B6C4
-#define D__sthreads                x
+#define D__sthreads                0x1073B8
 #define D__str                     x
 #define D__Tag_                    0x16D23C
 #define D__tag_skill               0x263680

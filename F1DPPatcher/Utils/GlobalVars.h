@@ -28,8 +28,7 @@
 // Don't forget EVERY variable you put here, to get it you'll have to go through getRealBlockAddrData(), so put only
 // things that won't be used that much or that will be used only in one place or something.
 
-extern bool prop_logPatcher_G;
-extern struct FileInfo dospatch_ini_info_G;
+extern struct FileInfo f1dpatch_ini_info_G;
 
 
 

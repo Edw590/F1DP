@@ -21,14 +21,16 @@
 // NOTE: I don't see mention to Crafty in the copyright notices, but I'll just say here that this code was taken from
 // his modification of the original sFall1.
 
-#ifndef F1DPPATCHER_BUGS_H
-#define F1DPPATCHER_BUGS_H
+#ifndef F1DPPATCHER_BUGS_H1
+#define F1DPPATCHER_BUGS_H1
 
 
 #include <stdint.h>
 
 extern uint32_t WeightOnBody;
 
+void BugsInit(void);
 
 
-#endif //F1DPPATCHER_BUGS_H
+
+#endif //F1DPPATCHER_BUGS_H1

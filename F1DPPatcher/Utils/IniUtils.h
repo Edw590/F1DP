@@ -29,9 +29,9 @@
 #define MAX_PROP_VALUE_LEN 900
 
 #define MAIN_INI_SPEC_SEC_MAIN "F1DP-Main"
-#define MAIN_INI_SPEC_SEC_SFALL1 "F1DP-sFall1"
+#define MAIN_INI_SPEC_SEC_SFALL1 "F1DP-CraftySFall1"
 
-#define F1DP_MAIN_INI "dospatch.ini"
+#define F1DP_MAIN_INI "f1dpatch.ini"
 
 struct FileInfo {
 	char *contents;

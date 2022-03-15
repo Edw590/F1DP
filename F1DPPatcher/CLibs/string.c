@@ -154,7 +154,7 @@ int strcpy_s(char *dest, size_t dest_size, char const *src) {
 	src = getRealBlockAddrData(src);
 
 	ret_var = NULL != strncpy(dest, src, dest_size);
-	dest[strnlen(src, dest_size) - 1] = '\0';
+	dest[strnlen(src, dest_size)] = '\0'; // Don't forget strnlen() excludes the NULL character from the count...
 
 	return ret_var;
 }

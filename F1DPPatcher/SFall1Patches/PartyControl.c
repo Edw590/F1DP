@@ -141,10 +141,12 @@ static void __declspec(naked) PartyControl_CanUseWeapon(void) {
 }
 
 static bool __stdcall IsInPidList(uint32_t const *npc) {
-	size_t i = 0;
+	int i = 0;
 	uint32_t pid = npc[0x64u / 4u] & 0xFFFFFFu;
 
-	for (i = 0; i < (sizeof(Chars) / 2); ++i) {
+	// Here, suppose the usage of the array is measured until the first 0 word is found on it.
+
+	for (i = 0; i < ((int) sizeof(Chars) / 2); ++i) {
 		if (0 == ((uint16_t *) getRealBlockAddrData(Chars))[i]) {
 			break;
 		}
@@ -154,7 +156,7 @@ static bool __stdcall IsInPidList(uint32_t const *npc) {
 	}
 
 
-	for (i = 0; i < (sizeof(Chars) / 2); ++i) {
+	for (i = 0; i < ((int) sizeof(Chars) / 2); ++i) {
 		if (pid == ((uint16_t *) getRealBlockAddrData(Chars))[i]) {
 			return true;
 		}
@@ -323,8 +325,8 @@ static void __declspec(naked) SaveDudeState(void) {
 			lea     edi, [edi+C_item_d_check_addict_]
 			call    edi
 			pop     edi
-			test    eax, eax                             // Åñòü çàâèñèìîñòü?
-			jz      noAddict                             // Íåò
+			test    eax, eax                             // Is there an addiction?
+			jz      noAddict                             // No
 			xor     eax, eax
 			inc     eax
 		noAddict:
@@ -332,8 +334,8 @@ static void __declspec(naked) SaveDudeState(void) {
 			add     edx, 4
 			add     edi, 4
 			loop    loopDrug
-			test    eax, eax                             // Åñòü çàâèñèìîñòü ê àëêîãîëþ (ïèâî)?
-			jnz     skipBooze                            // Äà
+			test    eax, eax                             // Are you addicted to alcohol (beer)?
+			jnz     skipBooze                            // Yes
 			mov     eax, [edx]                           // PID_BOOZE
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -399,15 +401,15 @@ static void __declspec(naked) SaveDudeState(void) {
 			mov     edx, [ebx+0x20]                      // fid
 			and     edx, 0x0F000
 			sar     edx, 0xC                             // edx = current weapon anim code as seen in hands
-			xor     ecx, ecx                             // Ëåâàÿ ðóêà
+			xor     ecx, ecx                             // Left hand
 			mov     eax, ebx
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_inven_right_hand_]
 			call    edi
 			pop     edi
-			test    eax, eax                             // Åñòü âåùü â ïðàâîé ðóêå?
-			jz      setActiveHand                        // Íåò
+			test    eax, eax                             // Is there an item in your right hand?
+			jz      setActiveHand                        // No
 			push    eax
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -416,15 +418,15 @@ static void __declspec(naked) SaveDudeState(void) {
 			pop     edi
 			cmp     eax, item_type_weapon
 			pop     eax
-			jne     setActiveHand                        // Íåò
+			jne     setActiveHand                        // No
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_item_w_anim_code_]
 			call    edi
 			pop     edi
-			cmp     eax, edx                             // Àíèìàöèÿ îäèíàêîâàÿ?
-			jne     setActiveHand                        // Íåò
-			inc     ecx                                  // Ïðàâàÿ ðóêà
+			cmp     eax, edx                             // Is the animation the same?
+			jne     setActiveHand                        // No
+			inc     ecx                                  // Right hand
 		setActiveHand:
 			push    edi
 			mov     edi, SN_DATA_SEC_EXE_ADDR
@@ -436,14 +438,14 @@ static void __declspec(naked) SaveDudeState(void) {
 			lea     edi, [edi+C_inven_right_hand_]
 			call    edi
 			pop     edi
-			test    eax, eax                             // Åñòü âåùü â ïðàâîé ðóêå?
-			jz      noRightHand                          // Íåò
+			test    eax, eax                             // Is there an item in your right hand?
+			jz      noRightHand                          // No
 			push    eax
 			call    PartyControl_CanUseWeapon
 			test    eax, eax
 			pop     eax
 			jnz     noRightHand
-			and     byte ptr [eax+0x27], 0xFD            // Ñáðàñûâàåì ôëàã âåùè â ïðàâîé ðóêå
+			and     byte ptr [eax+0x27], 0xFD            // Reset the item flag in the right hand
 		noRightHand:
 			xchg    ebx, eax
 			push    edi
@@ -451,14 +453,14 @@ static void __declspec(naked) SaveDudeState(void) {
 			lea     edi, [edi+C_inven_left_hand_]
 			call    edi
 			pop     edi
-			test    eax, eax                             // Åñòü âåùü â ëåâîé ðóêå?
-			jz      noLeftHand                           // Íåò
+			test    eax, eax                             // Have an item in your left hand?
+			jz      noLeftHand                           // No
 			push    eax
 			call    PartyControl_CanUseWeapon
 			test    eax, eax
 			pop     eax
 			jnz     noLeftHand
-			and     byte ptr [eax+0x27], 0xFE            // Ñáðàñûâàåì ôëàã âåùè â ëåâîé ðóêå
+			and     byte ptr [eax+0x27], 0xFE            // Reset the item flag in the left hand
 		noLeftHand:
 			pop     ebx
 			pop     ecx
@@ -626,7 +628,7 @@ static void __declspec(naked) CombatWrapper_v2(void) {
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
 			cmp     [edi+_combatNumTurns], edx
 			pop     edi
-			je      skipControl                          // Ýòî ïåðâûé õîä
+			je      skipControl                          // This is the first move
 			mov     eax, [eax+0x4]                       // tile_num
 			add     edx, 2
 			push    edi
@@ -709,10 +711,10 @@ static void __declspec(naked) CombatWrapper_v2(void) {
 			call    edi
 			pop     edi
 		skipRestore:
-			test    ecx, ecx                             // Íîðìàëüíîå çàâåðøåíèå õîäà?
+			test    ecx, ecx                             // Normal end of turn?
 			popad
-			jz      end                                  // Äà
-			// âûõîä/çàãðóçêà/ïîáåã/ñìåðòü
+			jz      end                                  // Yes
+			// exit/load/escape/death
 			test    byte ptr [eax+0x44], 0x80            // DAM_DEAD
 			jnz     end
 			xor     eax, eax
@@ -768,8 +770,8 @@ static void __declspec(naked) inven_pickup_hook(void) {
 			lea     edi, [edi+C_item_get_type_]
 			call    edi
 			pop     edi
-			test    eax, eax                             // Ýòî item_type_armor?
-			jnz     end                                  // Íåò
+			test    eax, eax                             // Is it item_type_armor?
+			jnz     end                                  // No
 			push    edi
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
 			cmp     [edi+IsControllingNPC], eax
@@ -808,9 +810,9 @@ static void __declspec(naked) handle_inventory_hook(void) {
 			pop     edi
 			pop     edx                                  // edx = source
 			pop     ebx                                  // ebx = armor
-			inc     eax                                  // Óäàëèëè?
-			jnz     nextArmor                            // Äà
-			// Íå ñìîãëè óäàëèòü, ïîýòîìó ñíèìåì áðîíþ ñ ó÷¸òîì óìåíüøåíèÿ ÊÁ
+			inc     eax                                  // Removed?
+			jnz     nextArmor                            // Yes
+			// We couldn’t remove it, so we will remove the armor, taking into account the decrease in KB
 			push    edx
 			push    eax
 			xchg    ebx, eax                             // ebx = newarmor, eax = oldarmor
@@ -831,7 +833,7 @@ static void __declspec(naked) handle_inventory_hook(void) {
 			pop     edi
 			test    eax, eax
 			jz      noArmor
-			and     byte ptr [eax+0x27], 0xFB            // Ñáðàñûâàåì ôëàã îäåòîé áðîíè
+			and     byte ptr [eax+0x27], 0xFB            // Resetting the equipped armor flag
 			jmp     nextArmor
 		noArmor:
 			xchg    ebx, eax                             // eax = armor
@@ -859,7 +861,7 @@ static void __declspec(naked) handle_inventory_hook1(void) {
 			pop     edi
 			test    edx, edx
 			jz      skip
-			or      byte ptr [edx+0x27], 4               // Óñòàíàâëèâàåì ôëàã îäåòîé áðîíè
+			or      byte ptr [edx+0x27], 4               // Set the armor flag
 			xor     ebx, ebx
 			inc     ebx
 			push    edi
@@ -891,7 +893,7 @@ static void __declspec(naked) switch_hand_hook(void) {
 			call    PartyControl_CanUseWeapon
 			dec     eax
 			jz      end
-			pop     esi                                  // Óíè÷òîæàåì àäðåñ âîçâðàòà
+			pop     esi                                  // Destroying the return address
 			pop     ebp
 			pop     edi
 			pop     esi
@@ -911,12 +913,12 @@ static void __declspec(naked) combat_input_hook(void) {
 			cmp     [edi+IsControllingNPC], ebx
 			pop     edi
 			je      end
-			cmp     eax, 0xD                             // Enter (çàâåðøåíèå áîÿ)?
-			jne     end                                  // Íåò
-			mov     eax, 0x20                            // Space (îêîí÷àíèå õîäà)
+			cmp     eax, 0xD                             // Enter (end of battle)?
+			jne     end                                  // No
+			mov     eax, 0x20                            // Space (end of turn)
 		end:
 			mov     ebx, eax
-			cmp     eax, 0x20                            // Space (îêîí÷àíèå õîäà)?
+			cmp     eax, 0x20                            // Space (end of turn)?
 			retn
 	}
 }
@@ -932,7 +934,7 @@ static void __declspec(naked) action_skill_use_hook(void) {
 			pop     edi
 			je      end
 		skip:
-			pop     eax                                  // Óíè÷òîæàåì àäðåñ âîçâðàòà
+			pop     eax                                  // Destroying the return address
 			xor     eax, eax
 			dec     eax
 		end:
@@ -958,16 +960,14 @@ static void __declspec(naked) action_use_skill_on_hook(void) {
 }
 
 void PartyControlInit(void) {
-	uint32_t temp_uint32 = 0;
+	int temp_int = 0;
 	char prop_value[MAX_PROP_VALUE_LEN];
 	memset(prop_value, 0, MAX_PROP_VALUE_LEN);
 
-	//printf("\0\0\0\0\0\0\0\0\0\0"); // "Reason" on DllMain2()
-
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "ControlCombat", "0", prop_value, &sfall1_ini_info_G);
-	sscanf(prop_value, "%ud", &temp_uint32);
-	*(uint32_t *) getRealBlockAddrData(&Mode) = temp_uint32;
-	if ((1 == temp_uint32) || (2 == temp_uint32)) {
+	sscanf(prop_value, "%d", &temp_int);
+	*(uint32_t *) getRealBlockAddrData(&Mode) = (uint32_t) temp_int;
+	if ((1 == temp_int) || (2 == temp_int)) {
 		char pidbuf[512];
 		pidbuf[511] = 0;
 

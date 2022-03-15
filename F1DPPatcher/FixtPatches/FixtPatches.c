@@ -17,21 +17,22 @@
 // specific language governing permissions and limitations
 // under the License.
 
-#ifndef F1DPPATCHER_GENERAL_H
-#define F1DPPATCHER_GENERAL_H
+#include "../CLibs/string.h"
+#include "../Utils/EXEPatchUtils.h"
+#include "FixtPatches.h"
 
+void initFixtPatches(void) {
+	// strnpy() is being used instead of strcpy() because we don't want to copy the NULL character, so the number of
+	// characters to copy must be equal to the number of characters inside the quotation marks (which don't include the
+	// NULL one).
 
-// The Microsoft-chosen newline characters: CR LF
-#define NL "\r\n"
+	strncpy(getRealEXEAddr(0xF32FC), "not played because being", 24);
 
-// Maximum path length on DOS, including the NULL character
-#define MAX_DOS_PATH_LEN 80
+	strncpy(getRealEXEAddr(0xFC0CD), "NOT", 3);
+	strncpy(getRealEXEAddr(0xFC0F5), "IS", 2);
 
-// 3 chars exactly or change the initial strings with the dashes
-#define F1DP_VER_STR "1.0"
-
-#define freeNew(ptr) free(ptr); ptr = NULL
-
-
-
-#endif //F1DPPATCHER_GENERAL_H
+	// No idea what this patch does
+	writeMem32EXE((uint32_t) getRealEXEAddr(0x22050), 0xC003C003u);
+	writeMem32EXE((uint32_t) getRealEXEAddr(0x22050+4), 0x04244429u);
+	writeMem32EXE((uint32_t) getRealEXEAddr(0x22050+8), 0x90909090u);
+}

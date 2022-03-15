@@ -67,7 +67,7 @@ __declspec(naked) int printf(char const *format, ...) {
 
 			lea     edi, [ret_addr]
 			lea     edi, [edi+SN_DATA_SEC_BLOCK_ADDR]
-			mov     [edi], 0 // Empty ret_addr just in case I ever use it elsewhere and check its value(?)
+			mov     dword ptr [edi], 0 // Empty ret_addr just in case I ever use it elsewhere and check its value(?)
 
 			pop     edi
 
@@ -75,7 +75,7 @@ __declspec(naked) int printf(char const *format, ...) {
 	}
 }
 
-__declspec(naked) int sprintf(char const * s, char const *format, ...) {
+__declspec(naked) int sprintf(char *s, char const *format, ...) {
 	(void) s; // To ignore the unused parameter warning
 	(void) format; // To ignore the unused parameter warning
 	__asm {
@@ -112,7 +112,7 @@ __declspec(naked) int sprintf(char const * s, char const *format, ...) {
 
 			lea     edi, [ret_addr]
 			lea     edi, [edi+SN_DATA_SEC_BLOCK_ADDR]
-			mov     [edi], 0 // Empty ret_addr just in case I ever use it elsewhere and check its value(?)
+			mov     dword ptr [edi], 0 // Empty ret_addr just in case I ever use it elsewhere and check its value(?)
 
 			pop     edi
 
@@ -120,7 +120,7 @@ __declspec(naked) int sprintf(char const * s, char const *format, ...) {
 	}
 }
 
-__declspec(naked) int sscanf(char const *s, char const *format, ...) {
+__declspec(naked) int sscanf(char *s, char const *format, ...) {
 	(void) s; // To ignore the unused parameter warning
 	(void) format; // To ignore the unused parameter warning
 	__asm {
@@ -157,7 +157,7 @@ __declspec(naked) int sscanf(char const *s, char const *format, ...) {
 
 			lea     edi, [ret_addr]
 			lea     edi, [edi+SN_DATA_SEC_BLOCK_ADDR]
-			mov     [edi], 0 // Empty ret_addr just in case I ever use it elsewhere and check its value(?)
+			mov     dword ptr [edi], 0 // Empty ret_addr just in case I ever use it elsewhere and check its value(?)
 
 			pop     edi
 
@@ -193,37 +193,4 @@ int printlnStr(char const *string) {
 	}
 
 	return ret_var;
-}
-
-__declspec(naked) int logf(char const *format, ...) {
-	(void) format;
-	__asm {
-			lea     eax, [prop_logPatcher_G]
-			call    getRealBlockAddrData
-			cmp     [eax], 0
-			je      end1
-
-			// Pointer correction (copied from printf(), see an explanation there)
-			mov     eax, [esp+4]
-			call    getRealBlockAddrData
-			mov     [esp+4], eax
-
-			// Jump to printf (not call, or the stack will be modified and it can't - the parameters are passed on it).
-			// printf() will be the one to return to where logf() was called. logf() only returns if the logger is disabled.
-			jmp    printf
-
-		end1:
-			ret
-	}
-}
-
-int loglnStr(char const *string) {
-	if (!(*(bool *) getRealBlockAddrData(&prop_logPatcher_G))) {
-		return -3234;
-	}
-
-	// Pointer correction
-	string = getRealBlockAddrData(string);
-
-	return printlnStr(string);
 }

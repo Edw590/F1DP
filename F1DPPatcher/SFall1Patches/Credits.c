@@ -36,9 +36,11 @@
 static uint32_t InCredits = 0;
 static uint32_t CreditsLine = 0;
 
-static char const * const ExtraLines[47] = {
+static char const *const ExtraLines[47] = {
+		// The below 2 lines weren't here, but I've added, because as Sduibek mentioned, why are a mod's credits before
+		// even the game name itself? So, as this appears before everything else, I've added the game name to it.
 		"#FALLOUT",
-		"----------",
+		"-------------",
 		"#SFALL1 "VERSION_STRING,
 		"",
 		"sfall1 is free software, licensed under the GPL",
@@ -115,7 +117,9 @@ static void __declspec(naked) credits_hook(void) {
 static uint32_t __stdcall CreditsNextLine(char *buf, uint32_t *font, uint32_t *colour) {
 	char const *line = NULL;
 
-	if ((0 != *(uint32_t *) getRealBlockAddrData(&InCredits)) ||
+	// There was a != on the line just below, which would make the credits not appear in the Credits screen (???). So
+	// I've corrected(?) it to ==. Now they appear normally.
+	if ((0 == *(uint32_t *) getRealBlockAddrData(&InCredits)) ||
 			(*(uint32_t *) getRealBlockAddrData(&CreditsLine) >= *(uint32_t *) getRealBlockAddrData(&ExtraLineCount))) {
 		return 0;
 	}
@@ -126,7 +130,7 @@ static uint32_t __stdcall CreditsNextLine(char *buf, uint32_t *font, uint32_t *c
 		if ('#' == line[0]) {
 			++line;
 			*font = *(uint32_t *) getRealEXEAddr(D__name_font);
-			*colour = *(uint8_t *) 0x6A8151;
+			*colour = *(uint8_t *) getRealEXEAddr(0x2A6041);
 		} else if ('@' == line[0]) {
 			++line;
 			*font = *(uint32_t *) getRealEXEAddr(D__title_font);
@@ -175,11 +179,8 @@ void CreditsInit(void) {
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Debugging", "NoCredits", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if (0 == temp_int) {
-		// Not sure what these 2 below do, but I've commented them so the sFall1 credits appear just before Fallout's
-		// ones.
-		//HookCallEXE(0x72B04, getRealBlockAddrCode((void *) &credits_hook));
-		//HookCallEXE(0x38CF4, getRealBlockAddrCode((void *) &credits_hook));
-		(void) credits_hook; // To ignore the unused function warnings
+		HookCallEXE(0x72B04, getRealBlockAddrCode((void *) &credits_hook));
+		HookCallEXE(0x38CF4, getRealBlockAddrCode((void *) &credits_hook));
 		HookCallEXE(0x2752A, getRealBlockAddrCode((void *) &credits_get_next_line_hook));
 	}
 }

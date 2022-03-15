@@ -17,21 +17,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-#ifndef F1DPPATCHER_GENERAL_H
-#define F1DPPATCHER_GENERAL_H
-
-
-// The Microsoft-chosen newline characters: CR LF
-#define NL "\r\n"
-
-// Maximum path length on DOS, including the NULL character
-#define MAX_DOS_PATH_LEN 80
-
-// 3 chars exactly or change the initial strings with the dashes
-#define F1DP_VER_STR "1.0"
-
-#define freeNew(ptr) free(ptr); ptr = NULL
+#ifndef F1DPPATCHER_TEAMXPATCHES_H
+#define F1DPPATCHER_TEAMXPATCHES_H
 
 
 
-#endif //F1DPPATCHER_GENERAL_H
+#include <stdbool.h>
+
+void initTeamXPatches(void);
+
+
+
+#endif //F1DPPATCHER_TEAMXPATCHES_H

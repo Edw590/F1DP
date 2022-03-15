@@ -26,7 +26,7 @@
 
 #define SN_BASE 0x70563412 // 12 34 56 70 in little endian
 
-void patchPatcher(uint32_t sn_base);
+void patcherPatcher(uint32_t sn_base);
 
 
 

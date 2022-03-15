@@ -21,13 +21,22 @@
 // NOTE: I don't see mention to Crafty in the copyright notices, but I'll just say here that this code was taken from
 // his modification of the original sFall1.
 
-#ifndef F1DPPATCHER_VERSION_H
-#define F1DPPATCHER_VERSION_H
+#include "../CLibs/stdio.h"
+#include "../CLibs/string.h"
+#include "../Utils/IniUtils.h"
+#include "SFall1Patches.h"
+#include "Sound.h"
+#include "../Utils/EXEPatchUtils.h"
+#include <stdint.h>
 
+void SoundInit(void) {
+	int temp_int = 0;
+	char prop_value[MAX_PROP_VALUE_LEN];
+	memset(prop_value, 0, MAX_PROP_VALUE_LEN);
 
-
-#define VERSION_STRING "v1.7.6+"
-
-
-
-#endif //F1DPPATCHER_VERSION_H
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Sound", "NumSoundBuffers", "0", prop_value, &sfall1_ini_info_G);
+	sscanf(prop_value, "%d", &temp_int);
+	if ((temp_int > 0) && (temp_int <= 4)) {
+		writeMem8EXE(0x48CA7+2, (uint8_t) temp_int);
+	}
+}

@@ -36,25 +36,27 @@
 #include "CLibs/stdio.h"
 #include "CLibs/stdlib.h"
 #include "CLibs/string.h"
+#include "FixtPatches/FixtPatches.h"
 #include "GameAddrs/CStdFuncs.h"
-#include "Utils/General.h"
-#include "Utils/GlobalEXEAddrs.h"
 #include "PatcherPatcher/PatcherPatcher.h"
 #include "SFall1Patches/SFall1Patches.h"
+#include "TeamXPatches/TeamXPatches.h"
 #include "Utils/BlockAddrUtils.h"
 #include "Utils/EXEPatchUtils.h"
+#include "Utils/General.h"
+#include "Utils/GlobalEXEAddrs.h"
 #include "Utils/IniUtils.h"
 #include <stdbool.h>
 
 #define SN_MAIN_FUNCTION 0x78563412 // 12 34 56 78 in little endian
 
-bool prop_logPatcher_G = true;
-struct FileInfo dospatch_ini_info_G = {0};
+struct FileInfo f1dpatch_ini_info_G = {0};
 
 static char version_str[] = "F1DP v"F1DP_VER_STR" by DADi590";
 
 bool realMain(void);
 static void patchVerStr(void);
+bool appplyPatches(void);
 
 __declspec(naked) int main(void) {
 	// The special number declaration below is for the loader to look for it and start the execution right there.
@@ -76,10 +78,10 @@ __declspec(naked) int main(void) {
 			dd      SN_MAIN_FUNCTION
 		main1: // Where code execution begins for the loader
 			// Right before ANYthing else (before the ESI register, which contains the address of the allocated block) is
-			// used somewhere), patch the patcher itself - and also before any operations that need the special numbers
+			// used somewhere), patch the patcher itself - and also before any operations that need the Special Numbers
 			// already replaced.
 			mov     eax, SN_BASE
-			call    patchPatcher
+			call    patcherPatcher
 			jmp     realMain
 	}
 
@@ -100,38 +102,38 @@ bool realMain(void) {
 	// because it's automatic.
 	// So ONLY initialize if it can be initialized with "= number", OR if it can't, ask for memset()'s help.
 	bool ret_var = true;
-	int temp_int = 0;
 	char prop_value[MAX_PROP_VALUE_LEN];
 
-	memset(&dospatch_ini_info_G, 0, sizeof(dospatch_ini_info_G));
+	memset(&f1dpatch_ini_info_G, 0, sizeof(f1dpatch_ini_info_G));
 	memset(prop_value, 0, MAX_PROP_VALUE_LEN);
 
-	((struct FileInfo *) getRealBlockAddrData(&dospatch_ini_info_G))->is_main_ini = true;
+	((struct FileInfo *) getRealBlockAddrData(&f1dpatch_ini_info_G))->is_main_ini = true;
 
 	printlnStr("  /---- F1DP v"F1DP_VER_STR" Patcher ----\\");
 
 	// Open the main INI file
-	if (!readFile(F1DP_MAIN_INI, &dospatch_ini_info_G)) {
-		printlnStr(LOGGER_ERR_STR "DOSPATCH.INI NOT FOUND!!!");
-		printlnStr(LOGGER_STR "Press any key to create a new dospatch.ini file with default values...");
-
-		// todo Make a function to create the INI file with default values
+	if (!readFile(F1DP_MAIN_INI, &f1dpatch_ini_info_G)) {
+		printlnStr(LOGGER_ERR_STR "Main settings file \""F1DP_MAIN_INI"\" not found! Aborting all operations...");
 
 		ret_var = false;
 		goto funcEnd;
 	}
 
 	printlnStr(LOGGER_STR "Initialization successful.");
-	logf(LOGGER_STR "Code section at: 0x%X; Data section at: 0x%X."NL, SN_CODE_SEC_BLOCK_ADDR, SN_DATA_SEC_BLOCK_ADDR);
+
+	// Leave these 3 turned on. Might be useful for anyone to debug something wrong with the game or whatever.
+	printf(LOGGER_STR "Block code section at: 0x%X; Block data section at: 0x%X;"NL, SN_CODE_SEC_BLOCK_ADDR, SN_DATA_SEC_BLOCK_ADDR);
+	printf("    Game code section at: 0x%X; Game data section at: 0x%X;"NL, SN_CODE_SEC_EXE_ADDR, SN_DATA_SEC_EXE_ADDR);
+	printf("    Block at: 0x%X."NL, SN_BLOCK_ADDR);
 
 	// Check if the version of the INI file is the same as of the Patcher
-	if (getPropValueIni(MAIN_INI_SPEC_SEC_MAIN, NULL, "F1DPVersion", NULL, prop_value, &dospatch_ini_info_G)) {
+	if (getPropValueIni(MAIN_INI_SPEC_SEC_MAIN, NULL, "F1DPVersion", NULL, prop_value, &f1dpatch_ini_info_G)) {
 		float temp_float = 0;
 		float temp_float2 = 0;
 		sscanf(prop_value, "%f", &temp_float);
 		sscanf(F1DP_VER_STR, "%f", &temp_float2);
 		if (temp_float != temp_float2) {
-			// Ignore floating-point comparision errors. It's the same value, no operations are made in different orders
+			// Ignore floating-point comparison warning. It's the same value, no operations are made in different orders
 			// or something like that. It's just convert the version number and again, that same version number. And
 			// then compare both. Must be equal, I guess (I'm not doing math here to influence the precision of the
 			// result).
@@ -151,58 +153,16 @@ bool realMain(void) {
 	// loaded and working normally.
 	patchVerStr();
 
-	// Enable or disable the logger
-	if (getPropValueIni(MAIN_INI_SPEC_SEC_MAIN, NULL, "logPatcher", NULL, prop_value, &dospatch_ini_info_G)) {
-		sscanf(prop_value, "%d", &temp_int);
-		*(bool *) getRealBlockAddrData(&prop_logPatcher_G) = (0 == temp_int ? false : true);
-		if (0 == temp_int) {
-			loglnStr(LOGGER_STR "Patcher logger disabled."); // Will never print (logger = false), but anyway.
-		} else if (1 == temp_int) {
-			loglnStr(LOGGER_STR "Patcher logger enabled.");
-		} else {
-			printlnStr(LOGGER_ERR_STR "'logPatcher' has a wrong value. Using 1 as default...");
-
-			ret_var = false;
-		}
-	} else {
-		*(bool *) getRealBlockAddrData(&prop_logPatcher_G) = true;
-		printlnStr(LOGGER_ERR_STR "'logPatcher' not specified. Using 1 as default...");
-
-		ret_var = false;
-	}
-
-	// Enable or disable the sFall1 patches
-	if (getPropValueIni(MAIN_INI_SPEC_SEC_MAIN, NULL, "sFall1Enable", NULL, prop_value, &dospatch_ini_info_G)) {
-		// Clang-Tidy is complaining of "Comparison length is too long and might lead to a buffer overflow" with the 2
-		// below, but both are null-terminated strings, so ignore that - and I need to check if the string starts and
-		// ends with "1", so I need to check the NULL character too (2 characters total).
-		sscanf(prop_value, "%d", &temp_int);
-		if (0 == temp_int) {
-			loglnStr(LOGGER_STR "sFall1 1.7.6 patches disabled.");
-		} else if (1 == temp_int) {
-			loglnStr(LOGGER_STR "sFall1 1.7.6 patches enabled.");
-
-			ret_var = ret_var && initSfall1Patcher();
-		} else {
-			printlnStr(LOGGER_ERR_STR "'sFall1Enable' has a wrong value. Aborting sFall1 1.7.6 patches...");
-
-			ret_var = false;
-		}
-	} else {
-		printlnStr(LOGGER_ERR_STR "'sFall1Enable' not specified. Aborting sFall1 1.7.6 patches...");
-
-		ret_var = false;
-	}
+	ret_var = ret_var && appplyPatches();
 
 
 	funcEnd:
 
-	freeNew(((struct FileInfo *) getRealBlockAddrData(&dospatch_ini_info_G))->contents);
+	freeNew(((struct FileInfo *) getRealBlockAddrData(&f1dpatch_ini_info_G))->contents);
 
-	printlnStr(ret_var ? NL LOGGER_STR "true" : NL LOGGER_STR "false");
 	printlnStr("  \\---- F1DP v"F1DP_VER_STR" Patcher ----/");
 
-	return false;
+	return ret_var;
 }
 
 static __declspec(naked) void getverstr_hook(void) {
@@ -230,6 +190,9 @@ static __declspec(naked) void getverstr_hook(void) {
 	}
 }
 
+/**
+ * @brief Patches the FALLOUT 1.2 string on the main menu in the bottom right corner with F1DP's own version string.
+ */
 static void patchVerStr(void) {
 	// This replaces a call to the original getverstr_ function by the one above. The other call to that function
 	// remains untouched, which is used when Ctrl+V is pressed in-game and the version will appear on the Pip-Boy.
@@ -240,4 +203,89 @@ static void patchVerStr(void) {
 	writeMem32EXE(0x73373+1, 0x1BD); // Change the string height (445)
 
 	HookCallEXE(0x73358, getRealBlockAddrCode((void *) &getverstr_hook));
+}
+
+/**
+ * @brief Applies the patches according to the INI file settings.
+ *
+ * @return true if everything went fine, false if at least one error occurred
+ */
+bool appplyPatches(void) {
+	bool ret_var = true;
+	int temp_int = 0;
+	char prop_value[MAX_PROP_VALUE_LEN];
+	memset(prop_value, 0, MAX_PROP_VALUE_LEN);
+
+
+
+	// APPLY THE PATCHES IN CHRONOLOGICAL ORDER!!!!!!!!!!!!!!!
+	//
+	// Meaning: TeamX's patches came first. Other patches may have been build on top of those (which are permanent
+	// patches, not dynamic with a DLL). So those are the first ones to be applied.
+	// Then come Fixt patches, which are also permanent, and came after TeamX's. Finally there's sFall1 patches which
+	// are dynamic, so they are always applied on top of whatever was already on the EXE (the 2 patches mentioned above).
+
+
+
+	// Enable or disable TeamX's patches
+	if (getPropValueIni(MAIN_INI_SPEC_SEC_MAIN, NULL, "TeamXPatches", NULL, prop_value, &f1dpatch_ini_info_G)) {
+		sscanf(prop_value, "%d", &temp_int);
+		if (0 == temp_int) {
+			printlnStr(LOGGER_STR "TeamX's patches disabled.");
+		} else if (1 == temp_int) {
+			printlnStr(LOGGER_STR "TeamX's patches enabled.");
+
+			initTeamXPatches();
+		} else {
+			printlnStr(LOGGER_ERR_STR "'TeamXPatches' has an invalid value. Aborting Fallout Fixt patches...");
+
+			ret_var = false;
+		}
+	} else {
+		printlnStr(LOGGER_ERR_STR "'TeamXPatches' not specified. Aborting Fallout Fixt patches...");
+
+		ret_var = false;
+	}
+
+	// Enable or disable the Fallout Fixt patches
+	if (getPropValueIni(MAIN_INI_SPEC_SEC_MAIN, NULL, "FixtPatches", NULL, prop_value, &f1dpatch_ini_info_G)) {
+		sscanf(prop_value, "%d", &temp_int);
+		if (0 == temp_int) {
+			printlnStr(LOGGER_STR "Fallout Fixt patches disabled.");
+		} else if (1 == temp_int) {
+			printlnStr(LOGGER_STR "Fallout Fixt patches enabled.");
+
+			initFixtPatches();
+		} else {
+			printlnStr(LOGGER_ERR_STR "'FixtPatches' has an invalid value. Aborting Fixt patches...");
+
+			ret_var = false;
+		}
+	} else {
+		printlnStr(LOGGER_ERR_STR "'FixtPatches' not specified. Aborting Fixt patches...");
+
+		ret_var = false;
+	}
+
+	// Enable or disable Crafty's sFall1 patches
+	if (getPropValueIni(MAIN_INI_SPEC_SEC_MAIN, NULL, "CraftySFall1Patches", NULL, prop_value, &f1dpatch_ini_info_G)) {
+		sscanf(prop_value, "%d", &temp_int);
+		if (0 == temp_int) {
+			printlnStr(LOGGER_STR "Crafty's sFall1 patches disabled.");
+		} else if (1 == temp_int) {
+			printlnStr(LOGGER_STR "Crafty's sFall1 patches enabled.");
+
+			ret_var = ret_var && initSFall1Patches();
+		} else {
+			printlnStr(LOGGER_ERR_STR "'CraftySFall1Patches' has an invalid value. Aborting Crafty's sFall1 patches...");
+
+			ret_var = false;
+		}
+	} else {
+		printlnStr(LOGGER_ERR_STR "'CraftySFall1Patches' not specified. Aborting Crafty's sFall1 patches...");
+
+		ret_var = false;
+	}
+
+	return ret_var;
 }

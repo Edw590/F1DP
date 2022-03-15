@@ -27,7 +27,7 @@
 
 extern struct FileInfo sfall1_ini_info_G;
 
-bool initSfall1Patcher(void);
+bool initSFall1Patches(void);
 
 
 
