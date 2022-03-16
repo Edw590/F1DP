@@ -5,6 +5,8 @@
 *.pdf
 
 generated_binaries/
+Releases/
+UsefulPrivate/
 *.exe
 *.lst
 *.map
