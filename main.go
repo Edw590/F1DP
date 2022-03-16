@@ -25,7 +25,10 @@ import (
 	"crypto/md5"
 	"fmt"
 	"os"
+	"strings"
 )
+
+const NEW_FILE_NAME string = "F1DPATCH.EXE"
 
 func showInitialScreen() {
 	fmt.Println("-------------------")
@@ -108,14 +111,14 @@ func main() {
 
 	prepareLoader(file_bytes)
 
-	var new_file_path string = file_path + "_patched.exe"
+	var new_file_path string = getFilePathFromPath(file_path) + "\\" + NEW_FILE_NAME
 	err = os.WriteFile(new_file_path, file_bytes, 0644)
 	if nil != err {
 		fmt.Println("Error - Could not write to and/or create the patched DOS file.")
 
 		exit(ERR_CANT_WRITE_FILE)
 	} else {
-		fmt.Println("Loader installed successfully to a new file: \"" + new_file_path + "\".")
+		fmt.Println("Loader installed successfully to a new file: \"" + NEW_FILE_NAME + "\".")
 	}
 	fmt.Println()
 
@@ -231,4 +234,10 @@ func exit(exit_code int) {
 	}
 
 	os.Exit(exit_code)
+}
+
+func getFilePathFromPath(file_path string) string {
+	var index_last_bar int = strings.LastIndex(file_path, "\\")
+
+	return file_path[:index_last_bar]
 }
