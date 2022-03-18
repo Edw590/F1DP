@@ -9,7 +9,7 @@ Hi everyone. I've decided to attempt to port all patches made to the Windows ver
 This repository contains the code for everything involved with F1DP:
 - the Installer, in Go (a GoLand project - this repository -, which includes inside it the below 2 things);
 - the Patcher, in C and Inline-Assembly (a CLion project);
-- and Loader, in Assembly (a file compiled from Sublime Text 3 using MASM 9.0 and using the compilation assistant and Sublime Text stuff from this repository of mine: https://github.com/DADi590/Chrome-Dino-Game-in-Assembly).
+- and the Loader, in Assembly (a file compiled from Sublime Text 3 using MASM 9.0 and using the compilation assistant and Sublime Text stuff from this repository of mine: https://github.com/DADi590/Chrome-Dino-Game-in-Assembly).
 
 Small note about the naming: I know it's kind of awful. But I'm not sure of a better naming. The Installer installs the Loader into the game EXE and creates the BIN file containing the Patcher code. But the project is (or was) called Fallout 1 DOS Patcher (best name I came up with). So I've reduced the name to F1DP, and now I can say F1DP Patcher more normally (don't think too much about it... xD).
 
@@ -85,7 +85,7 @@ So plan B. I'm assuming the game is running at the address DOS/32A puts it runni
 ### - Compiling the Installer
 I'm letting GoLand take care of that, but for manual mode, go on the main.c folder and just do: `go build` and that's it.
 ### - Compiling the Patcher
-Command I'm using to compile (use ONLY Open Watcom - I assume its Calling Convention in various things!): please see the `PROGRAM_PARAMS` attribute inside the file `F1DPPatcher/.idea/runConfigurations/Compile_with_Open_Watcom__for_C_.xml` (or a similar one in case I change its name).
+Command I'm using to compile (use ONLY Open Watcom - I assume its Calling Convention in various Inline-Assembly code and also on the return value from the Patcher to the Loader!): please see the `PROGRAM_PARAMS` attribute inside the file `F1DPPatcher/.idea/runConfigurations/Compile_with_Open_Watcom__for_C_.xml` (or a similar one in case I change its name).
 
 At the moment of writing this (02-03-2022), I don't have all the target C files in the compile command. With CLion, targets are automatically added to CMakeLists, which is then given to the compiler. As I haven't got CMake to work with Open Watcom, I can't have that automatic addition of files. So I'm including C files in other C files and just compiling main.c 😄...
 ### - Assemble the Loader
@@ -97,6 +97,8 @@ Command I'm using to assemble: `C:\MASM615\BIN\ml_9.00.21022.08_x86.EXE /omf /Fl
 
 - DADi590 (me), for making F1DP and adapting all patches the DOS EXE
 - Crafty for his sFall1 modifications
+- Sduibek for his patches
+- TeamX for their patches
 - Timeslip for the original sFall1 mod
 - xttl on the Doomworld forums for his posted knowledge, which helped making my life MUCH easier while trying to figure out how to get the patcher to work on DOS
 ### - Contributing
