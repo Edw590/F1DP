@@ -11,7 +11,7 @@ This repository contains the code for everything involved with F1DP:
 - the Patcher, in C and Inline-Assembly (a CLion project);
 - and the Loader, in Assembly (a file compiled from Sublime Text 3 using MASM 9.0 and using the compilation assistant and Sublime Text stuff from this repository of mine: https://github.com/DADi590/Chrome-Dino-Game-in-Assembly).
 
-Small note about the naming: I know it's kind of awful. But I'm not sure of a better naming. The Installer installs the Loader into the game EXE and creates the BIN file containing the Patcher code. But the project is (or was) called Fallout 1 DOS Patcher (best name I came up with). So I've reduced the name to F1DP, and now I can say F1DP Patcher more normally (don't think too much about it... xD).
+Small note about the naming: I know it's kind of awful. But I'm not sure of a better naming. The Installer installs only the Loader into the game EXE. The Patcher comes in its own file. But the project is (or was) called Fallout 1 DOS Patcher (best name I came up with). So I've reduced the name to F1DP, and now I can say F1DP Patcher more normally (don't think too much about it... xD).
 
 ## Download
 
