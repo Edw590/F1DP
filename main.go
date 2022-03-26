@@ -32,7 +32,7 @@ const NEW_FILE_NAME string = "F1DPATCH.EXE"
 
 func showInitialScreen() {
 	fmt.Println("-------------------")
-	fmt.Println("F1DP v1.0 Installer")
+	fmt.Println("F1DP v1.1 Installer")
 	fmt.Println("-------------------")
 	fmt.Println()
 	fmt.Println("This program will install the F1DP Loader into the game EXE. After completing, this program will be " +

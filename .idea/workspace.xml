@@ -5,51 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7f3019c0-b046-4aa9-80a3-9949dbb49521" name="Changes" comment="Update: patched file name changed to 8.3 file name&#10;&#10;Now it's F1DPATCH.EXE, a supported DOS name, as requested on Reddit by&#10;emxd_llc (thank you).">
-      <change afterPath="$PROJECT_DIR$/F1DPPatcher/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/F1DPPatcher/HighResPatches/HighResPatches.cNOTDONE" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/F1DPPatcher/HighResPatches/HighResPatches.hNOTDONE" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/DebugMode.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/DebugMode.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/CLibs/stdio.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/CLibs/stdio.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/GameAddrs/CStdFuncs.h" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/GameAddrs/CStdFuncs.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/PatcherPatcher/PatcherPatcher.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/PatcherPatcher/PatcherPatcher.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/,Crafty's sFall1 versions used.txt" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/,Crafty's sFall1 versions used.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/AmmoMod.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/AmmoMod.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/AnimationsAtOnceLimit.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/AnimationsAtOnceLimit.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/AnimationsAtOnceLimit.h" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/AnimationsAtOnceLimit.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Bugs.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Bugs.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Bugs.h" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Bugs.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Credits.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Credits.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Criticals.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Criticals.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Dadi590_NewUnk1.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/AI.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Dadi590_NewUnk1.h" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/AI.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Define.h" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Define.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/FalloutEngine.h" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/GameAddrs/FalloutEngine.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Inventory.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Inventory.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/LoadGameHook.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/LoadGameHook.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/LoadGameHook.h" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/LoadGameHook.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/MainMenu.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/MainMenu.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/PartyControl.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/PartyControl.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/PartyControl.h" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/PartyControl.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Quests.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Quests.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/SFall1Main.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/SFall1Main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/SFall1Main.h" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/SFall1Main.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/SFall1Patches.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/SFall1Patches.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Sound.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Sound.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Sound.h" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Sound.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/dinput.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/dinput.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/timer.cNOTDONE" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/timer.cNOTDONE" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/timer.hNOTDONE" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/timer.hNOTDONE" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/version.h" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/version.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/TeamXPatches/TeamXPatches.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/TeamXPatches/TeamXPatches.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/Utils/EXEPatchUtils.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/Utils/EXEPatchUtils.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/Utils/EXEPatchUtils.h" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/Utils/EXEPatchUtils.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/Utils/General.h" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/Utils/General.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/Utils/IniUtils.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/Utils/IniUtils.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,16 +50,6 @@
     <property name="settings.editor.selected.configurable" value="project.propVCSSupport.CommitDialog" />
   </component>
   <component name="RunManager">
-    <configuration name="F1DPInstaller" type="GoApplicationRunConfiguration" factoryName="Go Application">
-      <module name="F1DPInstaller" />
-      <working_directory value="$PROJECT_DIR$" />
-      <kind value="DIRECTORY" />
-      <package value="main" />
-      <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$" />
-      <output_directory value="$PROJECT_DIR$/generated_binaries" />
-      <method v="2" />
-    </configuration>
     <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="F1DPInstaller" />
       <working_directory value="$PROJECT_DIR$" />
