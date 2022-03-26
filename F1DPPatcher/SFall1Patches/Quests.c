@@ -23,12 +23,14 @@
 #include "../CLibs/stdio.h"
 #include "../CLibs/stdlib.h"
 #include "../CLibs/string.h"
+#include "../GameAddrs/FalloutEngine.h"
 #include "../Utils/EXEPatchUtils.h"
 #include "../Utils/General.h"
 #include "../Utils/IniUtils.h"
-#include "FalloutEngine.h"
 #include "Quests.h"
 #include "SFall1Patches.h"
+
+// Entire file updated to version 1.8
 
 void QuestsInit(void) {
 	char buf[MAX_DOS_PATH_LEN - 3];
@@ -53,18 +55,18 @@ void QuestsInit(void) {
 
 		for (location = 0; location < 12; ++location) {
 			int quest = 0;
-			itoa(location * 10 + 700, section, 10);
+			itoa((location * 10) + 701, section, 10);
 			for (quest = 0; quest < 9; ++quest) {
 				short gvar_index = 0;
-				sprintf(thread, "Quest%d", location * 10 + 701 + quest);
+				sprintf(thread, "Quest%d", (location * 10) + 701 + quest);
 				getPropValueIni(NULL, section, thread, "-1", prop_value, &iniQuests_info);
 				sscanf(prop_value, "%hd", &gvar_index);
 				if (gvar_index != -1) {
-					questsTable[location * 9 + quest] = gvar_index;
+					questsTable[(location * 18) + (quest * 2)] = gvar_index;
 				}
 			}
 		}
 
-		freeNew(iniQuests_info.contents);
+		free(iniQuests_info.contents);
 	}
 }

@@ -13,13 +13,20 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef F1DPPATCHER_DADI590_NEWUNKINIT_H
-#define F1DPPATCHER_DADI590_NEWUNKINIT_H
+// This had no copyright notice on it. I'm keeping the same license as in the other files of the project on it though
+// (I'm just licensing it only to myself because I can't put the original authors - no notice).
+//
+// Original code modified by me, DADi590, to adapt it to this project, starting on 2022-03-02.
+// NOTE: I don't see mention to Crafty in the copyright notices, but I'll just say here that this code was taken from
+// his modification of the original sFall1.
+
+#ifndef F1DPPATCHER_DEBUGMODE_H
+#define F1DPPATCHER_DEBUGMODE_H
 
 
 
-void Dadi590_NewUnk1Init(void);
+void DebugModeInit(void);
 
 
 
-#endif //F1DPPATCHER_DADI590_NEWUNKINIT_H
+#endif //F1DPPATCHER_DEBUGMODE_H

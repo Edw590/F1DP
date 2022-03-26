@@ -21,13 +21,15 @@
 // his modification of the original sFall1.
 
 #include "../CLibs/stdio.h"
+#include "../CLibs/stdlib.h"
 #include "../CLibs/string.h"
+#include "../GameAddrs/CStdFuncs.h"
+#include "../GameAddrs/FalloutEngine.h"
 #include "../Utils/BlockAddrUtils.h"
 #include "../Utils/EXEPatchUtils.h"
 #include "../Utils/GlobalEXEAddrs.h"
 #include "../Utils/IniUtils.h"
 #include "Define.h"
-#include "FalloutEngine.h"
 #include "PartyControl.h"
 #include "SFall1Main.h"
 #include "SFall1Patches.h"
@@ -35,14 +37,7 @@
 
 uint32_t IsControllingNPC = 0;
 uint32_t HiddenArmor = 0;
-
-// todo All the code is supposedly ready. But the DOS version can't handle it. Too many global data declared and an
-// error appears: "Exit to error: CPU_SetSegGeneral: Stack segment beyond limits". So I think it's too many declarations
-// and/or too big declarations. Not sure what to do about this. If it's this the problem, then it means I'll run out of
-// memory... Not good. I thought it could handle it normally.
-// And I think I can't change how much space the stack segment has (which is the data segment anyway) without messing
-// with the fixups table, and for that I need to move the EXE contents all down --> not cool. If it's only this feature
-// that goes away, doesn't seem bad. It's not an important feature anyway IMO.
+uint32_t DelayedExperience = 0;
 
 static uint32_t Mode = 0;
 static uint16_t Chars[50] = {0};
@@ -62,8 +57,12 @@ static uint32_t real_hand = 0;
 static uint32_t real_tag_skill[4] = {0};
 static uint32_t real_trait = 0;
 static uint32_t real_trait2 = 0;
-static uint32_t real_itemButtonItems[(6 * 4) * 2] = {0};
+static uint32_t real_itemButtonItems[6 * 2] = {0};
 static uint32_t real_drug_gvar[6] = {0};
+static uint32_t real_bbox_sneak = 0;
+//static uint32_t party_PERK_bonus_awareness = 0; - [DADi590: not used, so commented out]
+
+static uint8_t *NameBox = NULL;
 
 static void __declspec(naked) PartyControl_CanUseWeapon(void) {
 	__asm {
@@ -166,13 +165,9 @@ static bool __stdcall IsInPidList(uint32_t const *npc) {
 }
 
 // save "real" dude state
-static void __declspec(naked) SaveDudeState(void) {
+void __declspec(naked) SaveDudeState(void) {
 	__asm {
-			push    edi
-			push    esi
-			push    edx
-			push    ecx
-			push    ebx
+			pushad
 			push    edi
 			mov     edi, SN_DATA_SEC_EXE_ADDR
 			lea     esi, [edi+D__pc_name]
@@ -184,16 +179,113 @@ static void __declspec(naked) SaveDudeState(void) {
 			mov     ecx, 32/4
 			rep     movsd
 			mov     eax, ebx
+			push    ebx
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_critter_name_]
 			call    edi
 			pop     edi
+			push    eax
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_critter_pc_set_name_]
 			call    edi
 			pop     edi
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			mov     eax, ds:[edi+D__bbox+12+8]
+			pop     edi
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			mov     [edi+real_bbox_sneak], eax
+			mov     eax, [edi+NameBox]
+			pop     edi
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			mov     ds:[edi+D__bbox+12+8], eax
+			pop     edi
+			mov     ebx, 2730
+			xor     edx, edx
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+F_memset_]
+			call    edi
+			pop     edi
+			xchg    edi, eax                             // edi = Buffer
+			pop     edx                                  // edx = DisplayText
+
+			lea     esp, [esp-4] // [DADi590] Reserve space for the push
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			lea     edi, [edi+D__curr_font_num]
+			mov     [esp+4], edi
+			pop     edi
+
+			mov     eax, 103
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_text_font_]
+			call    edi
+			pop     edi
+			mov     esi, 21
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			call    ds:[edi+D__text_height]
+			pop     edi
+			sub     esi, eax
+			shr     esi, 1
+			inc     esi                                  // esi = y
+			mov     ecx, 130                             // ecx = ToWidth
+			imul    esi, ecx                             // esi = ToWidth * y
+			lea     esi, [esi+67]                        // esi = ToWidth * y + 67
+			lea     ebx, [ecx-4]
+			mov     eax, edx
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			call    ds:[edi+D__text_width]
+			pop     edi
+			cmp     eax, ebx
+			jbe     goodWidth
+			xchg    ebx, eax
+		goodWidth:
+			mov     ebx, eax                             // ebx = TxtWidth
+			shr     eax, 1                               // TxtWidth/2
+			sub     esi, eax
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			movzx   eax, byte ptr ds:[edi+D__BlueColor]
+			pop     edi
+			push    eax                                  // ColorIndex
+			lea     eax, [edi+esi]                       // eax = Buffer
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			call    ds:[edi+D__text_to_buf]
+			pop     edi
+			pop     eax
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_text_font_]
+			call    edi
+			pop     edi
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			movzx   eax, byte ptr ds:[edi+D__GreenColor]
+			pop     edi
+			lea     esp, [esp-4] // [DADi590: reserve space to "PUSH EDI"]
+			push    eax                                  // Color
+			push    19
+			mov     edx, 129
+			push    edx
+			inc     edx
+			xor     ecx, ecx
+			mov     ebx, 3
+			xchg    edi, eax                             // toSurface
+			mov     [esp+3*4], edi // [DADi590: "PUSH EDI"]
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_draw_box_]
+			call    edi
+			pop     edi
+			pop     ebx
 			push    esi
 			push    edi
 			mov     esi, SN_DATA_SEC_BLOCK_ADDR
@@ -275,12 +367,13 @@ static void __declspec(naked) SaveDudeState(void) {
 			mov     esi, SN_DATA_SEC_BLOCK_ADDR
 			lea     edi, [esi+real_itemButtonItems]
 			pop     esi
-			mov     ecx, (6*4)*2
+			mov     ecx, 6*2
 			rep     movsd
 			push    edi
 			mov     edi, SN_DATA_SEC_EXE_ADDR
 			lea     esi, [edi+D__perk_lev]
 			pop     edi
+			mov     edx, [esi]                           // PERK_bonus_awareness
 			push    esi
 			push    esi
 			mov     esi, SN_DATA_SEC_BLOCK_ADDR
@@ -292,7 +385,9 @@ static void __declspec(naked) SaveDudeState(void) {
 			xchg    ecx, eax
 			pop     ecx
 			pop     edi
+			mov     esi, edi
 			rep     stosd
+			mov  [esi], edx
 			push    edi
 			mov     edi, SN_DATA_SEC_EXE_ADDR
 			mov     ds:[edi+D__last_level], eax
@@ -409,7 +504,7 @@ static void __declspec(naked) SaveDudeState(void) {
 			call    edi
 			pop     edi
 			test    eax, eax                             // Is there an item in your right hand?
-			jz      setActiveHand                        // No
+			jz      checkAnim                            // No
 			push    eax
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -424,6 +519,7 @@ static void __declspec(naked) SaveDudeState(void) {
 			lea     edi, [edi+C_item_w_anim_code_]
 			call    edi
 			pop     edi
+		checkAnim:
 			cmp     eax, edx                             // Is the animation the same?
 			jne     setActiveHand                        // No
 			inc     ecx                                  // Right hand
@@ -462,17 +558,13 @@ static void __declspec(naked) SaveDudeState(void) {
 			jnz     noLeftHand
 			and     byte ptr [eax+0x27], 0xFE            // Reset the item flag in the left hand
 		noLeftHand:
-			pop     ebx
-			pop     ecx
-			pop     edx
-			pop     esi
-			pop     edi
+			popad
 			retn
 	}
 }
 
 // restore dude state
-static void __declspec(naked) RestoreDudeState(void) {
+void __declspec(naked) RestoreDudeState(void) {
 	__asm {
 			pushad
 			push    esi
@@ -522,12 +614,12 @@ static void __declspec(naked) RestoreDudeState(void) {
 			mov     esi, SN_DATA_SEC_EXE_ADDR
 			lea     edi, [esi+D__itemButtonItems]
 			pop     esi
-			mov     ecx, (6*4)*2
+			mov     ecx, 6*2
 			rep     movsd
 			push    esi
 			push    edi
-			mov     esi, SN_DATA_SEC_EXE_ADDR
-			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			mov     esi, SN_DATA_SEC_BLOCK_ADDR
+			mov     edi, SN_DATA_SEC_EXE_ADDR
 			mov     eax, [esi+real_free_perk]
 			mov     ds:[edi+D__free_perk], al
 			mov     eax, [esi+real_unspent_skill_points]
@@ -569,6 +661,8 @@ static void __declspec(naked) RestoreDudeState(void) {
 			mov     ds:[edi+D__itemCurrentItem], eax
 			mov     eax, [esi+real_sneak_working]
 			mov     ds:[edi+D__sneak_working], eax
+			mov     eax, [esi+real_bbox_sneak]
+			mov     ds:[edi+D__bbox+12+8], eax
 			xor     eax, eax
 			mov     [esi+IsControllingNPC], eax
 			pop     edi
@@ -601,13 +695,29 @@ static void __declspec(naked) RestoreDudeState(void) {
 			mov     eax, [edi+real_sneak_queue_time]
 			pop     edi
 			test    eax, eax
-			jz      end
+			jz      noSneak
 			mov     ecx, 10
 			xor     ebx, ebx
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_queue_add_]
 			call    edi
+			pop     edi
+		noSneak:
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			mov     eax, [edi+DelayedExperience]
+			pop     edi
+			test    eax, eax
+			jz      end
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_stat_pc_add_experience_]
+			call    edi
+			pop     edi
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			mov     [edi+DelayedExperience], eax
 			pop     edi
 		end:
 			popad
@@ -630,7 +740,7 @@ static void __declspec(naked) CombatWrapper_v2(void) {
 			pop     edi
 			je      skipControl                          // This is the first move
 			mov     eax, [eax+0x4]                       // tile_num
-			add     edx, 2
+			add     edx, 3
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_tile_scroll_to_]
@@ -671,7 +781,7 @@ static void __declspec(naked) CombatWrapper_v2(void) {
 		npcControl:
 			push    edi
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
-			mov     [edi+IsControllingNPC], eax          // if game was loaded during turn, PartyControlReset()
+			mov     [edi+IsControllingNPC], eax          // if game was loaded during turn, PartyControlExit()
 			pop     edi
 			popad
 			pushad
@@ -683,7 +793,7 @@ static void __declspec(naked) CombatWrapper_v2(void) {
 			call    edi
 			pop     edi
 			mov     eax, [ebx+0x4]                       // tile_num
-			mov     edx, 2
+			mov     edx, 3
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_tile_scroll_to_]
@@ -701,7 +811,7 @@ static void __declspec(naked) CombatWrapper_v2(void) {
 			xchg    ecx, eax
 			push    edi
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
-			cmp     [edi+IsControllingNPC], eax          // if game was loaded during turn, PartyControlReset()
+			cmp     [edi+IsControllingNPC], eax          // if game was loaded during turn, PartyControlExit()
 			pop     edi
 			je      skipRestore                          // was called and already restored state
 			call    RestoreDudeState
@@ -720,6 +830,7 @@ static void __declspec(naked) CombatWrapper_v2(void) {
 			xor     eax, eax
 			dec     eax
 			retn
+
 		end:
 			xor     eax, eax
 			retn
@@ -752,6 +863,7 @@ static void __declspec(naked) stat_pc_min_exp_hook(void) {
 			je      end
 			dec     eax
 			retn
+
 		end:
 			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
 			push    edi
@@ -796,7 +908,7 @@ static void __declspec(naked) handle_inventory_hook(void) {
 			jz      end
 			push    edi
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
-			cmp     [edi+IsControllingNPC], eax
+			cmp     [edi+IsControllingNPC], ebx
 			pop     edi
 			je      end
 			push    eax
@@ -811,7 +923,7 @@ static void __declspec(naked) handle_inventory_hook(void) {
 			pop     edx                                  // edx = source
 			pop     ebx                                  // ebx = armor
 			inc     eax                                  // Removed?
-			jnz     nextArmor                            // Yes
+			jnz     skip                                 // Yes
 			// We couldn’t remove it, so we will remove the armor, taking into account the decrease in KB
 			push    edx
 			push    eax
@@ -824,18 +936,7 @@ static void __declspec(naked) handle_inventory_hook(void) {
 			pop     edi
 			pop     ebx
 			pop     edx
-		nextArmor:
-			mov     eax, edx
-			push    edi
-			mov     edi, SN_CODE_SEC_EXE_ADDR
-			lea     edi, [edi+C_inven_worn_]
-			call    edi
-			pop     edi
-			test    eax, eax
-			jz      noArmor
-			and     byte ptr [eax+0x27], 0xFB            // Resetting the equipped armor flag
-			jmp     nextArmor
-		noArmor:
+		skip:
 			xchg    ebx, eax                             // eax = armor
 			push    edi
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
@@ -877,7 +978,6 @@ static void __declspec(naked) handle_inventory_hook1(void) {
 			pop     edi
 			pop     eax
 		end:
-
 			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -898,6 +998,7 @@ static void __declspec(naked) switch_hand_hook(void) {
 			pop     edi
 			pop     esi
 			retn
+
 		end:
 			mov     esi, ebx
 			cmp     [edx], eax
@@ -959,6 +1060,149 @@ static void __declspec(naked) action_use_skill_on_hook(void) {
 	}
 }
 
+static void __declspec(naked) damage_object_hook(void) {
+	__asm {
+			push    ecx
+			xor     ecx, ecx
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			cmp     [edi+IsControllingNPC], ecx
+			pop     edi
+			je      skip
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			cmp     edx, ds:[edi+D__obj_dude]
+			pop     edi
+			jne     skip
+			mov     ecx, edx
+			call    RestoreDudeState
+			push    eax
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_intface_redraw_]
+			call    edi
+			pop     edi
+			pop     eax
+		skip:
+			push    eax
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_scr_set_objs_]
+			call    edi
+			pop     edi
+			pop     eax
+			mov     edx, destroy_p_proc
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_exec_script_proc_]
+			call    edi
+			pop     edi
+			jecxz   end
+			inc     ebx
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			mov     [edi+IsControllingNPC], ebx
+			pop     edi
+			mov     ebx, ecx
+			call    SaveDudeState
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_intface_redraw_]
+			call    edi
+			pop     edi
+		end:
+			pop     ecx
+			pop     ebx                                  // Destroying the return address
+
+			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+0x228F6]
+			mov     [esp+4], edi
+			pop     edi
+			retn
+	}
+}
+
+static void __declspec(naked) op_give_exp_points_hook(void) {
+	__asm {
+			xor     eax, eax
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			cmp     [edi+IsControllingNPC], eax
+			pop     edi
+			je      skip
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			add     [edi+DelayedExperience], ecx
+			pop     edi
+			retn
+
+		skip:
+			xchg    ecx, eax
+
+			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_stat_pc_add_experience_]
+			mov     [esp+4], edi
+			pop     edi
+			retn
+	}
+}
+
+static void __declspec(naked) adjust_fid_hook(void) {
+	__asm {
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			mov     edx, ds:[edi+D__i_worn]
+			pop     edi
+			xor     eax, eax
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			cmp     [edi+IsControllingNPC], eax
+			pop     edi
+			je      skip
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			mov     eax, [edi+HiddenArmor]
+			pop     edi
+			test    eax, eax
+			jz      skip
+			xchg    edx, eax
+		skip:
+			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+0x650E5]
+			mov     [esp+4], edi
+			pop     edi
+			retn
+	}
+}
+
+static void __declspec(naked) refresh_box_bar_win_hook(void) {
+	__asm {
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			cmp     [edi+IsControllingNPC], eax
+			pop     edi
+			jne     end
+
+			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_is_pc_flag_]
+			mov     [esp+4], edi
+			pop     edi
+			retn
+
+		end:
+			inc     eax
+			retn
+	}
+}
+
 void PartyControlInit(void) {
 	int temp_int = 0;
 	char prop_value[MAX_PROP_VALUE_LEN];
@@ -970,6 +1214,7 @@ void PartyControlInit(void) {
 	if ((1 == temp_int) || (2 == temp_int)) {
 		char pidbuf[512];
 		pidbuf[511] = 0;
+		NameBox = malloc(2730 * sizeof(*NameBox));
 
 		getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "ControlCombatPIDList", "", pidbuf, &sfall1_ini_info_G);
 		if (0 != strcmp(pidbuf, "")) {
@@ -1005,29 +1250,26 @@ void PartyControlInit(void) {
 				}
 			}
 		}
-		HookCallEXE(0x20351, getRealBlockAddrCode((void *) &combat_add_noncoms_hook));
-		HookCallEXE(0x20D67, getRealBlockAddrCode((void *) &CombatWrapper_v2));
-		HookCallEXE(0x2ED6F, getRealBlockAddrCode((void *) &stat_pc_min_exp_hook));// PrintLevelWin_
-		HookCallEXE(0x339C3, getRealBlockAddrCode((void *) &stat_pc_min_exp_hook));// Save_as_ASCII_
-		HookCallEXE(0x64D7D, getRealBlockAddrCode((void *) &inven_pickup_hook));
-		HookCallEXE(0x62813, getRealBlockAddrCode((void *) &handle_inventory_hook));
-		HookCallEXE(0x62A2B, getRealBlockAddrCode((void *) &handle_inventory_hook1));
-		MakeCallEXE(0x64E93, getRealBlockAddrCode((void *) &switch_hand_hook), false);
+		hookCallEXE(0x20351, getRealBlockAddrCode((void *) &combat_add_noncoms_hook));
+		hookCallEXE(0x20D67, getRealBlockAddrCode((void *) &CombatWrapper_v2));
+		hookCallEXE(0x2ED6F, getRealBlockAddrCode((void *) &stat_pc_min_exp_hook));// PrintLevelWin_
+		hookCallEXE(0x339C3, getRealBlockAddrCode((void *) &stat_pc_min_exp_hook));// Save_as_ASCII_
+		hookCallEXE(0x64D7D, getRealBlockAddrCode((void *) &inven_pickup_hook));
+		hookCallEXE(0x62813, getRealBlockAddrCode((void *) &handle_inventory_hook));
+		hookCallEXE(0x62A2B, getRealBlockAddrCode((void *) &handle_inventory_hook1));
+		makeCallEXE(0x64E93, getRealBlockAddrCode((void *) &switch_hand_hook), false);
 		writeMem32EXE(0x655DF+1, 152);               // Text width 152, not 80
-		MakeCallEXE(0x20833, getRealBlockAddrCode((void *) &combat_input_hook), false);
-		MakeCallEXE(0x1234C, getRealBlockAddrCode((void *) &action_skill_use_hook), false);
-		HookCallEXE(0x12603, getRealBlockAddrCode((void *) &action_use_skill_on_hook));
+		makeCallEXE(0x20833, getRealBlockAddrCode((void *) &combat_input_hook), false);
+		makeCallEXE(0x1234C, getRealBlockAddrCode((void *) &action_skill_use_hook), false);
+		hookCallEXE(0x12603, getRealBlockAddrCode((void *) &action_use_skill_on_hook));
+		hookCallEXE(0x228E4, getRealBlockAddrCode((void *) &damage_object_hook));
+		hookCallEXE(0x4BA12, getRealBlockAddrCode((void *) &op_give_exp_points_hook));
+		makeCallEXE(0x650DF, getRealBlockAddrCode((void *) &adjust_fid_hook), true);
+		hookCallEXE(0x56D32, getRealBlockAddrCode((void *) &refresh_box_bar_win_hook));
 	}
 }
 
-void __stdcall PartyControlReset(void) {
-	__asm {
-			push    edi
-			mov     edi, SN_DATA_SEC_BLOCK_ADDR
-			cmp     dword ptr [edi+IsControllingNPC], 0
-			pop     edi
-			je      end
-			call    RestoreDudeState
-		end:
-	}
+void PartyControlExit(void) {
+	free(NameBox);
+	*(uint8_t **) getRealBlockAddrData(&NameBox) = NULL;
 }

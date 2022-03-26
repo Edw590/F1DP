@@ -13,9 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-// This had no copyright notice on it. Hopefully, the author doesn't mind me using it. I'm keeping
-// the same license as in the other files of the project on it though (I'm just licensing it only
-// to myself because I can't put the original authors there, whoever they were - no notice).
+// This had no copyright notice on it. I'm keeping the same license as in the other files of the project on it though
+// (I'm just licensing it only to myself because I can't put the original authors - no notice).
 //
 // Original code modified by me, DADi590, to adapt it to this project, starting on 2022-03-02.
 // NOTE: I don't see mention to Crafty in the copyright notices, but I'll just say here that this code was taken from
@@ -23,12 +22,12 @@
 
 #include "../CLibs/stdio.h"
 #include "../CLibs/string.h"
+#include "../GameAddrs/FalloutEngine.h"
 #include "../Utils/BlockAddrUtils.h"
 #include "../Utils/EXEPatchUtils.h"
 #include "../Utils/GlobalEXEAddrs.h"
 #include "../Utils/IniUtils.h"
 #include "Define.h"
-#include "FalloutEngine.h"
 #include "LoadGameHook.h"
 #include "PartyControl.h"
 #include "SFall1Main.h"
@@ -39,7 +38,20 @@ uint32_t InLoop = 0;
 
 static void __declspec(naked) ResetState(void) {
 	__asm {
-			call PartyControlReset
+			pushad
+			xor     eax, eax
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			cmp     [edi+IsControllingNPC], eax
+			pop     edi
+			je      end
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			mov     [edi+DelayedExperience], eax
+			pop     edi
+			call    RestoreDudeState
+		end:
+			popad
 			retn
 	}
 }
@@ -141,6 +153,7 @@ static void __declspec(naked) SaveGame_hook(void) {
 		skip:
 			dec     esi
 			retn
+
 		restore:
 			popad
 		end:
@@ -208,18 +221,18 @@ void LoadGameHookInit(void) {
 	char prop_value[MAX_PROP_VALUE_LEN];
 	memset(prop_value, 0, MAX_PROP_VALUE_LEN);
 
-	HookCallEXE(0x6EAEC, getRealBlockAddrCode((void *) &LoadGame_hook));
-	HookCallEXE(0x6F562, getRealBlockAddrCode((void *) &LoadGame_hook));
-	HookCallEXE(0x7291B, getRealBlockAddrCode((void *) &gnw_main_hook));
-	HookCallEXE(0x7299F, getRealBlockAddrCode((void *) &gnw_main_hook1));
+	hookCallEXE(0x6EAEC, getRealBlockAddrCode((void *) &LoadGame_hook));
+	hookCallEXE(0x6F562, getRealBlockAddrCode((void *) &LoadGame_hook));
+	hookCallEXE(0x7291B, getRealBlockAddrCode((void *) &gnw_main_hook));
+	hookCallEXE(0x7299F, getRealBlockAddrCode((void *) &gnw_main_hook1));
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "sfall", "SaveInCombat", "Cannot save at this time.", SaveFailMsg,
 					&translation_ini_info_G);
-	MakeCallEXE(0x6DC87, getRealBlockAddrCode((void *) &SaveGame_hook), false);
+	makeCallEXE(0x6DC87, getRealBlockAddrCode((void *) &SaveGame_hook), false);
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "SaveInCombatFix", "1", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	*(uint32_t *) getRealBlockAddrData(&SaveInCombatFix) = (uint32_t) (temp_int <= 2 ? temp_int : 0);
 
-	MakeCallEXE(0x62AB5, getRealBlockAddrCode((void *) &setup_inventory_hook), false);// INVENTORY + INTFACEUSE + INTFACELOOT + BARTER
+	makeCallEXE(0x62AB5, getRealBlockAddrCode((void *) &setup_inventory_hook), false);// INVENTORY + INTFACEUSE + INTFACELOOT + BARTER
 }

@@ -56,7 +56,7 @@ static char version_str[] = "F1DP v"F1DP_VER_STR" by DADi590";
 
 bool realMain(void);
 static void patchVerStr(void);
-bool appplyPatches(void);
+bool applyPatches(void);
 
 __declspec(naked) int main(void) {
 	// The special number declaration below is for the loader to look for it and start the execution right there.
@@ -153,12 +153,12 @@ bool realMain(void) {
 	// loaded and working normally.
 	patchVerStr();
 
-	ret_var = ret_var && appplyPatches();
+	ret_var = ret_var && applyPatches();
 
 
 	funcEnd:
 
-	freeNew(((struct FileInfo *) getRealBlockAddrData(&f1dpatch_ini_info_G))->contents);
+	free(((struct FileInfo *) getRealBlockAddrData(&f1dpatch_ini_info_G))->contents);
 
 	printlnStr("  \\---- F1DP v"F1DP_VER_STR" Patcher ----/");
 
@@ -202,7 +202,7 @@ static void patchVerStr(void) {
 
 	writeMem32EXE(0x73373+1, 0x1BD); // Change the string height (445)
 
-	HookCallEXE(0x73358, getRealBlockAddrCode((void *) &getverstr_hook));
+	hookCallEXE(0x73358, getRealBlockAddrCode((void *) &getverstr_hook));
 }
 
 /**
@@ -210,7 +210,7 @@ static void patchVerStr(void) {
  *
  * @return true if everything went fine, false if at least one error occurred
  */
-bool appplyPatches(void) {
+bool applyPatches(void) {
 	bool ret_var = true;
 	int temp_int = 0;
 	char prop_value[MAX_PROP_VALUE_LEN];

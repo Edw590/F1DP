@@ -4,9 +4,52 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7f3019c0-b046-4aa9-80a3-9949dbb49521" name="Changes" comment="Update: .gitignore file">
+    <list default="true" id="7f3019c0-b046-4aa9-80a3-9949dbb49521" name="Changes" comment="Update: patched file name changed to 8.3 file name&#10;&#10;Now it's F1DPATCH.EXE, a supported DOS name, as requested on Reddit by&#10;emxd_llc (thank you).">
+      <change afterPath="$PROJECT_DIR$/F1DPPatcher/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/F1DPPatcher/HighResPatches/HighResPatches.cNOTDONE" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/F1DPPatcher/HighResPatches/HighResPatches.hNOTDONE" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/DebugMode.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/DebugMode.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/CLibs/stdio.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/CLibs/stdio.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/GameAddrs/CStdFuncs.h" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/GameAddrs/CStdFuncs.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/PatcherPatcher/PatcherPatcher.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/PatcherPatcher/PatcherPatcher.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/,Crafty's sFall1 versions used.txt" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/,Crafty's sFall1 versions used.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/AmmoMod.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/AmmoMod.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/AnimationsAtOnceLimit.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/AnimationsAtOnceLimit.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/AnimationsAtOnceLimit.h" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/AnimationsAtOnceLimit.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Bugs.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Bugs.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Bugs.h" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Bugs.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Credits.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Credits.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Criticals.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Criticals.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Dadi590_NewUnk1.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/AI.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Dadi590_NewUnk1.h" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/AI.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Define.h" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Define.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/FalloutEngine.h" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/GameAddrs/FalloutEngine.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Inventory.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Inventory.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/LoadGameHook.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/LoadGameHook.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/LoadGameHook.h" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/LoadGameHook.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/MainMenu.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/MainMenu.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/PartyControl.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/PartyControl.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/PartyControl.h" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/PartyControl.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Quests.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Quests.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/SFall1Main.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/SFall1Main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/SFall1Main.h" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/SFall1Main.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/SFall1Patches.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/SFall1Patches.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Sound.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Sound.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Sound.h" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/Sound.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/dinput.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/dinput.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/timer.cNOTDONE" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/timer.cNOTDONE" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/timer.hNOTDONE" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/timer.hNOTDONE" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/version.h" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/version.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/TeamXPatches/TeamXPatches.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/TeamXPatches/TeamXPatches.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/Utils/EXEPatchUtils.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/Utils/EXEPatchUtils.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/Utils/EXEPatchUtils.h" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/Utils/EXEPatchUtils.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/Utils/General.h" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/Utils/General.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/Utils/IniUtils.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/Utils/IniUtils.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,7 +83,7 @@
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.modules.go.list.on.any.changes.was.set" value="true" />
     <property name="go.watchers.conflict.with.on.save.actions.check.performed" value="true" />
-    <property name="last_opened_file_path" value="$USER_HOME$" />
+    <property name="last_opened_file_path" value="$USER_HOME$/AssistantProjects/Assist_Platforms_Unifier" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.stylelint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -53,8 +96,8 @@
     <configuration name="F1DPInstaller" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="F1DPInstaller" />
       <working_directory value="$PROJECT_DIR$" />
-      <kind value="PACKAGE" />
-      <package value="F1DP" />
+      <kind value="DIRECTORY" />
+      <package value="main" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
       <output_directory value="$PROJECT_DIR$/generated_binaries" />
@@ -100,7 +143,8 @@
     <MESSAGE value="Update: Installer is now ready&#10;&#10;The Installer is now ready with the Loader bytes on it.&#10;&#10;The Data section will not be set as Executable because that will crash&#10;DOS/32A even though I believe it should not. It doesn't crash DOS/4GW,&#10;but then it would make the game not playable on DOS/32A by a thing which&#10;doesn't even matter because the LE loader seems to ignore these flags,&#10;so I disabled that patch for the game to be playable on DOS/32A.&#10;&#10;The Installer will also not create any files. All will go in a ZIP. It&#10;will only install the Loader into the game EXE and nothing else.&#10;&#10;I've also deleted the function patches because they were for me to see&#10;how to get Fallout Fixt 7.0alpha an newer to work on MS-DOS. I still&#10;think it has to do with something different between the MS-DOS and the&#10;Windows EXEs, but I've got it working without needing to mess with the&#10;EXE, so no more need for the function patches." />
     <MESSAGE value="Update: GoLand project files" />
     <MESSAGE value="Update: .gitignore file" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update: .gitignore file" />
+    <MESSAGE value="Update: patched file name changed to 8.3 file name&#10;&#10;Now it's F1DPATCH.EXE, a supported DOS name, as requested on Reddit by&#10;emxd_llc (thank you)." />
+    <option name="LAST_COMMIT_MESSAGE" value="Update: patched file name changed to 8.3 file name&#10;&#10;Now it's F1DPATCH.EXE, a supported DOS name, as requested on Reddit by&#10;emxd_llc (thank you)." />
   </component>
   <component name="VgoProject">
     <integration-enabled>true</integration-enabled>

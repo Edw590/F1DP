@@ -22,12 +22,12 @@
 
 #include "../CLibs/stdio.h"
 #include "../CLibs/string.h"
+#include "../GameAddrs/FalloutEngine.h"
 #include "../Utils/BlockAddrUtils.h"
 #include "../Utils/EXEPatchUtils.h"
 #include "../Utils/GlobalEXEAddrs.h"
 #include "../Utils/IniUtils.h"
 #include "Credits.h"
-#include "FalloutEngine.h"
 #include "SFall1Patches.h"
 #include "version.h"
 #include <stddef.h>
@@ -36,12 +36,12 @@
 static uint32_t InCredits = 0;
 static uint32_t CreditsLine = 0;
 
-static char const *const ExtraLines[47] = {
+static char const *const ExtraLines[49] = {
 		// The below 2 lines weren't here, but I've added, because as Sduibek mentioned, why are a mod's credits before
 		// even the game name itself? So, as this appears before everything else, I've added the game name to it.
 		"#FALLOUT",
 		"-------------",
-		"#SFALL1 "VERSION_STRING,
+		"#sfall1 "VERSION_STRING,
 		"",
 		"sfall1 is free software, licensed under the GPL",
 		"Copyright 2008-2016  The sfall team",
@@ -80,13 +80,14 @@ static char const *const ExtraLines[47] = {
 		"Lexx",
 		"Sduibek",
 		"burn",
-		"Anyone who has used sfall in their own mods",
+		"Foxx",
+		"Ethereal",
+		"Anyone who has used sfall1 in their own mods",
 		"The bug reporters and feature requesters",
-		""
 		"",
 		"",
 		"#FALLOUT",
-		""
+		"",
 };
 
 static uint32_t ExtraLineCount = sizeof(ExtraLines) / 4;
@@ -179,8 +180,8 @@ void CreditsInit(void) {
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Debugging", "NoCredits", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if (0 == temp_int) {
-		HookCallEXE(0x72B04, getRealBlockAddrCode((void *) &credits_hook));
-		HookCallEXE(0x38CF4, getRealBlockAddrCode((void *) &credits_hook));
-		HookCallEXE(0x2752A, getRealBlockAddrCode((void *) &credits_get_next_line_hook));
+		hookCallEXE(0x72B04, getRealBlockAddrCode((void *) &credits_hook));
+		hookCallEXE(0x38CF4, getRealBlockAddrCode((void *) &credits_hook));
+		hookCallEXE(0x2752A, getRealBlockAddrCode((void *) &credits_get_next_line_hook));
 	}
 }

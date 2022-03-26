@@ -13,9 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-// This had no copyright notice on it. Hopefully, the author doesn't mind me using it. I'm keeping
-// the same license as in the other files of the project on it though (I'm just licensing it only
-// to myself because I can't put the original authors there, whoever they were - no notice).
+// This had no copyright notice on it. I'm keeping the same license as in the other files of the project on it though
+// (I'm just licensing it only to myself because I can't put the original authors - no notice).
 //
 // Original code modified by me, DADi590, to adapt it to this project, starting on 2022-03-02.
 // NOTE: I don't see mention to Crafty in the copyright notices, but I'll just say here that this code was taken from
@@ -26,7 +25,7 @@
 
 
 
-#define VERSION_STRING "v1.7.6+"
+#define VERSION_STRING "v1.7.20+"
 
 
 

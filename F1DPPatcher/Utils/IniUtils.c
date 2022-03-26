@@ -58,7 +58,7 @@ bool readFile(char const *file_path, struct FileInfo *file) {
 	file_contents = malloc(file_size * sizeof(*file_contents));
 
 	if (temp != read((int) file_descriptor, file_contents, (size_t) file_size)) {
-		freeNew(file_contents);
+		free(file_contents);
 		close((int) file_descriptor);
 
 		return false;

@@ -18,6 +18,7 @@
 // under the License.
 
 #include "../CLibs/string.h"
+#include "../GameAddrs/FalloutEngine.h"
 #include "../Utils/BlockAddrUtils.h"
 #include "../Utils/EXEPatchUtils.h"
 #include "../Utils/GlobalEXEAddrs.h"
@@ -28,7 +29,7 @@ static void __declspec(naked) patch1(void) {
 			mov     eax, 0x10
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			lea     edi, [edi+0x3C750] // Args: non-stack / No prototype
+			lea     edi, [edi+C_game_get_global_var_]
 			call    edi
 			pop     edi
 			test    eax, eax
@@ -36,7 +37,7 @@ static void __declspec(naked) patch1(void) {
 			mov     eax, 0x25D
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			lea     edi, [edi+0x3C750] // Args: non-stack / No prototype
+			lea     edi, [edi+C_game_get_global_var_]
 			call    edi
 			pop     edi
 			test    eax, eax
@@ -68,7 +69,7 @@ static void __declspec(naked) patch1(void) {
 			xor     ebx, ebx
 			mov     [esp+1*4], edi // [DADi590: "PUSH EDI"]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			lea     edi, [edi+0x193FC] // Args: +stack (auto-clean) / int __userpurge art_id_@<eax>(int ObjType@<eax>, int Index@<edx>, int ID1@<ecx>, int ID2@<ebx>, int ID3)
+			lea     edi, [edi+C_art_id_]
 			call    edi
 			pop     edi
 			push    edi
@@ -96,7 +97,7 @@ void initTeamXPatches(void) {
 	// Nothing related to the DOS EXE (it's only the SizeOfImage in the PE header that changed).
 
 	// From Restoration Mod EXE
-	MakeCallEXE(0x38AFB, getRealBlockAddrCode((void *) &patch1), true);
+	makeCallEXE(0x38AFB, getRealBlockAddrCode((void *) &patch1), true);
 	strncpy(getRealEXEAddr(0xF131C), "nar_31\0\0", 8);
 	// There's another patch, but that has to do with screen resolutions, so I'll leave it.
 }

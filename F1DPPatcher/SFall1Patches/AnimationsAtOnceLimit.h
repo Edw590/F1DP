@@ -25,8 +25,6 @@
 
 
 
-extern int AnimationsLimit;
-
 void AnimationsAtOnceInit(void);
 void AnimationsAtOnceExit(void);
 

@@ -20,17 +20,13 @@
 // NOTE: I don't see mention to Crafty in the copyright notices, but I'll just say here that this code was taken from
 // his modification of the original sFall1.
 
-#ifndef F1DPPATCHER_TIMER_HNOTDONE
-#define F1DPPATCHER_TIMER_HNOTDONE
+#ifndef F1DPPATCHER_DADI590_NEWUNKINIT_H
+#define F1DPPATCHER_DADI590_NEWUNKINIT_H
 
 
 
-#include <stdint.h>
-
-uint32_t __stdcall FakeGetTickCount(void);
-void __stdcall FakeGetLocalTime(LPSYSTEMTIME);
-void TimerInit(void);
+void AIInit(void);
 
 
 
-#endif //F1DPPATCHER_TIMER_HNOTDONE
+#endif //F1DPPATCHER_DADI590_NEWUNKINIT_H

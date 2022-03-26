@@ -47,11 +47,11 @@ uint32_t readMem32EXE(uint32_t addr);
 uint16_t readMem16EXE(uint32_t addr);
 uint8_t readMem8EXE(uint32_t addr);
 
-void HookCallEXE(uint32_t addr, void const *func);
+void hookCallEXE(uint32_t addr, void const *func);
 
-void MakeCallEXE(uint32_t addr, void const *func, bool jump);
+void makeCallEXE(uint32_t addr, void const *func, bool jump);
 
-void BlockCallEXE(uint32_t addr);
+void blockCallEXE(uint32_t addr);
 
 
 

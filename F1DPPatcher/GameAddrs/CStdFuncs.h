@@ -99,6 +99,8 @@
 #define F_strncpy_ 0xBDBCA
 // strrchr_(EAX = s, EDX = c) EAX
 #define F_strrchr_ 0xBDBEF
+// strupr_(EAX = string) EAX
+#define F_strupr_ 0xCA38B
 
 // /////////////////
 // unistd.h

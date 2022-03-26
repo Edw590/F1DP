@@ -17,19 +17,40 @@
 // specific language governing permissions and limitations
 // under the License.
 
-#ifndef F1DPPATCHER_GENERAL_H
-#define F1DPPATCHER_GENERAL_H
+#include "../CLibs/stdio.h"
+#include "../GameAddrs/FalloutEngine.h"
+#include "../Utils/BlockAddrUtils.h"
+#include "../Utils/EXEPatchUtils.h"
+#include "HighResPatches.hNOTDONE"
 
-
-// The Microsoft-chosen newline characters: CR LF
-#define NL "\r\n"
-
-// Maximum path length on DOS, including the NULL character
-#define MAX_DOS_PATH_LEN 80
-
-// 3 chars exactly or change the initial strings with the dashes
-#define F1DP_VER_STR "1.1"
+static uint32_t FOWEnable = 0;
+static uint32_t FOWLightLevel = 0;
 
 
 
-#endif //F1DPPATCHER_GENERAL_H
+void initHighResPatches(void) {
+	// Fog Of War
+
+	*(uint32_t *) getRealBlockAddrData(&FOWEnable) = 1;
+	*(uint32_t *) getRealBlockAddrData(&FOWLightLevel) = 5;
+
+	// FOWEnable
+
+
+
+
+
+	// FOWLightLevel
+
+
+
+
+
+
+
+	// DLL: 0x10016B67
+	writeMem8EXE(0x47E314, 0xC3);
+
+	// DLL: 0x10016A7F
+	hookCallEXE(0x4A0250, getRealBlockAddrCode((void *) &sub_100162A0));
+}

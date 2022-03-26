@@ -13,9 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-// This had no copyright notice on it. Hopefully, the author doesn't mind me using it. I'm keeping
-// the same license as in the other files of the project on it though (I'm just licensing it only
-// to myself because I can't put the original authors there, whoever they were - no notice).
+// This had no copyright notice on it. I'm keeping the same license as in the other files of the project on it though
+// (I'm just licensing it only to myself because I can't put the original authors - no notice).
 //
 // Original code modified by me, DADi590, to adapt it to this project, starting on 2022-03-02.
 // NOTE: I don't see mention to Crafty in the copyright notices, but I'll just say here that this code was taken from
@@ -36,7 +35,7 @@
 #define PERK_bonus_hth_damage    (2)
 #define PERK_bonus_move          (3)
 #define PERK_bonus_ranged_damage (4)
-#define PERK_bonus_rate_of_fire	 (5)
+#define PERK_bonus_rate_of_fire  (5)
 #define PERK_earlier_sequence    (6)
 #define PERK_faster_healing      (7)
 #define PERK_more_criticals      (8)
@@ -83,11 +82,11 @@
 #define PERK_smooth_talker       (49)
 #define PERK_swift_learner       (50)
 #define PERK_tag                 (51)
-#define PERK_mutate		         (52)
-#define PERK_add_nuka	         (53)
+#define PERK_mutate              (52)
+#define PERK_add_nuka            (53)
 #define PERK_add_buffout         (54)
 #define PERK_add_mentats         (55)
-#define PERK_add_psycho	         (56)
+#define PERK_add_psycho          (56)
 #define PERK_add_radaway         (57)
 #define PERK_weapon_long_range   (58)
 #define PERK_weapon_accurate     (59)
@@ -219,6 +218,12 @@
 #define ROLL_CRITICAL_SUCCESS (3)
 
 #define destroy_p_proc (18)
+
+// types for script variables
+#define VAR_TYPE_INT   (0xC001)
+#define VAR_TYPE_FLOAT (0xA001)
+#define VAR_TYPE_STR   (0x9801)
+#define VAR_TYPE_STR2  (0x9001)
 
 
 

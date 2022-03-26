@@ -1,3 +1,3 @@
-module F1DP
+module F1DPInstaller
 
 go 1.17

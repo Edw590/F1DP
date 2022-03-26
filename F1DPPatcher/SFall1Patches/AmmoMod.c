@@ -20,16 +20,16 @@
 // NOTE: I don't see mention to Crafty in the copyright notices, but I'll just say here that this code was taken from
 // his modification of the original sFall1.
 
-#include "../CLibs/string.h"
 #include "../CLibs/stdio.h"
+#include "../CLibs/string.h"
 #include "../GameAddrs/CStdFuncs.h"
-#include "../Utils/GlobalEXEAddrs.h"
+#include "../GameAddrs/FalloutEngine.h"
 #include "../Utils/BlockAddrUtils.h"
 #include "../Utils/EXEPatchUtils.h"
+#include "../Utils/GlobalEXEAddrs.h"
 #include "../Utils/IniUtils.h"
 #include "AmmoMod.h"
 #include "Define.h"
-#include "FalloutEngine.h"
 #include "SFall1Patches.h"
 
 static void __declspec(naked) item_w_damage_hook(void) {
@@ -125,7 +125,7 @@ static void __declspec(naked) display_stats_hook1(void) {
 
 			lea     esp, [esp-4] // [DADi590] Reserve space for the "PUSH"
 			push    edi
-			mov     edi, SN_CODE_SEC_EXE_ADDR
+			mov     edi, SN_DATA_SEC_EXE_ADDR
 			lea     edi, [edi+0xF91F8]                         // '%s %d-%d'
 			mov     [esp+4], edi // "PUSH"
 			pop     edi
@@ -136,7 +136,7 @@ static void __declspec(naked) display_stats_hook1(void) {
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+F_sprintf_]
 			call    edi
-			add     esp, 4*5
+			add     esp, 5*4
 			pop     edi
 
 			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
@@ -180,12 +180,12 @@ void AmmoModInit(void) {
 	sscanf(prop_value, "%d", &temp_int);
 	if (0 != temp_int) {
 		// Bonus HtH Damage Perk fix
-		MakeCallEXE(0x6AF56, getRealBlockAddrCode((void *) &item_w_damage_hook), false);
-		HookCallEXE(0x6AFA8, getRealBlockAddrCode((void *) &item_w_damage_hook1));
-		HookCallEXE(0x65AA1, getRealBlockAddrCode((void *) &display_stats_hook));
-		MakeCallEXE(0x65CA1, getRealBlockAddrCode((void *) &display_stats_hook1), true);
+		makeCallEXE(0x6AF56, getRealBlockAddrCode((void *) &item_w_damage_hook), false);
+		hookCallEXE(0x6AFA8, getRealBlockAddrCode((void *) &item_w_damage_hook1));
+		hookCallEXE(0x65AA1, getRealBlockAddrCode((void *) &display_stats_hook));
+		makeCallEXE(0x65CA1, getRealBlockAddrCode((void *) &display_stats_hook1), true);
 	}
 
 	// "Show changes min./max. damage to the weapon if the perk "Bonus damage at distance" is taken."
-	HookCallEXE(0x65A75, getRealBlockAddrCode((void *) &display_stats_hook2));
+	hookCallEXE(0x65A75, getRealBlockAddrCode((void *) &display_stats_hook2));
 }

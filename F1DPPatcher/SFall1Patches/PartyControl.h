@@ -29,9 +29,12 @@
 
 extern uint32_t IsControllingNPC;
 extern uint32_t HiddenArmor;
+extern uint32_t DelayedExperience;
 
 void PartyControlInit(void);
-void __stdcall PartyControlReset(void);
+void __stdcall PartyControlExit(void);
+void __declspec(naked) RestoreDudeState(void);
+void __declspec(naked) SaveDudeState(void);
 
 
 

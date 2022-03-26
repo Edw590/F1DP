@@ -50,16 +50,16 @@ uint8_t readMem8EXE(uint32_t addr) {
 }
 
 
-void HookCallEXE(uint32_t addr, void const *func) {
+void hookCallEXE(uint32_t addr, void const *func) {
 	writeMem32EXE(addr + 1, (uint32_t) func - ((uint32_t) getRealEXEAddr(addr) + 5));
 }
 
-void MakeCallEXE(uint32_t addr, void const *func, bool jump) {
+void makeCallEXE(uint32_t addr, void const *func, bool jump) {
 	writeMem8EXE(addr, jump ? 0xE9 : 0xE8);
-	HookCallEXE(addr, func);
+	hookCallEXE(addr, func);
 }
 
-void BlockCallEXE(uint32_t addr) {
+void blockCallEXE(uint32_t addr) {
 	// 5 is the length of the CALL near instruction with opcode E8 or the JMP near instruction with opcode E9.
 	memset(getRealEXEAddr(addr), 0x90, 5);
 }

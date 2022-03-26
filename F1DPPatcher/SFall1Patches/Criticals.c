@@ -23,7 +23,7 @@
 #include "../CLibs/stdio.h"
 #include "../Utils/EXEPatchUtils.h"
 #include "Criticals.h"
-#include "FalloutEngine.h"
+#include "../GameAddrs/FalloutEngine.h"
 #include <stdint.h>
 
 struct CritStruct {

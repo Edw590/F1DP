@@ -22,11 +22,11 @@
 
 #include "../CLibs/stdio.h"
 #include "../CLibs/string.h"
-#include "../Utils/GlobalEXEAddrs.h"
+#include "../GameAddrs/FalloutEngine.h"
 #include "../Utils/BlockAddrUtils.h"
 #include "../Utils/EXEPatchUtils.h"
+#include "../Utils/GlobalEXEAddrs.h"
 #include "../Utils/IniUtils.h"
-#include "FalloutEngine.h"
 #include "MainMenu.h"
 #include "SFall1Patches.h"
 #include <stdint.h>
@@ -58,7 +58,7 @@ static void __declspec(naked) MainMenuTextYHook(void) {
 			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_DATA_SEC_EXE_ADDR
-			mov     edi, ds:[edi+D__text_to_buf]
+			lea     edi, ds:[edi+D__text_to_buf]
 			mov     [esp+4], edi
 			pop     edi
 			retn
@@ -151,19 +151,19 @@ void MainMenuInit(void) {
 		*(uint32_t *) getRealBlockAddrData(&MainMenuYOffset) = (uint32_t) temp_int;
 		*(uint32_t *) getRealBlockAddrData(&MainMenuTextOffset) += (uint32_t) temp_int * 640;
 		writeMem8EXE(0x73424, 0x90);
-		MakeCallEXE(0x73424+1, getRealBlockAddrCode((void *) &MainMenuButtonYHook), false);
+		makeCallEXE(0x73424 + 1, getRealBlockAddrCode((void *) &MainMenuButtonYHook), false);
 	}
 
 	if (0 != *(uint32_t *) getRealBlockAddrData(&MainMenuTextOffset)) {
 		writeMem8EXE(0x73513, 0x90);
-		MakeCallEXE(0x73513+1, getRealBlockAddrCode((void *) &MainMenuTextYHook), false);
+		makeCallEXE(0x73513 + 1, getRealBlockAddrCode((void *) &MainMenuTextYHook), false);
 	}
 
-	MakeCallEXE(0x7338B, getRealBlockAddrCode((void *) &MainMenuTextHook), true);
+	makeCallEXE(0x7338B, getRealBlockAddrCode((void *) &MainMenuTextHook), true);
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "MainMenuFontColour", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%X", (uint32_t *) getRealBlockAddrData(&OverrideColour));
 	if (0 != *(uint32_t *) getRealBlockAddrData(&OverrideColour)) {
-		MakeCallEXE(0x7332C, getRealBlockAddrCode((void *) &FontColour), false);
+		makeCallEXE(0x7332C, getRealBlockAddrCode((void *) &FontColour), false);
 	}
 }

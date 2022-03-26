@@ -24,17 +24,17 @@
 #include "../CLibs/stdio.h"
 #include "../CLibs/string.h"
 #include "../GameAddrs/CStdFuncs.h"
-#include "../Utils/GlobalEXEAddrs.h"
+#include "../GameAddrs/FalloutEngine.h"
 #include "../Utils/BlockAddrUtils.h"
 #include "../Utils/EXEPatchUtils.h"
+#include "../Utils/GlobalEXEAddrs.h"
 #include "Bugs.h"
 #include "Define.h"
-#include "FalloutEngine.h"
 #include "Inventory.h"
 #include "LoadGameHook.h"
 #include "PartyControl.h"
-#include "SFall1Patches.h"
 #include "SFall1Main.h"
+#include "SFall1Patches.h"
 
 // Specifically initialized to true
 static bool UseScrollWheel = true;
@@ -180,7 +180,7 @@ static void __declspec(naked) ReloadWeaponHotKey(void) {
 			mov     edi, SN_DATA_SEC_EXE_ADDR
 			cmp     ds:[edi+D__itemButtonItems + 0x5][eax], bl // itsWeapon
 			pop     edi
-			jne     itsWeapon                            // Äà
+			jne     itsWeapon                            // No
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_intface_use_item_]
@@ -449,7 +449,7 @@ static void __declspec(naked) printFreeMaxWeight(void) {
 			mov     edx, STAT_carry_amt
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			lea     edi, [edi+C_stat_level_]                     // eax = ìàêñ. âåñ ãðóçà
+			lea     edi, [edi+C_stat_level_]             // eax = Max. cargo weight
 			call    edi
 			pop     edi
 			xchg    ebx, eax                             // ebx = Max. cargo weight, eax = source
@@ -786,55 +786,35 @@ static void __declspec(naked) display_target_inventory_hook(void) {
 	}
 }
 
-uint32_t Dadi590_NewUnk1_var = 0;
-
-static void __declspec(naked) dadi590_newUnk1_hook(void) {
+static uint32_t isFakeTable = 0;                         // 0 = don't change source, 1 = don't change target
+static void __declspec(naked) display_table_inventories_hook(void) {
 	__asm {
 			xor     eax, eax
-			test    edx, edx
-			jz      dadi590_newUnk1
+			test    edx, edx                             // No source?
+			jz      skip                                 // Yes
 			inc     eax
-			test    ebx, ebx
-			jz      dadi590_newUnk1
+			test    ebx, ebx                             // No target?
+			jz      skip                                 // Yes
 			inc     eax
-		dadi590_newUnk1:
+		skip:
 			push    edi
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
-			mov     [edi+Dadi590_NewUnk1_var], eax
+			mov     [edi+isFakeTable], eax
 			pop     edi
-			mov     eax, ds:[0x59CEF8]
-			mov     [esp+0x70], eax
-			mov     eax, ds:[0x59CEE4]
-			mov     [esp+0x78], eax
-			mov     eax, ds:[0x59CF18]
-			ret
-	}
-}
-
-static void __declspec(naked) dadi590_newUnk2_hook(void) {
-	__asm {
-			and     eax, 0xFF
 			push    edi
-			mov     edi, SN_DATA_SEC_BLOCK_ADDR
-			cmp     [edi+Dadi590_NewUnk1_var], 0
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			mov     eax, ds:[edi+D__btable]
 			pop     edi
-			jnz     end
-			xor     eax, eax
-		end:
-			ret
-	}
-}
-
-static void __declspec(naked) dadi590_newUnk3_hook(void) {
-	__asm {
-			and     eax, 0xFF
+			mov     [esp+0x6C+4], eax                    // target_
 			push    edi
-			mov     edi, SN_DATA_SEC_BLOCK_ADDR
-			cmp     [edi+Dadi590_NewUnk1_var], 1
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			mov     eax, ds:[edi+D__ptable]
 			pop     edi
-			jnz     end
-			xor     eax, eax
-		end:
+			mov     [esp+0x74+4], eax                    // source_
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			mov     eax, ds:[edi+D__i_wid]
+			pop     edi
 			ret
 	}
 }
@@ -907,6 +887,34 @@ static void __declspec(naked) display_table_inventories_hook2(void) {
 			lea     edi, [edi+C_win_draw_rect_]
 			call    edi
 			pop     edi
+	}
+}
+
+static void __declspec(naked) display_table_inventories_hook4(void) {
+	__asm {
+			and     eax, 0xFF
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			cmp     [edi+isFakeTable], 0
+			pop     edi
+			jnz     end
+			xor     eax, eax
+		end:
+			ret
+	}
+}
+
+static void __declspec(naked) display_table_inventories_hook5(void) {
+	__asm {
+			and     eax, 0xFF
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			cmp     [edi+isFakeTable], 1
+			pop     edi
+			jnz     end
+			xor     eax, eax
+		end:
+			ret
 	}
 }
 
@@ -2241,8 +2249,8 @@ static void __declspec(naked) move_table_source(void) {
 			xchg    edx, eax                             // edx = item, eax = target
 			mov     ebp, eax                             // ebp = target
 			call    item_add_check
-			cmp     eax, -2                              // Íå õâàòèò ìåñòà â ñóìêå/ðþêçàêå?
-			je      end                                  // Äà
+			cmp     eax, -2                              // Not enough space in your bag/backpack?
+			je      end                                  // Yes
 			xchg    ebp, eax                             // eax = target
 			xchg    edx, eax                             // edx = target, eax = item
 			xchg    ebx, eax                             // ebx = item, eax = count
@@ -2273,9 +2281,9 @@ static void __declspec(naked) checkContainerSize(void) {
 	__asm {
 			push    eax
 			call    item_add_check
-			cmp     eax, -2                              // Íå õâàòèò ìåñòà â ñóìêå/ðþêçàêå?
+			cmp     eax, -2                              // Not enough space in your bag/backpack?
 			pop     eax
-			je      end                                  // Äà
+			je      end                                  // Yes
 
 			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
 			push    edi
@@ -2322,13 +2330,13 @@ void InventoryInit(void) {
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Input", "ReloadWeaponKey", "NONE", prop_value, &sfall1_ini_info_G);
 	*(char *) getRealBlockAddrData(&ReloadWeaponKey) = (char) (0 == strcmp(prop_value, "NONE") ? '\0' : prop_value[0]);
 	if ('\0' != *(char *) getRealBlockAddrData(&ReloadWeaponKey)) {
-		HookCallEXE(0x3B975, getRealBlockAddrCode((void *) &ReloadWeaponHotKey));
+		hookCallEXE(0x3B975, getRealBlockAddrCode((void *) &ReloadWeaponHotKey));
 	}
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "AutoReloadWeapon", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if (0 != temp_int) {
-		HookCallEXE(0x20D56, getRealBlockAddrCode((void *) &AutoReloadWeapon));
+		hookCallEXE(0x20D56, getRealBlockAddrCode((void *) &AutoReloadWeapon));
 	}
 
 	// "Do not bring up the quantity selection window when dragging ammo to a weapon"
@@ -2346,41 +2354,41 @@ void InventoryInit(void) {
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "StackEmptyWeapons", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", (int *) getRealBlockAddrData(&StackEmptyWeapons));
 	if (0 != *(uint32_t *) getRealBlockAddrData(&StackEmptyWeapons)) {
-		MakeCallEXE(0x66B6E, getRealBlockAddrCode((void *) &inven_action_cursor_hook), true);
+		makeCallEXE(0x66B6E, getRealBlockAddrCode((void *) &inven_action_cursor_hook), true);
 	}
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "FreeWeight", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if (0 != temp_int) {
-		MakeCallEXE(0x63C20, getRealBlockAddrCode((void *) &display_inventory_hook), true);
-		MakeCallEXE(0x63F1B, getRealBlockAddrCode((void *) &display_target_inventory_hook), true);
+		makeCallEXE(0x63C20, getRealBlockAddrCode((void *) &display_inventory_hook), true);
+		makeCallEXE(0x63F1B, getRealBlockAddrCode((void *) &display_target_inventory_hook), true);
 
-		MakeCallEXE(0x683E1, getRealBlockAddrCode((void *) &dadi590_newUnk1_hook), false);
+		makeCallEXE(0x683E1, getRealBlockAddrCode((void *) &display_table_inventories_hook), false);
 
 		writeMem16EXE(0x6844A, 0xD231);
-		MakeCallEXE(0x6847F, getRealBlockAddrCode((void *) &display_table_inventories_hook1), true);
-		HookCallEXE(0x685A2, getRealBlockAddrCode((void *) &display_table_inventories_hook2));
+		makeCallEXE(0x6847F, getRealBlockAddrCode((void *) &display_table_inventories_hook1), true);
+		hookCallEXE(0x685A2, getRealBlockAddrCode((void *) &display_table_inventories_hook2));
 
-		MakeCallEXE(0x684C7, getRealBlockAddrCode((void *) &dadi590_newUnk2_hook), false);
-		MakeCallEXE(0x6867E, getRealBlockAddrCode((void *) &dadi590_newUnk3_hook), false);
+		makeCallEXE(0x684C7, getRealBlockAddrCode((void *) &display_table_inventories_hook4), false);
+		makeCallEXE(0x6867E, getRealBlockAddrCode((void *) &display_table_inventories_hook5), false);
 
 		getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "F1DPWeightOnBarter", "1", prop_value, &sfall1_ini_info_G);
 		sscanf(prop_value, "%d", &temp_int);
 		if (0 != temp_int) {
-			HookCallEXE(0x688BB, getRealBlockAddrCode((void *) &barter_inventory_hook));
-			HookCallEXE(0x68CB9, getRealBlockAddrCode((void *) &barter_inventory_hook1));
+			hookCallEXE(0x688BB, getRealBlockAddrCode((void *) &barter_inventory_hook));
+			hookCallEXE(0x68CB9, getRealBlockAddrCode((void *) &barter_inventory_hook1));
 		}
 	}
 
 	// "Using chemistry from the inventory on the player's picture"
-	HookCallEXE(0x64E38, getRealBlockAddrCode((void *) &inven_pickup_hook2));
+	hookCallEXE(0x64E38, getRealBlockAddrCode((void *) &inven_pickup_hook2));
 
 	// "Show max weight in inventory"
-	MakeCallEXE(0x65D1F, getRealBlockAddrCode((void *) &display_stats_hook), true);
+	makeCallEXE(0x65D1F, getRealBlockAddrCode((void *) &display_stats_hook), true);
 
 	// ""Take All" and "Put All" Buttons"
-	MakeCallEXE(0x6352A, getRealBlockAddrCode((void *) &make_loot_drop_button), false);
-	MakeCallEXE(0x672C1, getRealBlockAddrCode((void *) &loot_drop_all), false);
+	makeCallEXE(0x6352A, getRealBlockAddrCode((void *) &make_loot_drop_button), false);
+	makeCallEXE(0x672C1, getRealBlockAddrCode((void *) &loot_drop_all), false);
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "sfall", "OverloadedLoot", "Sorry, you cannot carry that much.",
 					OverloadedLoot, &translation_ini_info_G);
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "sfall", "OverloadedDrop", "Sorry, there is no space left.",
@@ -2391,15 +2399,15 @@ void InventoryInit(void) {
 	if (0 != temp_int) {
 		getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "sfall", "SuperStimExploitMsg",
 						"You cannot use a super stim on someone who is not injured!", SuperStimMsg, &translation_ini_info_G);
-		MakeCallEXE(0x8B34F, getRealBlockAddrCode((void *) &protinst_use_item_on_hook), false);
+		makeCallEXE(0x8B34F, getRealBlockAddrCode((void *) &protinst_use_item_on_hook), false);
 	}
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Input", "UseScrollWheel", "1", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	*(bool *) getRealBlockAddrData(&UseScrollWheel) = (1 == temp_int);
 	if (*(bool *) getRealBlockAddrData(&UseScrollWheel)) {
-		MakeCallEXE(0x67251, getRealBlockAddrCode((void *) &loot_container_hook), false);
-		MakeCallEXE(0x6896B, getRealBlockAddrCode((void *) &barter_inventory_hook2), false);
+		makeCallEXE(0x67251, getRealBlockAddrCode((void *) &loot_container_hook), false);
+		makeCallEXE(0x6896B, getRealBlockAddrCode((void *) &barter_inventory_hook2), false);
 		// No idea what this below is for (I wish documentation existed on sFall1 source... ;_;), but if I enable it,
 		// the game won't like it (will try to access invalid memory). Though, the scroll (and the rest of the game)
 		// works if I disable it. So I'll keep it disabled. Wonder what it's supposed to do...
@@ -2408,34 +2416,34 @@ void InventoryInit(void) {
 
 
 	// Refreshing data and window (in particular in the tuck) and closing the inner bag
-	HookCallEXE(0x6294E, getRealBlockAddrCode((void *) &handle_inventory_hook));
+	hookCallEXE(0x6294E, getRealBlockAddrCode((void *) &handle_inventory_hook));
 
 	// Whether it is necessary to ink one function
-	MakeCallEXE(0x69F19, getRealBlockAddrCode((void *) &item_add_mult), true);
+	makeCallEXE(0x69F19, getRealBlockAddrCode((void *) &item_add_mult), true);
 
 	// Using the correct functions n and the corresponding conditions
-	HookCallEXE(0x6936E, getRealBlockAddrCode((void *) &drop_into_container_hook));
-	HookCallEXE(0x64BEB, getRealBlockAddrCode((void *) &item_add_force_call));
+	hookCallEXE(0x6936E, getRealBlockAddrCode((void *) &drop_into_container_hook));
+	hookCallEXE(0x64BEB, getRealBlockAddrCode((void *) &item_add_force_call));
 
 	// P and confirm whether to use the main backpack and oka, and not the opened bag
 	writeMem32EXE(0x68BF6, (uint32_t) getRealEXEAddr(D__stack));
 
 	// When dragging a smot from the window into the bag, a new free air gap is added, but also a bellow
-	HookCallEXE(0x68318, getRealBlockAddrCode((void *) &move_table_source));
-	HookCallEXE(0x68388, getRealBlockAddrCode((void *) &move_table_target));
+	hookCallEXE(0x68318, getRealBlockAddrCode((void *) &move_table_source));
+	hookCallEXE(0x68388, getRealBlockAddrCode((void *) &move_table_target));
 
 	// Report the absence of a place in the monitor window, and in the ovl window
-	HookCallEXE(0x683B2, getRealEXEAddr(C_gdialog_display_msg_));
+	hookCallEXE(0x683B2, getRealEXEAddr(C_gdialog_display_msg_));
 	writeMem16EXE(0x68390, 0x8EEB);             // jmps 0x4684F0
 
 	// You can’t take it out of the bag to your hand / if it gets into the bag last day
-	HookCallEXE(0x64F1E, getRealBlockAddrCode((void *) &checkContainerSize));
-	HookCallEXE(0x64DD2, getRealBlockAddrCode((void *) &checkContainerSize));
+	hookCallEXE(0x64F1E, getRealBlockAddrCode((void *) &checkContainerSize));
+	hookCallEXE(0x64DD2, getRealBlockAddrCode((void *) &checkContainerSize));
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "ContainerSizeFix", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if (0 != temp_int) {
-		HookCallEXE(0x6A729, getRealBlockAddrCode((void *) &proto_ptr_call));
-		HookCallEXE(0x6C073, getRealBlockAddrCode((void *) &proto_ptr_call));
+		hookCallEXE(0x6A729, getRealBlockAddrCode((void *) &proto_ptr_call));
+		hookCallEXE(0x6C073, getRealBlockAddrCode((void *) &proto_ptr_call));
 	}
 }

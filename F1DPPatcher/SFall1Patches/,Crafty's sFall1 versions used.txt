@@ -1,11 +1,13 @@
-This is a mixture of sFall1 1.7.6 with other versions I find around without source. I'm asking for IDA's help on those
-and putting the changes here, always having version 1.7.6 in mind, which is the latest one for which I found the source.
+Currently, this is Crafty's sFall1 version 1.7.20. It has only a thing from version 1.8 which I've limited the sound
+buffers to 4 as it's done on that version. All the rest is from 1.7.20, if I didn't miss anything.
 
-I've got version 1.7.17 as a DLL, still coded in C++, so the code is understood by IDA and it can disassemble it
-normally - meaning it's easier to port.
-All the other versions I find are all pure Assembly versions, and the code is a mess such that IDA cannot disassemble it
-decently. I can more or less still understand parts of it, so it's more or less possible to port somethings from those
-versions.
+For now it's only 1.7.20, as I need to get back to study-mode, but later I'll ask IDA's help on newer versions. When I
+do that, I'll put the changes here from 1.7.20 vs that version, having always version 1.7.20 in mind, which is the
+last with available source code (even though that goes against the GPL license agreement).
 
-For now though, only up to 1.7.17, as I need to get back to study-mode. I'll leave the other newer versions for some
-other time, as those will need deeper analysis with IDA then 1.7.17 requires, which is almost no analysis.
+So far I could not find any version other than the most recent 1.8. All above 1.7.20 are pure Assembly versions, and the
+code is a mess such that IDA cannot disassemble it decently. I can more or less still understand parts of it, so it's
+more or less possible to port some things from those pure-ASM versions (some other time though, as I said above).
+
+When a file is updated to version 1.8, just above the main function of the file there will be a string saying just that:
+"Entire file updated to version 1.8". Currently only the very easy ones. The others will be later as I said above.

@@ -13,40 +13,40 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-// This had no copyright notice on it. Hopefully, the author doesn't mind me using it. I'm keeping
-// the same license as in the other files of the project on it though (I'm just licensing it only
-// to myself because I can't put the original authors there, whoever they were - no notice).
+// This had no copyright notice on it. I'm keeping the same license as in the other files of the project on it though
+// (I'm just licensing it only to myself because I can't put the original authors - no notice).
 //
 // Original code modified by me, DADi590, to adapt it to this project, starting on 2022-03-02.
 // NOTE: I don't see mention to Crafty in the copyright notices, but I'll just say here that this code was taken from
 // his modification of the original sFall1.
 
+#include "../CLibs/conio.h"
+#include "../CLibs/ctype.h"
 #include "../CLibs/stdio.h"
 #include "../CLibs/stdlib.h"
 #include "../CLibs/string.h"
 #include "../GameAddrs/CStdFuncs.h"
-#include "../Utils/General.h"
-#include "../Utils/GlobalEXEAddrs.h"
+#include "../GameAddrs/FalloutEngine.h"
 #include "../Utils/BlockAddrUtils.h"
 #include "../Utils/EXEPatchUtils.h"
+#include "../Utils/General.h"
+#include "../Utils/GlobalEXEAddrs.h"
+#include "AI.h"
 #include "AmmoMod.h"
 #include "AnimationsAtOnceLimit.h"
-#include "Criticals.h"
-#include "Define.h"
-#include "FalloutEngine.h"
-#include "Inventory.h"
-#include "SFall1Patches.h"
-#include "SFall1Main.h"
-#include "../CLibs/ctype.h"
-#include "MainMenu.h"
+#include "Bugs.h"
 #include "Credits.h"
+#include "Criticals.h"
+#include "DebugMode.h"
+#include "Define.h"
+#include "Inventory.h"
 #include "LoadGameHook.h"
-#include "../CLibs/conio.h"
+#include "MainMenu.h"
 #include "PartyControl.h"
 #include "Quests.h"
+#include "SFall1Main.h"
+#include "SFall1Patches.h"
 #include "Sound.h"
-#include "Bugs.h"
-#include "Dadi590_NewUnk1.h"
 
 
 // ADVICE: don't try to understand the functions in each patch... Infinite EDI register uses there to be able to have
@@ -292,7 +292,6 @@ static void __declspec(naked) intface_item_reload_hook(void) {
 }
 
 static uint32_t RetryCombatMinAP = 0;
-
 static void __declspec(naked) combat_turn_hook(void) {
 	__asm {
 			xor     eax, eax
@@ -352,7 +351,6 @@ static void __declspec(naked) intface_rotate_numbers_hook(void) {
 		negative:
 			xor     ebx, ebx
 		end:
-
 			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -360,21 +358,6 @@ static void __declspec(naked) intface_rotate_numbers_hook(void) {
 			mov     [esp+4], edi
 			pop     edi
 			retn
-	}
-}
-
-static void __declspec(naked) DebugMode(void) {
-	__asm {
-			pusha
-			push    edi
-			mov     edi, SN_CODE_SEC_EXE_ADDR
-			lea     edi, [edi+C_debug_register_env_]
-			call    edi
-			pop     edi
-			popa
-
-			mov     ecx, 1
-			ret
 	}
 }
 
@@ -398,20 +381,20 @@ static void __declspec(naked) obj_outline_all_items_on(void) {
 			pop     edi
 			je      nextObject
 			xchg    ecx, eax
-			mov     edx, 0x10
+			mov     edx, 0x10                            // yellow
 			mov     eax, [ecx+0x20]
 			and     eax, 0xF000000
 			sar     eax, 0x18
 			test    eax, eax                             // Is it ObjType_Item?
-			jz      dadi590_newUnk1                      // Yes
-			dec     eax
-			jnz     nextObject
-			test    byte ptr [ecx+0x44], 0x80
-			jz      nextObject
+			jz      skip                                 // Yes
+			dec     eax                                  // Is it ObjType_Critter?
+			jnz     nextObject                           // No
+			test    byte ptr [ecx+0x44], 0x80            // source.results & DAM_DEAD?
+			jz      nextObject                           // No
 			push    edx
 			sub     esp, 4
 			mov     edx, esp
-			mov     eax, [ecx+0x64]
+			mov     eax, [ecx+0x64]                      // eax = pid
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_proto_ptr_]
@@ -423,11 +406,11 @@ static void __declspec(naked) obj_outline_all_items_on(void) {
 			inc     edx
 			pop     edx
 			jz      nextObject
-			test    byte ptr [ecx+0x20], 0x20
-			jnz     nextObject
+			test    byte ptr [ecx+0x20], 0x20            // Can't be stolen from?|Can't be robbed?
+			jnz     nextObject                           // Yes
 			or      [ecx+0x25], dl
 			xor     eax, eax
-		dadi590_newUnk1:
+		skip:
 			cmp     [ecx+0x7C], eax                      // Does it belong to someone?
 			jnz     nextObject                           // Yes
 			test    [ecx+0x74], eax                      // Already illuminated?
@@ -484,12 +467,12 @@ static void __declspec(naked) obj_outline_all_items_off(void) {
 			and     eax, 0xF000000
 			sar     eax, 0x18
 			test    eax, eax                             // Is it ObjType_Item?
-			jz      dadi590_newUnk1                      // Yes
-			dec     eax
-			jnz     nextObject
-			test    byte ptr [ecx+0x44], 0x80
-			jz      nextObject
-		dadi590_newUnk1:
+			jz      skip                                 // Yes
+			dec     eax                                  // Is it ObjType_Critter?
+			jnz     nextObject                           // No
+			test    byte ptr [ecx+0x44], 0x80            // source.results & DAM_DEAD?
+			jz      nextObject                           // No
+		skip:
 			cmp     [ecx+0x7C], eax                      // Does it belong to someone?
 			jnz     nextObject                           // Yes
 			mov     [ecx+0x74], eax
@@ -649,8 +632,7 @@ static void __declspec(naked) pipboy_hook(void) {
 	}
 }
 
-static const char *_nar_31 = "nar_31";
-
+static const char _nar_31[] = "nar_31";
 static void __declspec(naked) Brotherhood_final(void) {
 	__asm {
 			mov     eax, 16                              // BROTHERHOOD_INVADED
@@ -667,10 +649,16 @@ static void __declspec(naked) Brotherhood_final(void) {
 			lea     edi, [edi+C_game_get_global_var_]
 			call    edi
 			pop     edi
-			mov     edx, 0x38B45
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edx, [edi+0x38B45]
+			pop     edi
 			test    eax, eax
 			jz      RhombusDead
-			mov     edx, 0x38B18
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edx, [edi+0x38B18]
+			pop     edi
 		RhombusDead:
 			jmp     edx
 		nar_31:
@@ -687,7 +675,7 @@ static void __declspec(naked) Brotherhood_final(void) {
 			pop     edi
 			push    edi
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
-			mov     edx, [edi+_nar_31]
+			lea     edx, [edi+_nar_31]
 			pop     edi
 
 			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
@@ -704,7 +692,6 @@ static uint32_t Educated = 0;
 static uint32_t Lifegiver = 0;
 static uint32_t Tag_ = 0;
 static uint32_t Mutate_ = 0;
-
 static void __declspec(naked) editor_design_hook(void) {
 	__asm {
 			push    edi
@@ -1093,7 +1080,6 @@ static void __declspec(naked) combat_hook(void) {
 }
 
 static uint32_t MaxPCLevel = 21;
-
 static void __declspec(naked) stat_pc_min_exp_hook(void) {
 	__asm {
 			inc     eax
@@ -1133,7 +1119,6 @@ static void __declspec(naked) stat_pc_min_exp_hook(void) {
 
 static uint32_t RemoveFriendlyFoe = 0;
 static uint32_t ColorLOS = 0;
-
 static void __declspec(naked) combat_update_critter_outline_for_los(void) {
 	__asm {
 			pushad
@@ -1424,13 +1409,13 @@ static void __declspec(naked) print_with_linebreak(void) {
 
 static void __declspec(naked) display_print_with_linebreak(void) {
 	__asm {
-			push edi
+			push    edi
 			push    esi
 			mov     esi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [esi+C_display_print_]
 			pop     esi
-			call print_with_linebreak
-			pop  edi
+			call    print_with_linebreak
+			pop     edi
 			retn
 	}
 }
@@ -1449,12 +1434,11 @@ static void __declspec(naked) inven_display_msg_with_linebreak(void) {
 }
 
 static int drugExploit = 0;
-
 static void __declspec(naked) protinst_use_item_hook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
-			dec     [edi+drugExploit]
+			inc     dword ptr [edi+drugExploit]
 			pop     edi
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -1463,7 +1447,7 @@ static void __declspec(naked) protinst_use_item_hook(void) {
 			pop     edi
 			push    edi
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
-			inc     [edi+drugExploit]
+			dec     dword ptr [edi+drugExploit]
 			pop     edi
 			retn
 	}
@@ -1473,7 +1457,7 @@ static void __declspec(naked) UpdateLevel_hook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
-			dec     [edi+drugExploit]
+			inc     dword ptr [edi+drugExploit]
 			pop     edi
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -1482,7 +1466,7 @@ static void __declspec(naked) UpdateLevel_hook(void) {
 			pop     edi
 			push    edi
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
-			inc     [edi+drugExploit]
+			dec     dword ptr [edi+drugExploit]
 			pop     edi
 			retn
 	}
@@ -1492,7 +1476,7 @@ static void __declspec(naked) skill_level_hook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
-			dec     [edi+drugExploit]
+			inc     dword ptr [edi+drugExploit]
 			pop     edi
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -1501,7 +1485,7 @@ static void __declspec(naked) skill_level_hook(void) {
 			pop     edi
 			push    edi
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
-			inc     [edi+drugExploit]
+			dec     dword ptr [edi+drugExploit]
 			pop     edi
 			retn
 	}
@@ -1511,7 +1495,7 @@ static void __declspec(naked) SliderBtn_hook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
-			dec     [edi+drugExploit]
+			inc     dword ptr [edi+drugExploit]
 			pop     edi
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -1520,7 +1504,7 @@ static void __declspec(naked) SliderBtn_hook(void) {
 			pop     edi
 			push    edi
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
-			inc     [edi+drugExploit]
+			dec     dword ptr [edi+drugExploit]
 			pop     edi
 			retn
 	}
@@ -1530,7 +1514,7 @@ static void __declspec(naked) SliderBtn_hook1(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
-			dec     [edi+drugExploit]
+			inc     dword ptr [edi+drugExploit]
 			pop     edi
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -1539,7 +1523,154 @@ static void __declspec(naked) SliderBtn_hook1(void) {
 			pop     edi
 			push    edi
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
-			inc     [edi+drugExploit]
+			dec     dword ptr [edi+drugExploit]
+			pop     edi
+			retn
+	}
+}
+
+static void __declspec(naked) checkPerk(void) {
+	__asm {
+			inc     eax                                  // Got a perk?
+			jz      end                                  // No
+			dec     eax
+			imul    edx, eax, 0x3C
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			lea     eax, [edi+D__perk_data]
+			pop     edi
+			lea     eax, [eax+edx]
+			cmp     ebx, [eax+0x10]                      // Perk.Stat
+			jne     skip
+			sub     ebp, [eax+0x14]                      // Perk.StatMod
+		skip:
+			cmp     dword ptr [eax+0x8], -1              // Perk.Ranks
+			jne     end
+			sub     ebp, [eax+ebx*4+0x20]                // Perk.Str
+		end:
+			retn
+	}
+}
+
+static void __declspec(naked) stat_get_real_bonus(void) {
+	__asm {
+			push    edi
+			xchg    ebp, eax
+			mov     eax, ecx
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_inven_worn_]
+			call    edi
+			pop     edi
+			test    eax, eax
+			jz      noArmor
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_item_ar_perk_]
+			call    edi
+			pop     edi
+			call    checkPerk
+		noArmor:
+			mov     eax, ecx
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_inven_right_hand_]
+			call    edi
+			pop     edi
+			test    eax, eax
+			jz      noRightWeapon
+			mov     edx, eax
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_item_get_type_]
+			call    edi
+			pop     edi
+			cmp     eax, item_type_weapon
+			jne     noRightWeapon
+			xchg    edx, eax                             // eax = weapon
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_item_w_perk_]
+			call    edi
+			pop     edi
+			call    checkPerk
+		noRightWeapon:
+			mov     eax, ecx
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_inven_left_hand_]
+			call    edi
+			pop     edi
+			test    eax, eax
+			jz      noLeftWeapon
+			mov     edx, eax
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_item_get_type_]
+			call    edi
+			pop     edi
+			cmp     eax, item_type_weapon
+			jne     noLeftWeapon
+			xchg    edx, eax                             // eax = weapon
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_item_w_perk_]
+			call    edi
+			pop     edi
+			call    checkPerk
+		noLeftWeapon:
+			push    esi
+			mov     esi, SN_DATA_SEC_EXE_ADDR
+			mov     edi, ds:[esi+D__queue]
+			pop     esi
+		loopQueue:
+			test    edi, edi                             // Nothing in the queue?
+			jz      end                                  // Yes
+			cmp     ecx, [edi+0x8]                       // source == queue.object?
+			jne     nextQueue                            // No
+			mov     edx, [edi+0x4]                       // edx = queue.type
+			mov     esi, [edi+0xC]                       // esi = queue.data
+			test    edx, edx                             // Drug?
+			jz      checkDrug                            // Yes
+			cmp     edx, 2                               // Addiction?
+			je      checkAddict                          // Yes
+			cmp     edx, 6                               // Radiation?
+			jne     nextQueue                            // No
+			cmp     ebx, edx                             // STAT_lu?
+			je      nextQueue                            // Yes
+			mov     eax, [esi]                           // eax = queue_rads.rad_level
+			dec     eax
+			shl     eax, 5
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			sub     ebp, ds:[edi+D__rad_bonus][eax+ebx*4]
+			pop     edi
+			jmp     nextQueue
+		checkDrug:
+			cmp     dword ptr [esi], -2                  // Special situation?
+			jne     loopStats                            // No
+			inc     edx
+			inc     edx
+		loopStats:
+			cmp     ebx, [esi+edx*4]                     // stat == queue_drug.stat#?
+			jne     nextStat                             // No
+			add     ebp, [esi+edx*4+0xC]
+		nextStat:
+			inc     edx
+			cmp     edx, 3
+			jl      loopStats
+			jmp     nextQueue
+		checkAddict:
+			dec     edx
+			cmp     [esi], edx                           // Perk active?
+			je      nextQueue                            // No
+			mov     eax, [esi+0x8]                       // eax = queue_addict.perk
+			call    checkPerk
+		nextQueue:
+			mov     edi, [edi+0x10]                      // edi = queue.next
+			jmp     loopQueue
+		end:
+			xchg    ebp, eax
 			pop     edi
 			retn
 	}
@@ -1552,22 +1683,11 @@ static void __declspec(naked) stat_level_hook(void) {
 			lea     edi, [edi+C_stat_get_bonus_]
 			call    edi
 			pop     edi
-			cmp     ebx, STAT_lu                         // We test only strength-luck
-			ja      end
-			//test eax, eax                              // Is there any [+/-] bonus?
-			//jz   end                                   // No
-			push    edi
-			mov     edi, SN_DATA_SEC_BLOCK_ADDR
-			cmp     [edi+drugExploit], 0                 // Calling from the right places?
-			pop     edi
-			jl      checkPenalty                         // Book reading/skill check
-			jg      noBonus                              // Getting Perks
-			retn
-		checkPenalty:
-			cmp     eax, 1                               // Positive effect?
-			jge     end                                  // Yes - take it into account
-		noBonus:
-			xor     eax, eax                             // We do not take into account the effect of drugs/radiation/etc.
+			cmp     ebx, STAT_lu
+			ja      end                                  // We test only strength-luck
+			cmp  dword ptr drugExploit, 0                // Calling from the right places?
+			je   end                                     // No
+			call stat_get_real_bonus                     // We do not take into account temporary effects
 		end:
 			retn
 	}
@@ -1582,6 +1702,7 @@ static void __declspec(naked) barter_attempt_transaction_hook(void) {
 			xor     eax, eax
 			dec     eax
 			retn
+
 		found:
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -1761,14 +1882,16 @@ static void __declspec(naked) inc_game_time_in_seconds_hook(void) {
 
 static void __declspec(naked) script_chk_timed_events_hook(void) {
 	__asm {
+			test    dl, 1
+			jnz     end
 			xor     eax, eax
 			inc     eax
 			call    inc_game_time_hook
-
+		end:
 			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			lea     edi, [edi+0x920CE]
+			lea     edi, [edi+0x920D7]
 			mov     [esp+4], edi
 			pop     edi
 			retn
@@ -1843,13 +1966,15 @@ static void __declspec(naked) gdAddOptionStr_hook(void) {
 }
 
 static void OnExit(void) {
-	//ConsoleExit();
 	AnimationsAtOnceExit();
+	PartyControlExit();
 }
 
 static void __declspec(naked) _WinMain_hook(void) {
 	__asm {
+			pushad
 			call    OnExit
+			popad
 
 			// [DADi590: no need to call exit() here. That's done in the Loader code already.]
 			retn
@@ -1863,13 +1988,15 @@ void DllMain2(void) {
 	memset(prop_value, 0, MAX_PROP_VALUE_LEN);
 
 	// Make a call just before the game exits, which is inside the Loader code, in the NOPs I left there for this.
-	// Those NOPs that are replaced here are just before this block of code is freed by free().
-	MakeCallEXE(0xEA2DA, getRealBlockAddrCode((void *) &_WinMain_hook), false);
+	// Those NOPs that are replaced here and called just before this block of code is freed by free() on the Loader.
+	makeCallEXE(0xEA2DA, getRealBlockAddrCode((void *) &_WinMain_hook), false);
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Main", "TranslationsINI", "./Translations.ini", prop_value, &sfall1_ini_info_G);
 	// If it fails, the struct will have 0s and the file won't be read, so the default values will be used as sFall1 does.
 	readFile(prop_value, &translation_ini_info_G);
 
+
+	BugsInit();
 
 	// Too much work and I don't see much/any gain in doing this.
 	//getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Speed", "Enable", "0", prop_value, &sfall1_ini_info_G);
@@ -1900,7 +2027,7 @@ void DllMain2(void) {
 	}
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "VersionString", "", versionString, &sfall1_ini_info_G);
-	if (0 != strcmp(mapName, "")) {
+	if (0 != strcmp(versionString, "")) {
 		writeMem32EXE(0xA10E7+1, (uint32_t) getRealBlockAddrData(versionString));
 	}
 
@@ -1977,13 +2104,13 @@ void DllMain2(void) {
 	if (0 != temp_int) {
 		getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "sfall", "KarmaGain", "You gained %d karma.", KarmaGainMsg, &translation_ini_info_G);
 		getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "sfall", "KarmaLoss", "You lost %d karma.", KarmaLossMsg, &translation_ini_info_G);
-		HookCallEXE(0x4CED4, getRealBlockAddrCode((void *) &op_set_global_var_hook));
+		hookCallEXE(0x4CED4, getRealBlockAddrCode((void *) &op_set_global_var_hook));
 	}
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "PlayIdleAnimOnReload", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if (0 != temp_int) {
-		HookCallEXE(0x563D9, getRealBlockAddrCode((void *) &intface_item_reload_hook));
+		hookCallEXE(0x563D9, getRealBlockAddrCode((void *) &intface_item_reload_hook));
 	}
 
 	// Disabled
@@ -2000,7 +2127,7 @@ void DllMain2(void) {
 	*(uint32_t *) getRealBlockAddrData(&RetryCombatMinAP) = (uint32_t) temp_int;
 	if (temp_int > 0) {
 		// Apply retry combat patch
-		HookCallEXE(0x20ABA, getRealBlockAddrCode((void *) &combat_turn_hook));
+		hookCallEXE(0x20ABA, getRealBlockAddrCode((void *) &combat_turn_hook));
 	}
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "RemoveWindowRounding", "0", prop_value, &sfall1_ini_info_G);
@@ -2015,7 +2142,7 @@ void DllMain2(void) {
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "SpeedInterfaceCounterAnims", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if (1 == temp_int) {
-		MakeCallEXE(0x563F1, getRealBlockAddrCode((void *) &intface_rotate_numbers_hook), true);
+		makeCallEXE(0x563F1, getRealBlockAddrCode((void *) &intface_rotate_numbers_hook), true);
 	} else if (2 == temp_int) {
 		writeMem32EXE(0x56406, 0x90DB3190u);
 	}
@@ -2034,14 +2161,10 @@ void DllMain2(void) {
 	}
 
 	// Patch ereg call - I think this is only for Windows, so I've disabled it here
-	//BlockCallEXE(0x3B25F);
+	//blockCallEXE(0x3B25F);
 
 	// todo The below is disabled until ALL the addresses are corrected for the DOS EXE
-	/*getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "AnimationsAtOnceLimit", "21", prop_value, &sfall1_ini_info_G);
-	sscanf(prop_value, "%d", &AnimationsLimit);
-	if (*(int *) getRealBlockAddrData(&AnimationsLimit) > 21) {
-		AnimationsAtOnceInit();
-	}*/
+	//AnimationsAtOnceInit();
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "CombatPanelAnimDelay", "1000", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
@@ -2057,25 +2180,7 @@ void DllMain2(void) {
 		writeMem32EXE(0x401C1+1, (uint32_t) temp_int);
 	}
 
-	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Debugging", "DebugMode", "0", prop_value, &sfall1_ini_info_G);
-	sscanf(prop_value, "%d", &temp_int);
-	if (0 != temp_int) {
-		uint32_t str_addr = 0;
-		// This is a modification of the patch (DADi590) - this one doesn't cut code
-		MakeCallEXE(0x728A7, getRealBlockAddrCode((void *) &DebugMode), false);
-
-		writeMem8EXE(0xB308B, 0xB8);               // mov  eax, offset ???
-		if (1 == temp_int) {
-			str_addr = (uint32_t) getRealEXEAddr(0xFE1EC); // "gnw"
-		} else if (2 == temp_int) {
-			str_addr = (uint32_t) getRealEXEAddr(0xFE1D0); // "log"
-		} else if (3 == temp_int) {
-			str_addr = (uint32_t) getRealEXEAddr(0xFE1E4); // "screen"
-		} else if (4 == temp_int) {
-			str_addr = (uint32_t) getRealEXEAddr(0xFE1C8); // "mono"
-		}
-		writeMem32EXE(0xB308B+1, str_addr);
-	}
+	DebugModeInit();
 
 	// I don't think this applies for MS-DOS...
 	//if (GetPrivateProfileIntA("Misc", "SingleCore", 1, ini)) {
@@ -2118,15 +2223,15 @@ void DllMain2(void) {
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Input", "ToggleItemHighlightsKey", "NONE", prop_value, &sfall1_ini_info_G);
 	*(char *) getRealBlockAddrData(&toggleHighlightsKey) = (char) (0 == strcmp(prop_value, "NONE") ? '\0' : prop_value[0]);
 	if ('\0' != *(char *) getRealBlockAddrData(&toggleHighlightsKey)) {
-		HookCallEXE(0x43715, getRealBlockAddrCode((void *) &gmouse_bk_process_hook));
-		HookCallEXE(0x4398A, getRealBlockAddrCode((void *) &obj_remove_outline_hook));
-		HookCallEXE(0x46155, getRealBlockAddrCode((void *) &obj_remove_outline_hook));
+		hookCallEXE(0x43715, getRealBlockAddrCode((void *) &gmouse_bk_process_hook));
+		hookCallEXE(0x4398A, getRealBlockAddrCode((void *) &obj_remove_outline_hook));
+		hookCallEXE(0x46155, getRealBlockAddrCode((void *) &obj_remove_outline_hook));
 		getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Input", "TurnHighlightContainers", "0", prop_value, &sfall1_ini_info_G);
 		sscanf(prop_value, "%ud", (uint32_t *) getRealBlockAddrData(&TurnHighlightContainers));
 	}
 
-	HookCallEXE(0x72D37, getRealBlockAddrCode((void *) &get_input_hook));       //hook the main game loop
-	HookCallEXE(0x2082E, getRealBlockAddrCode((void *) &get_input_hook));       //hook the combat loop
+	hookCallEXE(0x72D37, getRealBlockAddrCode((void *) &get_input_hook));       //hook the main game loop
+	hookCallEXE(0x2082E, getRealBlockAddrCode((void *) &get_input_hook));       //hook the combat loop
 
 	MainMenuInit();
 
@@ -2144,25 +2249,25 @@ void DllMain2(void) {
 
 	// Named like this because it was added by me (I didn't invent though) to this source but I have no idea of how to
 	// call it (I'm not sure what category this belongs to, based on the 2 things inside the function).
-	Dadi590_NewUnk1Init();
+	AIInit();
 
 	// todo I think this is not working. Check everything again, for the 3rd time?
 	PartyControlInit();
 
 	// Navigation keys in pipboy
-	HookCallEXE(0x86A5E, getRealBlockAddrCode((void *) &pipboy_hook));
+	hookCallEXE(0x86A5E, getRealBlockAddrCode((void *) &pipboy_hook));
 
 	// Third ending for the Brotherhood of Steel
-	MakeCallEXE(0x38B00, getRealBlockAddrCode((void *) &Brotherhood_final), true);
+	makeCallEXE(0x38B00, getRealBlockAddrCode((void *) &Brotherhood_final), true);
 
 	// Disable the disappearance of an unused perk
 	writeMem8EXE(0x361CB, 0x80);                // add  byte ptr ds:_free_perk, 1
 	writeMem16EXE(0x36222, 0x0DFE);             // dec  byte ptr ds:_free_perk
 	writeMem8EXE(0x36228+1, 0xB1);              // jmp  0x436263
-	HookCallEXE(0x2C64E, getRealBlockAddrCode((void *) &editor_design_hook));
-	HookCallEXE(0x2CBE4, getRealBlockAddrCode((void *) &editor_design_hook2));
-	HookCallEXE(0x368EC, getRealBlockAddrCode((void *) &perks_dialog_hook));
-	MakeCallEXE(0x866C2, getRealBlockAddrCode((void *) &perk_can_add_hook), true);
+	hookCallEXE(0x2C64E, getRealBlockAddrCode((void *) &editor_design_hook));
+	hookCallEXE(0x2CBE4, getRealBlockAddrCode((void *) &editor_design_hook2));
+	hookCallEXE(0x368EC, getRealBlockAddrCode((void *) &perks_dialog_hook));
+	makeCallEXE(0x866C2, getRealBlockAddrCode((void *) &perk_can_add_hook), true);
 
 	// Raise the Perk Window
 	writeMem8EXE(0x3641E+1, 31);                  // 91-60=31
@@ -2178,17 +2283,17 @@ void DllMain2(void) {
 	sscanf(prop_value, "%d", &temp_int);
 	*(uint32_t *) getRealBlockAddrData(&FakeCombatFix) = (uint32_t) temp_int;
 	if (0 != temp_int) {
-		MakeCallEXE(0x17952, getRealBlockAddrCode((void *) &check_move_hook), false);
-		MakeCallEXE(0x43609, getRealBlockAddrCode((void *) &gmouse_bk_process_hook1), false);
-		HookCallEXE(0x43D98, getRealBlockAddrCode((void *) &FakeCombatFix1));       // action_get_an_object_
-		HookCallEXE(0x443CB, getRealBlockAddrCode((void *) &FakeCombatFix1));       // action_get_an_object_
-		HookCallEXE(0x43E41, getRealBlockAddrCode((void *) &FakeCombatFix2));       // action_loot_container_
-		HookCallEXE(0x443B7, getRealBlockAddrCode((void *) &FakeCombatFix2));       // action_loot_container_
-		HookCallEXE(0x11F7B, getRealBlockAddrCode((void *) &FakeCombatFix3));       // action_use_an_object_
-		HookCallEXE(0x43F80, getRealBlockAddrCode((void *) &FakeCombatFix3));       // gmouse_handle_event_
-		MakeCallEXE(0x1FEDA, getRealBlockAddrCode((void *) &combat_begin_hook), false);
-		MakeCallEXE(0x1FA53, getRealBlockAddrCode((void *) &combat_reset_hook), false);
-		HookCallEXE(0x20D29, getRealBlockAddrCode((void *) &combat_hook));
+		makeCallEXE(0x17952, getRealBlockAddrCode((void *) &check_move_hook), false);
+		makeCallEXE(0x43609, getRealBlockAddrCode((void *) &gmouse_bk_process_hook1), false);
+		hookCallEXE(0x43D98, getRealBlockAddrCode((void *) &FakeCombatFix1));       // action_get_an_object_
+		hookCallEXE(0x443CB, getRealBlockAddrCode((void *) &FakeCombatFix1));       // action_get_an_object_
+		hookCallEXE(0x43E41, getRealBlockAddrCode((void *) &FakeCombatFix2));       // action_loot_container_
+		hookCallEXE(0x443B7, getRealBlockAddrCode((void *) &FakeCombatFix2));       // action_loot_container_
+		hookCallEXE(0x11F7B, getRealBlockAddrCode((void *) &FakeCombatFix3));       // action_use_an_object_
+		hookCallEXE(0x43F80, getRealBlockAddrCode((void *) &FakeCombatFix3));       // gmouse_handle_event_
+		makeCallEXE(0x1FEDA, getRealBlockAddrCode((void *) &combat_begin_hook), false);
+		makeCallEXE(0x1FA53, getRealBlockAddrCode((void *) &combat_reset_hook), false);
+		hookCallEXE(0x20D29, getRealBlockAddrCode((void *) &combat_hook));
 	}
 
 	// Some people were not that happy this "feature", so I've put it optional, and disabled by default (it's wtf anyway)
@@ -2218,7 +2323,7 @@ void DllMain2(void) {
 	if ((temp_int != 21) && (temp_int >= 1) && (temp_int <= 99)) {
 		writeMem8EXE(0x3611B+2, (uint8_t) temp_int);
 		writeMem8EXE(0x9CCBC+2, (uint8_t) temp_int);
-		MakeCallEXE(0x9CB82, getRealBlockAddrCode((void *) &stat_pc_min_exp_hook), false);
+		makeCallEXE(0x9CB82, getRealBlockAddrCode((void *) &stat_pc_min_exp_hook), false);
 		// Max Perks Gained
 		writeMem8EXE(0x36197+2, 33);
 		writeMem8EXE(0x361A2+2, 33);
@@ -2249,9 +2354,9 @@ void DllMain2(void) {
 	sscanf(prop_value, "%d", &temp_int);
 	*(uint32_t *) getRealBlockAddrData(&ColorLOS) = (uint32_t) temp_int;
 	if ((2 == temp_int) || (4 == temp_int) || (16 == temp_int) || (32 == temp_int)) {
-		HookCallEXE(0x242FF, getRealBlockAddrCode((void *) &combat_update_critter_outline_for_los));
-		HookCallEXE(0x24399, getRealBlockAddrCode((void *) &combat_update_critter_outline_for_los));
-		MakeCallEXE(0x7C2CA, getRealBlockAddrCode((void *) &obj_move_to_tile_hook), true);
+		hookCallEXE(0x242FF, getRealBlockAddrCode((void *) &combat_update_critter_outline_for_los));
+		hookCallEXE(0x24399, getRealBlockAddrCode((void *) &combat_update_critter_outline_for_los));
+		makeCallEXE(0x7C2CA, getRealBlockAddrCode((void *) &obj_move_to_tile_hook), true);
 	}
 
 	// You can use the newline control character (\n) in the description of objects from pro_*.msg
@@ -2272,16 +2377,14 @@ void DllMain2(void) {
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "DrugExploitFix", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if (0 != temp_int) {
-		HookCallEXE(0x8B11C, getRealBlockAddrCode((void *) &protinst_use_item_hook));
-		HookCallEXE(0x361FB, getRealBlockAddrCode((void *) &UpdateLevel_hook));
-		HookCallEXE(0x34AA0, getRealBlockAddrCode((void *) &skill_level_hook));    // SavePlayer_
-		HookCallEXE(0x355E8, getRealBlockAddrCode((void *) &SliderBtn_hook));
-		HookCallEXE(0x3564F, getRealBlockAddrCode((void *) &skill_level_hook));    // SliderBtn_
-		HookCallEXE(0x35668, getRealBlockAddrCode((void *) &SliderBtn_hook1));
-		HookCallEXE(0x9C563, getRealBlockAddrCode((void *) &stat_level_hook));
+		hookCallEXE(0x8B11C, getRealBlockAddrCode((void *) &protinst_use_item_hook));
+		hookCallEXE(0x361FB, getRealBlockAddrCode((void *) &UpdateLevel_hook));
+		hookCallEXE(0x34AA0, getRealBlockAddrCode((void *) &skill_level_hook));    // SavePlayer_
+		hookCallEXE(0x355E8, getRealBlockAddrCode((void *) &SliderBtn_hook));
+		hookCallEXE(0x3564F, getRealBlockAddrCode((void *) &skill_level_hook));    // SliderBtn_
+		hookCallEXE(0x35668, getRealBlockAddrCode((void *) &SliderBtn_hook1));
+		hookCallEXE(0x9C563, getRealBlockAddrCode((void *) &stat_level_hook));
 	}
-
-	BugsInit();
 
 	QuestsInit();
 
@@ -2291,8 +2394,8 @@ void DllMain2(void) {
 	if (0 != temp_int) {
 		writeMem8EXE(0x6AC2A, 0xBA);
 		writeMem8EXE(0x6AC5C, 0xBA);
-		MakeCallEXE(0x67E23, getRealBlockAddrCode((void *) &barter_attempt_transaction_hook), false);
-		HookCallEXE(0x6BEE9, getRealBlockAddrCode((void *) &item_m_turn_off_hook));
+		makeCallEXE(0x67E23, getRealBlockAddrCode((void *) &barter_attempt_transaction_hook), false);
+		hookCallEXE(0x6BEE9, getRealBlockAddrCode((void *) &item_m_turn_off_hook));
 	}
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "InstantWeaponEquip", "0", prop_value, &sfall1_ini_info_G);
@@ -2302,10 +2405,10 @@ void DllMain2(void) {
 		for (i = 0; i < ((int) sizeof(PutAwayWeapon) / 4); ++i) {
 			writeMem8EXE(((uint32_t *) getRealBlockAddrData(PutAwayWeapon))[i], 0xEB); // jmps
 		}
-		BlockCallEXE(0x65FFD);                      //
-		BlockCallEXE(0x66008);                      // inven_unwield_
-		BlockCallEXE(0x66018);                      //
-		MakeCallEXE(0x14C5C, getRealBlockAddrCode((void *) &register_object_take_out_hook), true);
+		blockCallEXE(0x65FFD);                      //
+		blockCallEXE(0x66008);                      // inven_unwield_
+		blockCallEXE(0x66018);                      //
+		makeCallEXE(0x14C5C, getRealBlockAddrCode((void *) &register_object_take_out_hook), true);
 	}
 
 	// Why is this commented? Read the comment inside the commented code.
@@ -2328,12 +2431,12 @@ void DllMain2(void) {
 	    // doesn't work all the rest is disabled.
 		//MakeCallEXE(0x918BC, getRealBlockAddrCode((void *) &inc_game_time_hook), true);
 		MakeCallEXE(0x918D4, getRealBlockAddrCode((void *) &inc_game_time_in_seconds_hook), true);
-		MakeCallEXE(0x920C8, getRealBlockAddrCode((void *) &script_chk_timed_events_hook), true);
+		makeCallEXE(0x920C3, getRealBlockAddrCode((void *) &script_chk_timed_events_hook), true);
 		for (j = 0; j < ((int) sizeof(TimedRest) / 4); ++j) {
 			HookCallEXE(((uint32_t *) getRealBlockAddrData(TimedRest))[i], getRealBlockAddrCode((void *) &TimedRest_hook));
 		}
 		for (j = 0; j < ((int) sizeof(world_map) / 4); ++j) {
-			HookCallEXE(((uint32_t *) getRealBlockAddrData(world_map))[i], getRealBlockAddrCode((void *) &world_map_hook));
+			hookCallEXE(((uint32_t *) getRealBlockAddrData(world_map))[i], getRealBlockAddrCode((void *) &world_map_hook));
 		}
 	}*/
 
@@ -2354,11 +2457,18 @@ void DllMain2(void) {
 		writeMem8EXE(0x3F825+4, 0x52);               // push edx
 		writeMem32EXE(0x3F901, 0x2024548B);          // mov  edx, [esp+0x20]
 		writeMem8EXE(0x3F901+4, 0x52);               // push edx
-		MakeCallEXE(0x3E807, getRealBlockAddrCode((void *) &gdAddOptionStr_hook), true);
+		makeCallEXE(0x3E807, getRealBlockAddrCode((void *) &gdAddOptionStr_hook), true);
 	}
 
 	SoundInit();
 
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Speed", "TimeScale", "1", prop_value, &sfall1_ini_info_G);
+	sscanf(prop_value, "%d", &temp_int);
+	if ((temp_int > 1) && (temp_int <= 10)) {
+		writeMem32EXE(0x92093+1, 30000 / (uint32_t) temp_int);
+		writeMem8EXE(0x920B2+2, (uint8_t) (100 / (uint32_t) temp_int));
+	}
 
-	freeNew(((struct FileInfo *) getRealBlockAddrData(&translation_ini_info_G))->contents);
+
+	free(((struct FileInfo *) getRealBlockAddrData(&translation_ini_info_G))->contents);
 }
