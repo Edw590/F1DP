@@ -1,6 +1,6 @@
 
 # Fallout 1 DOS Patcher (F1DP)
-An engine patcher for the MS-DOS version of Fallout 1 including Crafty's sFall1, TeamX, and Fallout Fixt patches
+An engine patcher for the MS-DOS version of Fallout 1 including Crafty's sFall1/sFall, TeamX, and Fallout Fixt patches
 
 ## Introduction
 
