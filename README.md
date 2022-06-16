@@ -1,6 +1,6 @@
 
 # Fallout 1 DOS Patcher (F1DP)
-An engine patcher for the MS-DOS version of Fallout 1 including Crafty's sFall1, TeamX, and Fallout Fixt patches
+An engine patcher for the MS-DOS version of Fallout 1 including Crafty's sFall1/sFall, TeamX, and Fallout Fixt patches
 
 ## Introduction
 
@@ -11,7 +11,7 @@ This repository contains the code for everything involved with F1DP:
 - the Patcher, in C and Inline-Assembly (a CLion project);
 - and the Loader, in Assembly (a file compiled from Sublime Text 3 using MASM 9.0 and using the compilation assistant and Sublime Text stuff from this repository of mine: https://github.com/DADi590/Chrome-Dino-Game-in-Assembly).
 
-Small note about the naming: I know it's kind of awful. But I'm not sure of a better naming. The Installer installs the Loader into the game EXE and creates the BIN file containing the Patcher code. But the project is (or was) called Fallout 1 DOS Patcher (best name I came up with). So I've reduced the name to F1DP, and now I can say F1DP Patcher more normally (don't think too much about it... xD).
+Small note about the naming: I know it's kind of awful. But I'm not sure of a better naming. The Installer installs only the Loader into the game EXE. The Patcher comes in its own file. But the project is (or was) called Fallout 1 DOS Patcher (best name I came up with). So I've reduced the name to F1DP, and now I can say F1DP Patcher more normally (don't think too much about it... xD).
 
 ## Download
 
@@ -25,7 +25,7 @@ Notes:
 <details> 
   <summary><h3>Second version</h3></summary>
 
-Carrying on from the last thing I said on the first version, I did find out a way to go around editing the relocations table. I got the idea from @xttl user from the Doomworld forum, more precisely this thread: https://www.doomworld.com/forum/topic/86380-exe-hacking (thank you infinitely for posting your knowledge there). This was an AMAZING find and I loved the idea. The idea there is to load a BIN file with binary instructions, then jump to it and execute the instructions. The only thing permanently patched in the EXE (by editing the EXE with a hex editor) is the loader. When the game starts, it loads the patch file and executes the instructions. After that, it comes back to the game and unloads the patch from memory. Inside the patch, there could be only simple patches, like patching a number or a call to NOPs, for example. No adding new functions or strings or other things. There could not be any strings on it or global variables. Nothing outside the functions. So an idea I had first to go around having no strings was to allocate on the stack space for the characters and then assign char by char, index by index manually --> awful, but worked 😂. A char is an int (8-bit but doesn't matter for this), so it would create strings on the stack xD.
+Carrying on from the last thing I said on the first version, I did find out a way to go around editing the relocations table. I got the idea from @xttl user from the Doomworld forum, more precisely this thread: https://www.doomworld.com/forum/topic/86380-exe-hacking (thank you infinitely for posting your knowledge there). This was an AMAZING find and I loved the idea. The idea there is to load a BIN file with binary instructions, then jump to it and execute the instructions. The only thing permanently patched in the EXE (by editing the EXE with a hex editor) is the loader. When the game starts, it loads the patch file and executes the instructions. After that, it comes back to the game and unloads the patch from memory. Inside the patch, there could be only simple patches, like patching a number or a call to NOPs, for example. No adding new functions or strings or other things. There could not be any strings on it or global variables. Nothing outside the functions. So an idea I had first to go around having no strings was to allocate on the stack space for the characters and then assign char by char, index by index manually --> awful, but worked 😂.
 
 Still, I tried to think on ideas to improve that, and seems all worked! Spoiler: the patches execute like a DLL and I can patch dynamically, and go from the EXE to the patch and back to the EXE and mention strings in the patch and modify them and whatever is needed, just like is done with Crafty's sFall1 mod. Took me some work to get to this though xD. I'll just more or less copy what I wrote on the mentioned forum.
 
@@ -84,6 +84,7 @@ So plan B. I'm assuming the game is running at the address DOS/32A puts it runni
 ## For developers
 ### - Compiling the Installer
 I'm letting GoLand take care of that, but for manual mode, go on the main.go folder and just do: `go build` and that's it.
+
 ### - Compiling the Patcher
 Command I'm using to compile (use ONLY Open Watcom - I assume its Calling Convention in various Inline-Assembly code and also on the return value from the Patcher to the Loader!): please check inside the file `F1DPPatcher/generated_binaries/compile.py` (or a similar one in case I change its name).
 
@@ -99,7 +100,7 @@ Command I'm using to assemble: `C:\MASM615\BIN\ml_9.00.21022.08_x86.EXE /omf /Fl
 - Sduibek for his patches
 - TeamX for their patches
 - Timeslip for the original sFall1 mod
-- xttl on the Doomworld forums for his posted knowledge, which helped making my life MUCH easier while trying to figure out how to get the patcher to work on DOS
+- xttl on the Doomworld forums for his [posted knowledge](https://www.doomworld.com/forum/topic/86380-exe-hacking), which helped making my life MUCH easier while trying to figure out how to get the patcher to work on DOS (or even make this project possible, in case I'd find it too hard to do with my available time without this knowledge)
 ### - Contributing
 
 Anyone is free to contribute to the repository with new patch ports, new patches entirely, port fixes, whatever that is useful.
@@ -115,4 +116,4 @@ If you have any questions, try the options below:
 - Create a Discussion here: https://github.com/DADi590/F1DP/discussions
 
 ## Final notes
-Hope you like it! It seems to me that this was an amazing thing to try to do because I've been learning a lot with this!!!
+Hope you like it! It seems to me that this was an amazing thing to try to do because I learned a lot with this!!!
