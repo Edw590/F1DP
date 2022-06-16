@@ -2247,8 +2247,6 @@ void DllMain2(void) {
 
 	InventoryInit();
 
-	// Named like this because it was added by me (I didn't invent though) to this source but I have no idea of how to
-	// call it (I'm not sure what category this belongs to, based on the 2 things inside the function).
 	AIInit();
 
 	// todo I think this is not working. Check everything again, for the 3rd time?
@@ -2415,6 +2413,7 @@ void DllMain2(void) {
 	// ASIDE FROM THAT!!!!!! In version 1.7.6, this seems to have a problem and the game will crash after 13 years. So
 	// do NOT attempt to port it UNLESS you know how to fix it!!!
 	// Go get the fix from version 1.8 with IDA's help. todo
+	// Btw, the bug is also in version 1.7.20, so just go on 1.8 get it.
 	/*getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "TimeLimit", "13", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	*(uint32_t *) getRealBlockAddrData(&TimeLimit) = (uint32_t) temp_int;

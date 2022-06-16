@@ -27,7 +27,7 @@
 // Maximum path length on DOS, including the NULL character
 #define MAX_DOS_PATH_LEN 80
 
-// 3 chars exactly or change the initial strings with the dashes
+// 3 chars exactly or change the initial strings with the dashes (so that it's the same length as the Loader)
 #define F1DP_VER_STR "1.1"
 
 

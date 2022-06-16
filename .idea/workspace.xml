@@ -4,9 +4,14 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7f3019c0-b046-4aa9-80a3-9949dbb49521" name="Changes" comment="Update: patched file name changed to 8.3 file name&#10;&#10;Now it's F1DPATCH.EXE, a supported DOS name, as requested on Reddit by&#10;emxd_llc (thank you).">
+    <list default="true" id="7f3019c0-b046-4aa9-80a3-9949dbb49521" name="Changes" comment="Update: version to 1.1 on the Installer">
+      <change afterPath="$PROJECT_DIR$/F1DPInstaller/.idea/F1DPInstaller.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/F1DPPatcher/.idea/serialmonitor_settings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/PatcherPatcher/PatcherPatcher.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/PatcherPatcher/PatcherPatcher.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/SFall1Main.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/SFall1Main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/Utils/General.h" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/Utils/General.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/F1DPPatcher/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/main.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,7 +26,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GoLibraries">
-    <option name="indexEntireGoPath" value="false" />
+    <option name="indexEntireGoPath" value="true" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -31,43 +36,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="go.format.on.save.advertiser.fired" value="true" />
-    <property name="go.formatter.settings.were.checked" value="true" />
-    <property name="go.import.settings.migrated" value="true" />
-    <property name="go.modules.go.list.on.any.changes.was.set" value="true" />
-    <property name="go.watchers.conflict.with.on.save.actions.check.performed" value="true" />
-    <property name="last_opened_file_path" value="$USER_HOME$/AssistantProjects/Assist_Platforms_Unifier" />
-    <property name="node.js.detected.package.eslint" value="true" />
-    <property name="node.js.detected.package.stylelint" value="true" />
-    <property name="node.js.detected.package.tslint" value="true" />
-    <property name="node.js.selected.package.eslint" value="(autodetect)" />
-    <property name="node.js.selected.package.stylelint" value="" />
-    <property name="node.js.selected.package.tslint" value="(autodetect)" />
-    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.CommitDialog" />
-  </component>
-  <component name="RunManager">
-    <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
-      <module name="F1DPInstaller" />
-      <working_directory value="$PROJECT_DIR$" />
-      <kind value="FILE" />
-      <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$" />
-      <method v="2" />
-    </configuration>
-    <configuration default="true" type="GoTestRunConfiguration" factoryName="Go Test">
-      <module name="F1DPInstaller" />
-      <working_directory value="$PROJECT_DIR$" />
-      <kind value="DIRECTORY" />
-      <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$" />
-      <framework value="gotest" />
-      <method v="2" />
-    </configuration>
-  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.go.format.on.save.advertiser.fired": "true",
+    "RunOnceActivity.go.formatter.settings.were.checked": "true",
+    "RunOnceActivity.go.migrated.go.modules.settings": "true",
+    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
+    "RunOnceActivity.go.watchers.conflict.with.on.save.actions.check.performed": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "configurable..is.expanded": "true",
+    "configurable.GoLibrariesConfigurable.is.expanded": "true",
+    "go.import.settings.migrated": "true",
+    "last_opened_file_path": "C:/Users/DADi590/GoLandProjects/F1DP",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.stylelint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.stylelint": "",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "settings.editor.selected.configurable": "com.goide.configuration.GoLibrariesConfigurableProvider"
+  }
+}]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
@@ -91,9 +80,10 @@
     <MESSAGE value="Update: GoLand project files" />
     <MESSAGE value="Update: .gitignore file" />
     <MESSAGE value="Update: patched file name changed to 8.3 file name&#10;&#10;Now it's F1DPATCH.EXE, a supported DOS name, as requested on Reddit by&#10;emxd_llc (thank you)." />
-    <option name="LAST_COMMIT_MESSAGE" value="Update: patched file name changed to 8.3 file name&#10;&#10;Now it's F1DPATCH.EXE, a supported DOS name, as requested on Reddit by&#10;emxd_llc (thank you)." />
+    <MESSAGE value="Update: version to 1.1 on the Installer" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update: version to 1.1 on the Installer" />
   </component>
   <component name="VgoProject">
-    <integration-enabled>true</integration-enabled>
+    <settings-migrated>true</settings-migrated>
   </component>
 </project>

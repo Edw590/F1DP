@@ -128,15 +128,10 @@ bool realMain(void) {
 
 	// Check if the version of the INI file is the same as of the Patcher
 	if (getPropValueIni(MAIN_INI_SPEC_SEC_MAIN, NULL, "F1DPVersion", NULL, prop_value, &f1dpatch_ini_info_G)) {
-		float temp_float = 0;
-		float temp_float2 = 0;
-		sscanf(prop_value, "%f", &temp_float);
-		sscanf(F1DP_VER_STR, "%f", &temp_float2);
-		if (temp_float != temp_float2) {
-			// Ignore floating-point comparison warning. It's the same value, no operations are made in different orders
-			// or something like that. It's just convert the version number and again, that same version number. And
-			// then compare both. Must be equal, I guess (I'm not doing math here to influence the precision of the
-			// result).
+		if (0 != strcmp(prop_value, F1DP_VER_STR)) {
+			// There was a float comparison here, but what if I decide to launch 1.1.1, for example?
+			// But actually there's no problem at all. I had it there because of spaces after the numbers. But that's
+			// being ignored with the getPropValueIni() function. So it's all good just checking the value string.
 			printlnStr(LOGGER_ERR_STR "Wrong INI settings file version. Aborting the Patcher...");
 
 			ret_var = false;
@@ -177,7 +172,7 @@ static __declspec(naked) void getverstr_hook(void) {
 			push    edx
 			mov     edx, eax
 			push    eax
-			mov     [esp+5*4], edi // [DADi590: "PUSH EDI"]
+			mov     [esp+2*4], edi // [DADi590: "PUSH EDI"]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+F_sprintf_]
 			call    edi

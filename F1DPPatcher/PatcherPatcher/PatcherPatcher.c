@@ -117,6 +117,4 @@ void patcherPatcher(uint32_t sn_base) {
 
 		++offset;
 	}
-
-	//printf(LOGGER_STR"- Number of Special Numbers replaced: %d + %d + %d + %d + %d\r\n", temp1, temp2, temp3, temp4, temp5);
 }
