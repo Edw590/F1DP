@@ -21,6 +21,7 @@
 #define F1DPPATCHER_GENERAL_H
 
 
+
 // The Microsoft-chosen newline characters: CR LF
 #define NL "\r\n"
 

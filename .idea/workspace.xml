@@ -5,13 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7f3019c0-b046-4aa9-80a3-9949dbb49521" name="Changes" comment="Update: version to 1.1 on the Installer">
-      <change afterPath="$PROJECT_DIR$/F1DPInstaller/.idea/F1DPInstaller.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/F1DPPatcher/.idea/serialmonitor_settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/F1DPInstaller/generated_binaries/compile.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/PatcherPatcher/PatcherPatcher.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/PatcherPatcher/PatcherPatcher.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/SFall1Main.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/SFall1Patches/SFall1Main.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/F1DPPatcher/Utils/General.h" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/Utils/General.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/F1DPPatcher/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/F1DPPatcher/main.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
