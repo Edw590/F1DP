@@ -1,0 +1,30 @@
+I'm not sure how Crafty coded this thing, as this file is an interesting mess which IDA doesn't even understands
+decently. Still, IDA gave me the entry point, and with help of versions with source-code available, I was able to
+understand better what's happening in the code.
+
+I've prepared it to be checked against F1DP's code, or v1.7.20 if possible (I'm not sure I can share it, it was
+deleted after I got it and I can't message who posted it).
+
+2 things which confused me the most were:
+- one, that there is data or whatever it is in-between the code. There are some lines of code, then there's a call to
+  some lines after that call, and what's in the middle seems garbage to me. And they're always calls, not jumps, which
+  makes my understanding of it much worse. Luckily I don't have to understand the stack management, only how the
+  patches are checked and done.
+- two, that there were weird values just before a valid address on the game EXE. That weird value was supposed to be
+  the new function address. But it was too big to be inside the file (VERY big). After some analysis of the code, I
+  came to realize optimizations are done in compile-time and there is a formula for that, which I noted on the
+  MakeCall and HookCall functions: `dll_func_addr = offset + game_addr + 4`, on which `dll_func_addr` is the address
+  of the new function on the DLL, `offset` is the big weird number (the conclusion was that it's an offset) and
+  `game_addr` is the address on which to make the change on the game EXE.
+  As I had absolutely no idea what the number was, or at least how to get to the functions, an idea I had was to go
+  look for some function code that I knew where it was linked to, locate its bytes, and reverse the formula. For
+  example, suppose the naked newFunc() function is used on some lines of code in the source-code. I opened an older
+  DLL (those compiled from C++), found the naked function through strings, and copied the function bytes. After that,
+  I went on HxD and looked for the same bytes and got the file offset to go to IDA see the function code.
+  After having the function beginning line, and knowing MakeCall() and HookCall() make a calculation, I reversed the
+  calculation to give me the function beginning back when I'd provide it with the information available on the DLL,
+  and got the formula to use.
+  
+With these 2 things taken care of, I was then able to read the file well enough to compare and copy patches.
+There is just the problem where I have no names of anything, and no pretty C++ source-code to copy and paste + adapt.
+So this can lead to mistakes, more than normal. And needs more time than with C++ code. But can surely be done.

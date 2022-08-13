@@ -18,39 +18,2758 @@
 // under the License.
 
 #include "../CLibs/stdio.h"
+#include "../CLibs/string.h"
 #include "../GameAddrs/FalloutEngine.h"
 #include "../Utils/BlockAddrUtils.h"
 #include "../Utils/EXEPatchUtils.h"
+#include "../Utils/GlobalEXEAddrs.h"
+#include "../Utils/GlobalVars.h"
 #include "HighResPatches.hNOTDONE"
 
 static uint32_t FOWEnable = 0;
-static uint32_t FOWLightLevel = 0;
+static uint32_t FOWLightLevel = 0; // Done
+
+static uint32_t FOW_dword_10064418 = 0; // Done
+static uint32_t FOW_dword_1003C908[500] = {0}; // Done
+static uint32_t FOW_dword_1003D160[40000] = {0}; // Done
+static uint8_t FOW_byte_10064400 = 0;
+static uint32_t FOW_dword_100643FC = 0;
+static uint32_t FOW_dword_10064374 = 0;
+
+static void __declspec(naked) FOW_sub_10009DF0(void) {
+	__asm {
+			mov     edx, [esp+0x0]
+			push    esi
+			mov     esi, [ecx+8]
+			mov     eax, edx
+			shr     eax, 5
+			cmp     eax, esi
+			pop     esi
+			jnb     locret_10009E16
+			mov     ecx, [ecx+4]
+			lea     eax, [ecx+eax*4]
+			mov     ecx, edx
+			and     ecx, 1Fh
+			mov     edx, 1
+			shl     edx, cl
+			or      [eax], edx
+
+		locret_10009E16:
+			retn    4
+	}
+}
+
+static void __declspec(naked) FOW_sub_10009E20(void) {
+	__asm {
+			mov     edx, [esp+0x0]
+			mov     eax, edx
+			push    esi
+			mov     esi, [ecx+8]
+			shr     eax, 5
+			cmp     eax, esi
+			jnb     loc_10009E49
+			mov     esi, [ecx+4]
+			mov     eax, [esi+eax*4]
+			mov     ecx, edx
+			and     ecx, 1Fh
+			mov     edx, 1
+			shl     edx, cl
+			pop     esi
+			and     eax, edx
+			retn    4
+
+		loc_10009E49:
+			xor     eax, eax
+			pop     esi
+			retn    4
+	}
+}
+
+static void __declspec(naked) FOW_sub_1000B8C0(void) {
+	__asm {
+			mov     eax, [esp+0x0]
+			test    eax, eax
+			jl      loc_1000B959
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			lea     ecx, [edi+D__grid_size]
+			pop     edi
+			mov     ecx, [ecx]
+			cmp     eax, ecx
+			jge     loc_1000B959
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			lea     edx, [edi+D__objectTable]
+			pop     edi
+			push    ebx
+			mov     ebx, [edx+eax*4]
+			push    esi
+			push    edi
+			push    esi
+			mov     esi, SN_DATA_SEC_BLOCK_ADDR
+			mov     edi, [esi+FOW_dword_100643FC]
+			pop     esi
+			test    edi, edi
+			jz      loc_1000B914
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			lea     edx, [edi+D__map_elevation]
+			pop     edi
+			mov     edx, [edx]
+			imul    edx, ecx
+			lea     esi, [edx+eax]
+			push    esi
+			mov     ecx, edi
+			call    FOW_sub_10009E20
+			test    eax, eax
+			jnz     loc_1000B914
+			push    esi
+			mov     ecx, edi
+			call    FOW_sub_10009DF0
+		loc_1000B914:
+			test    ebx, ebx
+			jz      loc_1000B94D
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			lea     eax, [edi+D__map_elevation]
+			pop     edi
+			mov     esi, [eax]
+			mov     edi, 0A0008000h
+		loc_1000B924:
+			mov     eax, [ebx]
+			mov     ecx, [eax+28h]
+			cmp     ecx, esi
+			jg      loc_1000B94D
+			jnz     loc_1000B946
+			xor     ecx, ecx
+			mov     cl, [eax+23h]
+			and     ecx, 0Fh
+			cmp     ecx, 3
+			jz      loc_1000B941
+			cmp     ecx, 2
+			jnz     loc_1000B946
+		loc_1000B941:
+			test    [eax+24h], edi
+			jz      loc_1000B953
+		loc_1000B946:
+			mov     ebx, [ebx+4]
+			test    ebx, ebx
+			jnz     loc_1000B924
+		loc_1000B94D:
+			pop     edi
+			pop     esi
+			xor     al, al
+			pop     ebx
+			retn
+
+		loc_1000B953:
+			pop     edi
+			pop     esi
+			mov     al, 1
+			pop     ebx
+			retn
+
+		loc_1000B959:
+			mov     al, 1
+			retn
+	}
+}
+
+static void __declspec(naked) FOW_sub_1000B9A0(void) {
+	__asm {
+			sub     esp, 0x14
+			push    ebx
+			mov     ebx, [esp+0x18+0x0]
+			push    ebp
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			lea     ebp, [edi+D__grid_size]
+			pop     edi
+			push    esi
+			mov     esi, [esp+0x20+0x4]
+			xor     ecx, ecx
+			cmp     esi, ecx
+			push    edi
+			push    esi
+			mov     esi, SN_DATA_SEC_EXE_ADDR
+			lea     edi, [esi+D__grid_width]
+			pop     esi
+			mov     [esp+0x24-0x8], ecx
+			mov     [esp+0x24-0xC], ecx
+			jl      loc_1000B9DF
+			cmp     esi, [ebp+0]
+			jge     loc_1000B9DF
+			mov     ecx, [edi]
+			mov     eax, esi
+			cdq
+			idiv    ecx
+			xor     ecx, ecx
+			mov     [esp+0x24-0xC], eax
+			mov     [esp+0x24-0x8], edx
+		loc_1000B9DF:
+			cmp     ebx, ecx
+			mov     [esp+0x24-0x4], ecx
+			mov     [esp+0x24-0x10], ecx
+			jl      loc_1000BA01
+			cmp     ebx, [ebp+0]
+			jge     loc_1000BA01
+			mov     ecx, [edi]
+			mov     eax, ebx
+			cdq
+			idiv    ecx
+			mov     ecx, edx
+			mov     [esp+0x24-0x10], eax
+			mov     [esp+0x24-0x4], ecx
+		loc_1000BA01:
+			mov     edi, [edi]
+			mov     eax, esi
+			cdq
+			idiv    edi
+			mov     [esp+0x24-0x14], edi
+			mov     esi, edx
+			sar     esi, 1
+			add     esi, eax
+			lea     ebp, [edx+edx]
+			mov     eax, ebx
+			cdq
+			idiv    edi
+			sub     ebp, esi
+			mov     edi, edx
+			sar     edi, 1
+			add     edi, eax
+			lea     eax, [edx+edx]
+			mov     edx, [esp+0x24-0x8]
+			sub     eax, edi
+			cmp     ecx, edx
+			mov     [esp+0x24+0x0], eax
+			jnz     loc_1000BA72
+			cmp     ebx, [esp+0x24+0x4]
+			jz      loc_1000C1C2
+		loc_1000BA3D:
+			mov     ecx, [esp+0x24-0x10]
+			cmp     ecx, [esp+0x24-0xC]
+			mov     eax, [esp+0x24-0x14]
+			jge     loc_1000BA4F
+			add     ebx, eax
+			jmp     loc_1000BA51
+		loc_1000BA4F:
+			sub     ebx, eax
+		loc_1000BA51:
+			push    ebx
+			call    FOW_sub_1000B8C0
+			add     esp, 4
+			test    al, al
+			jnz     loc_1000C1CC
+			cmp     ebx, [esp+0x24+0x4]
+			jnz     loc_1000BA3D
+			pop     edi
+			pop     esi
+			pop     ebp
+			xor     al, al
+			pop     ebx
+			add     esp, 0x14
+			retn
+
+		loc_1000BA72:
+			mov     edx, [esp+0x24-0xC]
+			cmp     [esp+0x24-0x10], edx
+			jnz     loc_1000BAB5
+			cmp     ebx, [esp+0x24+0x4]
+			jz      loc_1000C1C2
+		loc_1000BA86:
+			mov     eax, [esp+0x24-0x4]
+			cmp     eax, [esp+0x24-0x8]
+			jge     loc_1000BA93
+			inc     ebx
+			jmp     loc_1000BA94
+		loc_1000BA93:
+			dec     ebx
+		loc_1000BA94:
+			push    ebx
+			call    FOW_sub_1000B8C0
+			add     esp, 4
+			test    al, al
+			jnz     loc_1000C1CC
+			cmp     ebx, [esp+0x24+0x4]
+			jnz     loc_1000BA86
+			pop     edi
+			pop     esi
+			pop     ebp
+			xor     al, al
+			pop     ebx
+			add     esp, 0x14
+			retn
+
+		loc_1000BAB5:
+			cmp     edi, esi
+			jnz     loc_1000BB11
+			cmp     ebx, [esp+0x24+0x4]
+			jz      loc_1000C1C2
+			jmp     loc_1000BAC9
+		loc_1000BAC5:
+			mov     eax, [esp+0x24+0x0]
+		loc_1000BAC9:
+			cmp     eax, ebp
+			mov     ecx, [esp+0x24-0x14]
+			jle     loc_1000BADF
+			test    bl, 1
+			jz      loc_1000BAD9
+			dec     ebx
+			jmp     loc_1000BAF0
+		loc_1000BAD9:
+			lea     ebx, [ebx+ecx-1]
+			jmp     loc_1000BAF0
+		loc_1000BADF:
+			test    bl, 1
+			jz      loc_1000BAEF
+			mov     edx, 1
+			sub     edx, ecx
+			add     ebx, edx
+			jmp     loc_1000BAF0
+		loc_1000BAEF:
+			inc     ebx
+		loc_1000BAF0:
+			push    ebx
+			call    FOW_sub_1000B8C0
+			add     esp, 4
+			test    al, al
+			jnz     loc_1000C1CC
+			cmp     ebx, [esp+0x24+0x4]
+			jnz     loc_1000BAC5
+			pop     edi
+			pop     esi
+			pop     ebp
+			xor     al, al
+			pop     ebx
+			add     esp, 0x14
+			retn
+
+		loc_1000BB11:
+			cmp     eax, ebp
+			jnz     loc_1000BC02
+			cmp     ebx, [esp+0x24+0x4]
+			jz      loc_1000C1C2
+		loc_1000BB23:
+			cmp     edi, esi
+			jge     loc_1000BB88
+			test    bl, 1
+			mov     ebp, [esp+0x24-0x14]
+			jz      loc_1000BB5D
+			lea     eax, [ebx+ebp]
+			push    eax
+			call    FOW_sub_1000B8C0
+			add     esp, 4
+			test    al, al
+			jz      loc_1000BB54
+			lea     ecx, [ebx+1]
+			push    ecx
+			call    FOW_sub_1000B8C0
+			add     esp, 4
+			test    al, al
+			jnz     loc_1000C1CC
+		loc_1000BB54:
+			lea     ebx, [ebx+ebp+1]
+			jmp     loc_1000BBDD
+		loc_1000BB5D:
+			lea     edx, [ebx+ebp]
+			push    edx
+			call    FOW_sub_1000B8C0
+			add     esp, 4
+			test    al, al
+			jz      loc_1000BB82
+			lea     eax, [ebx+ebp+1]
+			push    eax
+			call    FOW_sub_1000B8C0
+			add     esp, 4
+			test    al, al
+			jnz     loc_1000C1CC
+		loc_1000BB82:
+			lea     ebx, [ebx+ebp*2+1]
+			jmp     loc_1000BBDD
+		loc_1000BB88:
+			mov     ecx, [esp+0x24-0x14]
+			mov     ebp, ebx
+			sub     ebp, ecx
+			push    ebp
+			call    FOW_sub_1000B8C0
+			add     esp, 4
+			test    bl, 1
+			jz      loc_1000BBC4
+			test    al, al
+			jz      loc_1000BBB4
+			dec     ebp
+			push    ebp
+			call    FOW_sub_1000B8C0
+			add     esp, 4
+			test    al, al
+			jnz     loc_1000C1CC
+		loc_1000BBB4:
+			mov     ecx, [esp+0x24-0x14]
+			or      eax, 0x0FFFFFFFF
+			lea     edx, [ecx+ecx]
+			sub     eax, edx
+			add     ebx, eax
+			jmp     loc_1000BBDD
+		loc_1000BBC4:
+			test    al, al
+			jz      loc_1000BBDA
+			dec     ebx
+			push    ebx
+			call    FOW_sub_1000B8C0
+			add     esp, 4
+			test    al, al
+			jnz     loc_1000C1CC
+		loc_1000BBDA:
+			lea     ebx, [ebp-1]
+		loc_1000BBDD:
+			push    ebx
+			call    FOW_sub_1000B8C0
+			add     esp, 4
+			test    al, al
+			jnz     loc_1000C1CC
+			cmp     ebx, [esp+0x24+0x4]
+			jnz     loc_1000BB23
+			pop     edi
+			pop     esi
+			pop     ebp
+			xor     al, al
+			pop     ebx
+			add     esp, 0x14
+			retn
+
+		loc_1000BC02:
+			mov     ecx, eax
+			sub     ecx, edi
+			sub     ecx, ebp
+			add     ecx, esi
+			jnz     loc_1000BC62
+			cmp     ebx, [esp+0x24+0x4]
+			jz      loc_1000C1C2
+			jmp     loc_1000BC1C
+		loc_1000BC18:
+			mov     eax, [esp+0x24+0x0]
+		loc_1000BC1C:
+			cmp     eax, ebp
+			mov     ecx, [esp+0x24-0x14]
+			jge     loc_1000BC32
+			test    bl, 1
+			jz      loc_1000BC2C
+			inc     ebx
+			jmp     loc_1000BC41
+		loc_1000BC2C:
+			lea     ebx, [ebx+ecx+1]
+			jmp     loc_1000BC41
+		loc_1000BC32:
+			test    bl, 1
+			jz      loc_1000BC40
+			or      edx, 0x0FFFFFFFF
+			sub     edx, ecx
+			add     ebx, edx
+			jmp     loc_1000BC41
+		loc_1000BC40:
+			dec     ebx
+		loc_1000BC41:
+			push    ebx
+			call    FOW_sub_1000B8C0
+			add     esp, 4
+			test    al, al
+			jnz     loc_1000C1CC
+			cmp     ebx, [esp+0x24+0x4]
+			jnz     loc_1000BC18
+			pop     edi
+			pop     esi
+			pop     ebp
+			xor     al, al
+			pop     ebx
+			add     esp, 0x14
+			retn
+
+		loc_1000BC62:
+			mov     eax, esi
+			sub     eax, edi
+			cdq
+			mov     ecx, eax
+			xor     ecx, edx
+			sub     ecx, edx
+			mov     edx, [esp+0x24+0x0]
+			mov     eax, ebp
+			sub     eax, edx
+			cdq
+			xor     eax, edx
+			sub     eax, edx
+			cmp     ecx, eax
+			jg      loc_1000BF3A
+			mov     edx, ecx
+			imul    eax, ecx
+			imul    edx, ecx
+			cmp     edi, esi
+			mov     ecx, [esp+0x24+0x0]
+			mov     [esp+0x24-0x10], edx
+			mov     [esp+0x24-0xC], eax
+			jge     loc_1000BDEE
+			cmp     ecx, ebp
+			jge     loc_1000BD50
+			mov     ecx, [esp+0x24+0x4]
+			mov     esi, eax
+			sub     esi, edx
+			cmp     ebx, ecx
+			mov     byte ptr [esp+0x24+0x0], 1
+			jz      loc_1000C1C2
+			mov     edi, [esp+0x24-0x14]
+			nop
+		loc_1000BCC0:
+			cmp     esi, eax
+			jg      loc_1000BCF6
+			push    ebx
+			call    FOW_sub_1000B8C0
+			add     esp, 4
+			test    al, al
+			jnz     loc_1000C1CC
+			mov     al, byte ptr [esp+0x24+0x0]
+			test    al, al
+			jz      loc_1000BD29
+			test    bl, 1
+			jz      loc_1000BD21
+			mov     edx, [esp+0x24-0x14]
+			mov     eax, 1
+			sub     eax, edx
+			add     ebx, eax
+			mov     byte ptr [esp+0x24+0x0], 0
+			jmp     loc_1000BD2E
+		loc_1000BCF6:
+			mov     cl, byte ptr [esp+0x24+0x0]
+			sub     esi, eax
+			test    cl, cl
+			jz      loc_1000BD18
+			test    bl, 1
+			jz      loc_1000BD0D
+			inc     ebx
+			mov     byte ptr [esp+0x24+0x0], 0
+			jmp     loc_1000BD3C
+		loc_1000BD0D:
+			lea     ebx, [ebx+edi+1]
+			mov     byte ptr [esp+0x24+0x0], 0
+			jmp     loc_1000BD3C
+		loc_1000BD18:
+			add     ebx, edi
+			mov     byte ptr [esp+0x24+0x0], 1
+			jmp     loc_1000BD3C
+		loc_1000BD21:
+			inc     ebx
+			mov     byte ptr [esp+0x24+0x0], 0
+			jmp     loc_1000BD2E
+		loc_1000BD29:
+			mov     byte ptr [esp+0x24+0x0], 1
+		loc_1000BD2E:
+			mov     eax, [esp+0x24-0x10]
+			mov     edi, [esp+0x24-0x14]
+			add     esi, eax
+			mov     eax, [esp+0x24-0xC]
+		loc_1000BD3C:
+			cmp     ebx, [esp+0x24+0x4]
+			jnz     loc_1000BCC0
+			pop     edi
+			pop     esi
+			pop     ebp
+			xor     al, al
+			pop     ebx
+			add     esp, 0x14
+			retn
+
+		loc_1000BD50:
+			jle     loc_1000BDEC
+			mov     esi, eax
+			mov     eax, [esp+0x24+0x4]
+			sub     esi, edx
+			cmp     ebx, eax
+			mov     byte ptr [esp+0x24+0x0], 0
+			jz      loc_1000C1C2
+			mov     ebp, [esp+0x24-0xC]
+			mov     edi, [esp+0x24-0x14]
+		loc_1000BD73:
+			cmp     esi, ebp
+			jg      loc_1000BD9D
+			push    ebx
+			call    FOW_sub_1000B8C0
+			add     esp, 4
+			test    al, al
+			jnz     loc_1000C1CC
+			mov     al, byte ptr [esp+0x24+0x0]
+			test    al, al
+			jnz     loc_1000BDD3
+			test    bl, 1
+			jz      loc_1000BDC8
+			dec     ebx
+			mov     byte ptr [esp+0x24+0x0], 1
+			jmp     loc_1000BDD8
+		loc_1000BD9D:
+			mov     al, byte ptr [esp+0x24+0x0]
+			sub     esi, ebp
+			test    al, al
+			jnz     loc_1000BDB0
+			add     ebx, edi
+			mov     byte ptr [esp+0x24+0x0], 1
+			jmp     loc_1000BDDC
+		loc_1000BDB0:
+			test    bl, 1
+			jz      loc_1000BDBD
+			inc     ebx
+			mov     byte ptr [esp+0x24+0x0], 0
+			jmp     loc_1000BDDC
+		loc_1000BDBD:
+			lea     ebx, [ebx+edi+1]
+			mov     byte ptr [esp+0x24+0x0], 0
+			jmp     loc_1000BDDC
+		loc_1000BDC8:
+			lea     ebx, [ebx+edi-1]
+			mov     byte ptr [esp+0x24+0x0], 1
+			jmp     loc_1000BDD8
+		loc_1000BDD3:
+			mov     byte ptr [esp+0x24+0x0], 0
+		loc_1000BDD8:
+			add     esi, [esp+0x24-0x10]
+		loc_1000BDDC:
+			cmp     ebx, [esp+0x24+0x4]
+			jnz     loc_1000BD73
+			pop     edi
+			pop     esi
+			pop     ebp
+			xor     al, al
+			pop     ebx
+			add     esp, 0x14
+			retn
+
+		loc_1000BDEC:
+			cmp     edi, esi
+		loc_1000BDEE:
+			jle     loc_1000C1CC
+			cmp     ecx, ebp
+			jge     loc_1000BE9D
+			mov     esi, eax
+			mov     eax, [esp+0x24+0x4]
+			sub     esi, edx
+			cmp     ebx, eax
+			mov     byte ptr [esp+0x24+0x0], 1
+			jz      loc_1000C1C2
+			mov     ebp, [esp+0x24-0xC]
+			mov     edi, [esp+0x24-0x14]
+			lea     esp, [esp+0]
+		loc_1000BE20:
+			push    ebx
+			call    FOW_sub_1000B8C0
+			add     esp, 4
+			test    al, al
+			jnz     loc_1000C1CC
+			cmp     esi, ebp
+			mov     al, byte ptr [esp+0x24+0x0]
+			jle     loc_1000BE63
+			sub     esi, ebp
+			test    al, al
+			jz      loc_1000BE48
+			sub     ebx, edi
+			mov     byte ptr [esp+0x24+0x0], 0
+			jmp     loc_1000BE8D
+		loc_1000BE48:
+			test    bl, 1
+			jz      loc_1000BE5B
+			or      ecx, 0x0FFFFFFFF
+			sub     ecx, edi
+			add     ebx, ecx
+			mov     byte ptr [esp+0x24+0x0], 1
+			jmp     loc_1000BE8D
+		loc_1000BE5B:
+			dec     ebx
+			mov     byte ptr [esp+0x24+0x0], 1
+			jmp     loc_1000BE8D
+		loc_1000BE63:
+			test    al, al
+			jz      loc_1000BE84
+			test    bl, 1
+			jz      loc_1000BE7C
+			mov     edx, 1
+			sub     edx, edi
+			add     ebx, edx
+			mov     byte ptr [esp+0x24+0x0], 0
+			jmp     loc_1000BE89
+		loc_1000BE7C:
+			inc     ebx
+			mov     byte ptr [esp+0x24+0x0], 0
+			jmp     loc_1000BE89
+		loc_1000BE84:
+			mov     byte ptr [esp+0x24+0x0], 1
+		loc_1000BE89:
+			add     esi, [esp+0x24-0x10]
+		loc_1000BE8D:
+			cmp     ebx, [esp+0x24+0x4]
+			jnz     loc_1000BE20
+			pop     edi
+			pop     esi
+			pop     ebp
+			xor     al, al
+			pop     ebx
+			add     esp, 0x14
+			retn
+
+		loc_1000BE9D:
+			jle     loc_1000C1CC
+			mov     esi, eax
+			mov     eax, [esp+0x24+0x4]
+			sub     esi, edx
+			cmp     ebx, eax
+			mov     byte ptr [esp+0x24+0x0], 0
+			jz      loc_1000C1C2
+			mov     ebp, [esp+0x24-0xC]
+			mov     edi, [esp+0x24-0x14]
+		loc_1000BEC0:
+			push    ebx
+			call    FOW_sub_1000B8C0
+			add     esp, 4
+			test    al, al
+			jnz     loc_1000C1CC
+			cmp     esi, ebp
+			mov     al, byte ptr [esp+0x24+0x0]
+			jle     loc_1000BF05
+			sub     esi, ebp
+			test    al, al
+			jnz     loc_1000BEFC
+			test    bl, 1
+			jz      loc_1000BEF4
+			mov     eax, 0x0FFFFFFFF
+			sub     eax, edi
+			add     ebx, eax
+			mov     byte ptr [esp+0x24+0x0], 1
+			jmp     loc_1000BF2A
+		loc_1000BEF4:
+			dec     ebx
+			mov     byte ptr [esp+0x24+0x0], 1
+			jmp     loc_1000BF2A
+		loc_1000BEFC:
+			sub     ebx, edi
+			mov     byte ptr [esp+0x24+0x0], 0
+			jmp     loc_1000BF2A
+		loc_1000BF05:
+			test    al, al
+			jnz     loc_1000BF21
+			test    bl, 1
+			jz      loc_1000BF16
+			dec     ebx
+			mov     byte ptr [esp+0x24+0x0], 1
+			jmp     loc_1000BF26
+		loc_1000BF16:
+			lea     ebx, [ebx+edi-1]
+			mov     byte ptr [esp+0x24+0x0], 1
+			jmp     loc_1000BF26
+		loc_1000BF21:
+			mov     byte ptr [esp+0x24+0x0], 0
+		loc_1000BF26:
+			add     esi, [esp+0x24-0x10]
+		loc_1000BF2A:
+			cmp     ebx, [esp+0x24+0x4]
+			jnz     loc_1000BEC0
+			pop     edi
+			pop     esi
+			pop     ebp
+			xor     al, al
+			pop     ebx
+			add     esp, 0x14
+			retn
+
+		loc_1000BF3A:
+			mov     edx, eax
+			imul    edx, ecx
+			mov     ecx, eax
+			imul    ecx, eax
+			cmp     edi, esi
+			mov     eax, [esp+0x24+0x0]
+			mov     [esp+0x24-0x10], edx
+			mov     [esp+0x24-0xC], ecx
+			jge     loc_1000C097
+			cmp     eax, ebp
+			jge     loc_1000BFFA
+			mov     eax, [esp+0x24+0x4]
+			mov     esi, edx
+			sub     esi, ecx
+			cmp     ebx, eax
+			mov     byte ptr [esp+0x24+0x0], 1
+			jz      loc_1000C1C2
+			mov     edi, [esp+0x24-0x14]
+			mov     ebp, edx
+			jmp     loc_1000BF80
+		loc_1000BF80:
+			push    ebx
+			call    FOW_sub_1000B8C0
+			add     esp, 4
+			test    al, al
+			jnz     loc_1000C1CC
+			cmp     esi, ebp
+			mov     al, byte ptr [esp+0x24+0x0]
+			jle     loc_1000BFC3
+			sub     esi, ebp
+			test    al, al
+			jz      loc_1000BFBC
+			test    bl, 1
+			jz      loc_1000BFB4
+			mov     ecx, 1
+			sub     ecx, edi
+			add     ebx, ecx
+			mov     byte ptr [esp+0x24+0x0], 0
+			jmp     loc_1000BFEA
+		loc_1000BFB4:
+			inc     ebx
+			mov     byte ptr [esp+0x24+0x0], 0
+			jmp     loc_1000BFEA
+		loc_1000BFBC:
+			mov     byte ptr [esp+0x24+0x0], 1
+			jmp     loc_1000BFEA
+		loc_1000BFC3:
+			test    al, al
+			jz      loc_1000BFDF
+			test    bl, 1
+			jz      loc_1000BFD4
+			inc     ebx
+			mov     byte ptr [esp+0x24+0x0], 0
+			jmp     loc_1000BFE6
+		loc_1000BFD4:
+			lea     ebx, [ebx+edi+1]
+			mov     byte ptr [esp+0x24+0x0], 0
+			jmp     loc_1000BFE6
+		loc_1000BFDF:
+			add     ebx, edi
+			mov     byte ptr [esp+0x24+0x0], 1
+		loc_1000BFE6:
+			add     esi, [esp+0x24-0xC]
+		loc_1000BFEA:
+			cmp     ebx, [esp+0x24+0x4]
+			jnz     loc_1000BF80
+			pop     edi
+			pop     esi
+			pop     ebp
+			xor     al, al
+			pop     ebx
+			add     esp, 0x14
+			retn
+
+		loc_1000BFFA:
+			jle     loc_1000C095
+			mov     eax, [esp+0x24+0x4]
+			mov     esi, edx
+			sub     esi, ecx
+			cmp     ebx, eax
+			mov     byte ptr [esp+0x24+0x0], 0
+			jz      loc_1000C1C2
+			mov     ebp, [esp+0x24-0x10]
+			mov     edi, [esp+0x24-0x14]
+			lea     ecx, [ecx+0]
+		loc_1000C020:
+			push    ebx
+			call    FOW_sub_1000B8C0
+			add     esp, 4
+			test    al, al
+			jnz     loc_1000C1CC
+			cmp     esi, ebp
+			mov     al, byte ptr [esp+0x24+0x0]
+			jle     loc_1000C05E
+			sub     esi, ebp
+			test    al, al
+			jnz     loc_1000C057
+			test    bl, 1
+			jz      loc_1000C04C
+			dec     ebx
+			mov     byte ptr [esp+0x24+0x0], 1
+			jmp     loc_1000C085
+		loc_1000C04C:
+			lea     ebx, [ebx+edi-1]
+			mov     byte ptr [esp+0x24+0x0], 1
+			jmp     loc_1000C085
+		loc_1000C057:
+			mov     byte ptr [esp+0x24+0x0], 0
+			jmp     loc_1000C085
+		loc_1000C05E:
+			test    al, al
+			jz      loc_1000C07A
+			test    bl, 1
+			jz      loc_1000C06F
+			inc     ebx
+			mov     byte ptr [esp+0x24+0x0], 0
+			jmp     loc_1000C081
+		loc_1000C06F:
+			lea     ebx, [ebx+edi+1]
+			mov     byte ptr [esp+0x24+0x0], 0
+			jmp     loc_1000C081
+		loc_1000C07A:
+			add     ebx, edi
+			mov     byte ptr [esp+0x24+0x0], 1
+		loc_1000C081:
+			add     esi, [esp+0x24-0xC]
+		loc_1000C085:
+			cmp     ebx, [esp+0x24+0x4]
+			jnz     loc_1000C020
+			pop     edi
+			pop     esi
+			pop     ebp
+			xor     al, al
+			pop     ebx
+			add     esp, 0x14
+			retn
+
+		loc_1000C095:
+			cmp     edi, esi
+		loc_1000C097:
+			jle     loc_1000C1CC
+			cmp     eax, ebp
+			jle     loc_1000C135
+			mov     eax, [esp+0x24+0x4]
+			mov     esi, edx
+			sub     esi, ecx
+			cmp     ebx, eax
+			mov     byte ptr [esp+0x24+0x0], 0
+			jz      loc_1000C1C2
+			mov     ebp, [esp+0x24-0x10]
+			mov     edi, [esp+0x24-0x14]
+		loc_1000C0C2:
+			push    ebx
+			call    FOW_sub_1000B8C0
+			add     esp, 4
+			test    al, al
+			jnz     loc_1000C1CC
+			cmp     esi, ebp
+			mov     al, byte ptr [esp+0x24+0x0]
+			jle     loc_1000C100
+			sub     esi, ebp
+			test    al, al
+			jnz     loc_1000C0F9
+			test    bl, 1
+			jz      loc_1000C0EE
+			dec     ebx
+			mov     byte ptr [esp+0x24+0x0], 1
+			jmp     loc_1000C125
+		loc_1000C0EE:
+			lea     ebx, [ebx+edi-1]
+			mov     byte ptr [esp+0x24+0x0], 1
+			jmp     loc_1000C125
+		loc_1000C0F9:
+			mov     byte ptr [esp+0x24+0x0], 0
+			jmp     loc_1000C125
+		loc_1000C100:
+			test    al, al
+			jz      loc_1000C10D
+			sub     ebx, edi
+			mov     byte ptr [esp+0x24+0x0], 0
+			jmp     loc_1000C121
+		loc_1000C10D:
+			test    bl, 1
+			jz      loc_1000C11B
+			or      edx, 0x0FFFFFFFF
+			sub     edx, edi
+			add     ebx, edx
+			jmp     loc_1000C11C
+		loc_1000C11B:
+			dec     ebx
+		loc_1000C11C:
+			mov     byte ptr [esp+0x24+0x0], 1
+		loc_1000C121:
+			add     esi, [esp+0x24-0xC]
+		loc_1000C125:
+			cmp     ebx, [esp+0x24+0x4]
+			jnz     loc_1000C0C2
+			pop     edi
+			pop     esi
+			pop     ebp
+			xor     al, al
+			pop     ebx
+			add     esp, 0x14
+			retn
+
+		loc_1000C135:
+			jge     loc_1000C1CC
+			mov     eax, [esp+0x24+0x4]
+			mov     esi, edx
+			sub     esi, ecx
+			cmp     ebx, eax
+			mov     byte ptr [esp+0x24+0x0], 1
+			jz      loc_1000C1C2
+			mov     ebp, [esp+0x24-0x10]
+			mov     edi, [esp+0x24-0x14]
+		loc_1000C158:
+			push    ebx
+			call    FOW_sub_1000B8C0
+			add     esp, 4
+			test    al, al
+			jnz     loc_1000C1CC
+			cmp     esi, ebp
+			mov     al, byte ptr [esp+0x24+0x0]
+			jle     loc_1000C197
+			sub     esi, ebp
+			test    al, al
+			jz      loc_1000C190
+			test    bl, 1
+			jz      loc_1000C188
+			mov     eax, 1
+			sub     eax, edi
+			add     ebx, eax
+			mov     byte ptr [esp+0x24+0x0], 0
+			jmp     loc_1000C1BC
+		loc_1000C188:
+			inc     ebx
+			mov     byte ptr [esp+0x24+0x0], 0
+			jmp     loc_1000C1BC
+		loc_1000C190:
+			mov     byte ptr [esp+0x24+0x0], 1
+			jmp     loc_1000C1BC
+		loc_1000C197:
+			test    al, al
+			jz      loc_1000C1A4
+			sub     ebx, edi
+			mov     byte ptr [esp+0x24+0x0], 0
+			jmp     loc_1000C1B8
+		loc_1000C1A4:
+			test    bl, 1
+			jz      loc_1000C1B2
+			or      ecx, 0x0FFFFFFFF
+			sub     ecx, edi
+			add     ebx, ecx
+			jmp     loc_1000C1B3
+		loc_1000C1B2:
+			dec     ebx
+		loc_1000C1B3:
+			mov     byte ptr [esp+0x24+0x0], 1
+		loc_1000C1B8:
+			add     esi, [esp+0x24-0xC]
+		loc_1000C1BC:
+			cmp     ebx, [esp+0x24+0x4]
+			jnz     loc_1000C158
+		loc_1000C1C2:
+			pop     edi
+			pop     esi
+			pop     ebp
+			xor     al, al
+			pop     ebx
+			add     esp, 0x14
+			retn
+
+		loc_1000C1CC:
+			pop     edi
+			pop     esi
+			pop     ebp
+			mov     al, 1
+			pop     ebx
+			add     esp, 0x14
+			retn
+	}
+}
+
+static void __declspec(naked) FOW_sub_1000A430(void) {
+	__asm {
+			mov     eax, [esp+0x0]
+			cmp     eax, 0x0FFFFFFFF
+			jnz     loc_1000A43F
+			mov     eax, 0x270F
+			retn
+
+		loc_1000A43F:
+			push    ebx
+			mov     ebx, [esp+4+0x4]
+			cmp     ebx, 0x0FFFFFFFF
+			jnz     loc_1000A450
+			mov     eax, 0x270F
+			pop     ebx
+			retn
+
+		loc_1000A450:
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			lea     ecx, [edi+D__grid_width]
+			pop     edi
+			cdq
+			push    esi
+			mov     esi, [ecx]
+			idiv    esi
+			push    edi
+			mov     edi, edx
+			mov     ecx, edx
+			sar     ecx, 1
+			add     ecx, eax
+			mov     eax, ebx
+			cdq
+			idiv    esi
+			mov     esi, edx
+			sar     esi, 1
+			add     esi, eax
+			mov     eax, edx
+			sub     eax, edi
+			shl     eax, 1
+			sub     eax, esi
+			add     eax, ecx
+			cdq
+			mov     edi, eax
+			xor     edi, edx
+			mov     eax, esi
+			sub     eax, ecx
+			sub     edi, edx
+			cdq
+			xor     eax, edx
+			sub     eax, edx
+			cmp     eax, edi
+			jge     loc_1000A492
+			add     eax, edi
+			sar     eax, 1
+		loc_1000A492:
+			pop     edi
+			pop     esi
+			pop     ebx
+			retn
+	}
+}
+
+static void __declspec(naked) FOW_sub_1000E220(void) {
+	__asm {
+			push    ebp
+			mov     ebp, esp
+			push    ecx
+			mov     [ebp-0x4], 0
+			mov     edx, [ebp+0x4]
+			mov     eax, [ebp+0x0]
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     eax, [edi+C_proto_ptr_]
+			pop     edi
+			mov     [ebp-0x4], eax
+			mov     eax, [ebp-0x4]
+			mov     esp, ebp
+			pop     ebp
+			retn
+	}
+}
+
+static void __declspec(naked) FOW_sub_1000C1E0(void);
+static void __declspec(naked) FOW_sub_1000A310(void) {
+	__asm {
+			push    ecx
+			push    ebx
+			mov     ebx, [esp+8+0x4]
+			push    ebp
+			mov     ebp, [esp+0x0C+0x0]
+			push    esi
+			xor     esi, esi
+			push    edi
+			mov     [esp+0x14-0x4], esi
+		loc_1000C1F3:
+			mov     eax, [ebx+4]
+			push    1
+			push    esi
+			push    eax
+			call    FOW_sub_1000A310
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			lea     ecx, [edi+D__objectTable]
+			pop     edi
+			mov     edi, [ecx+eax*4]
+			add     esp, 0x0C
+			test    edi, edi
+			jz      loc_1000C2B1
+		loc_1000C213:
+			mov     esi, [edi]
+			mov     eax, [esi+0x28]
+			mov     ecx, [ebx+0x28]
+			cmp     eax, ecx
+			jg      loc_1000C2AD
+			xor     edx, edx
+			mov     dl, [esi+0x23]
+			and     edx, 0x0F
+			cmp     eax, ecx
+			jnz     loc_1000C2A2
+			mov     eax, [esi+0x24]
+			test    eax, 0x40000000
+			jnz     loc_1000C2A2
+			cmp     edx, 3
+			jnz     loc_1000C250
+			mov     edx, [esi+4]
+			or      eax, 0x40000000
+			mov     [esi+0x24], eax
+			mov     eax, [ebp+4]
+			push    edx
+			push    eax
+			jmp     loc_1000C28C
+		loc_1000C250:
+			cmp     edx, 2
+			jnz     loc_1000C2A2
+			mov     edx, [esi+0x64]
+			lea     ecx, [esp+0x14+0x4]
+			push    ecx
+			push    edx
+			mov     [esp+0x1C+0x4], 0
+			call    FOW_sub_1000E220
+			mov     eax, [esp+0x1C+0x4]
+			mov     ecx, [eax+0x20]
+			add     esp, 8
+			test    ecx, ecx
+			jnz     loc_1000C2A2
+			mov     eax, [esi+0x24]
+			mov     ecx, [esi+4]
+			or      eax, 0x40000000
+			mov     [esi+0x24], eax
+			mov     edx, [ebp+4]
+			push    ecx
+			push    edx
+		loc_1000C28C:
+			call    FOW_sub_1000B9A0
+			add     esp, 8
+			test    al, al
+			jnz     loc_1000C2A2
+			push    esi
+			push    ebp
+			call    FOW_sub_1000C1E0
+			add     esp, 8
+		loc_1000C2A2:
+			mov     edi, [edi+4]
+			test    edi, edi
+			jnz     loc_1000C213
+		loc_1000C2AD:
+			mov     esi, [esp+0x14-0x4]
+		loc_1000C2B1:
+			inc     esi
+			cmp     esi, 6
+			mov     [esp+0x14-0x4], esi
+			jl      loc_1000C1F3
+			pop     edi
+			pop     esi
+			pop     ebp
+			pop     ebx
+			pop     ecx
+			retn
+	}
+}
+
+static void __declspec(naked) FOW_sub_1000C1E0(void) {
+	__asm {
+			push    ecx
+			push    ebx
+			mov     ebx, [esp+8+0x4]
+			push    ebp
+			mov     ebp, [esp+0x0C+0x0]
+			push    esi
+			xor     esi, esi
+			push    edi
+			mov     [esp+0x14-0x4], esi
+		loc_1000C1F3:
+			mov     eax, [ebx+4]
+			push    1
+			push    esi
+			push    eax
+			call    FOW_sub_1000A310
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			lea     ecx, [edi+D__objectTable]
+			pop     edi
+			mov     edi, [ecx+eax*4]
+			add     esp, 0x0C
+			test    edi, edi
+			jz      loc_1000C2B1
+		loc_1000C213:
+			mov     esi, [edi]
+			mov     eax, [esi+0x28]
+			mov     ecx, [ebx+0x28]
+			cmp     eax, ecx
+			jg      loc_1000C2AD
+			xor     edx, edx
+			mov     dl, [esi+0x23]
+			and     edx, 0x0F
+			cmp     eax, ecx
+			jnz     loc_1000C2A2
+			mov     eax, [esi+0x24]
+			test    eax, 0x40000000
+			jnz     loc_1000C2A2
+			cmp     edx, 3
+			jnz     loc_1000C250
+			mov     edx, [esi+4]
+			or      eax, 0x40000000
+			mov     [esi+0x24], eax
+			mov     eax, [ebp+4]
+			push    edx
+			push    eax
+			jmp     loc_1000C28C
+		loc_1000C250:
+			cmp     edx, 2
+			jnz     loc_1000C2A2
+			mov     edx, [esi+0x64]
+			lea     ecx, [esp+0x14+0x4]
+			push    ecx
+			push    edx
+			mov     [esp+0x1C+0x4], 0
+			call    FOW_sub_1000E220
+			mov     eax, [esp+0x1C+0x4]
+			mov     ecx, [eax+0x20]
+			add     esp, 8
+			test    ecx, ecx
+			jnz     loc_1000C2A2
+			mov     eax, [esi+0x24]
+			mov     ecx, [esi+4]
+			or      eax, 0x40000000
+			mov     [esi+0x24], eax
+			mov     edx, [ebp+4]
+			push    ecx
+			push    edx
+		loc_1000C28C:
+			call    FOW_sub_1000B9A0
+			add     esp, 8
+			test    al, al
+			jnz     loc_1000C2A2
+			push    esi
+			push    ebp
+			call    FOW_sub_1000C1E0
+			add     esp, 8
+		loc_1000C2A2:
+			mov     edi, [edi+4]
+			test    edi, edi
+			jnz     loc_1000C213
+		loc_1000C2AD:
+			mov     esi, [esp+0x14-0x4]
+		loc_1000C2B1:
+			inc     esi
+			cmp     esi, 6
+			mov     [esp+0x14-0x4], esi
+			jl      loc_1000C1F3
+			pop     edi
+			pop     esi
+			pop     ebp
+			pop     ebx
+			pop     ecx
+			retn
+	}
+}
+
+static void __declspec(naked) FOW_sub_1000C2D0(void) {
+	__asm {
+			push    ecx
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			mov     eax, [edi+FOWEnable]
+			pop     edi
+			test    eax, eax
+			jz      loc_1000C2ED
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			lea     eax, [edi+D__refresh_enabled]
+			pop     edi
+			cmp     dword ptr [eax], 0
+			jz      loc_1000C2ED
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			mov     al, [edi+FOW_byte_10064400]
+			pop     edi
+			test    al, al
+			jnz     loc_1000C2F4
+		loc_1000C2ED:
+			mov     eax, 1
+			pop     ecx
+			retn
+
+		loc_1000C2F4:
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			lea     ecx, [edi+D__obj_dude]
+			pop     edi
+			push    ebp
+			mov     ebp, [ecx]
+			push    esi
+			mov     esi, [esp+0x0C+0x0]
+			cmp     esi, ebp
+			mov     [esp+0x0C-0x4], ebp
+			jnz     loc_1000C31A
+			or      dword ptr [esi+0x24], 0x40000000
+			pop     esi
+			mov     eax, 1
+			pop     ebp
+			pop     ecx
+			retn
+
+		loc_1000C31A:
+			xor     edx, edx
+			mov     dl, [esi+0x23]
+			push    ebx
+			push    edi
+			and     edx, 0x0F
+			mov     edi, edx
+			cmp     edi, 1
+			jz      loc_1000C401
+			test    dword ptr [esi+0x24], 0x40000000
+			jnz     loc_1000C3F6
+			mov     eax, [esi+4]
+			mov     ecx, [ebp+4]
+			push    eax
+			push    ecx
+			call    FOW_sub_1000B9A0
+			add     esp, 8
+			test    al, al
+			jz      loc_1000C3DB
+			mov     ebx, [esi+4]
+			mov     ebp, [ebp+4]
+			push    ebx
+			push    ebp
+			call    FOW_sub_1000A430
+			add     esp, 8
+			cmp     eax, 2
+			jge     loc_1000C36E
+			cmp     edi, 3
+			jz      loc_1000C3D7
+		loc_1000C36E:
+			push    ebx
+			push    ebp
+			call    FOW_sub_1000A430
+			add     esp, 8
+			cmp     eax, 2
+			jge     loc_1000C3C0
+			cmp     edi, 2
+			jnz     loc_1000C3C0
+			mov     eax, [esi+0x64]
+			lea     edx, [esp+0x14-0x4]
+			push    edx
+			push    eax
+			mov     [esp+0x1C-0x4], 0
+			call    FOW_sub_1000E220
+			mov     ecx, [esp+0x1C-0x4]
+			mov     eax, [ecx+0x20]
+			add     esp, 8
+			test    eax, eax
+			jnz     loc_1000C43A
+			mov     eax, [esi+0x24]
+			pop     edi
+			or      eax, 0x40000000
+			pop     ebx
+			mov     [esi+0x24], eax
+			pop     esi
+			mov     eax, 1
+			pop     ebp
+			pop     ecx
+			retn
+
+		loc_1000C3C0:
+			cmp     edi, 3
+			jz      loc_1000C3CF
+			cmp     edi, 2
+			jz      loc_1000C3CF
+			cmp     edi, 5
+			jnz     loc_1000C43A
+		loc_1000C3CF:
+			pop     edi
+			pop     ebx
+			pop     esi
+			xor     eax, eax
+			pop     ebp
+			pop     ecx
+			retn
+
+		loc_1000C3D7:
+			mov     ebp, [esp+0x14-0x4]
+		loc_1000C3DB:
+			mov     ecx, [esi+0x24]
+			or      ecx, 0x40000000
+			cmp     edi, 3
+			mov     [esi+0x24], ecx
+			jnz     loc_1000C3F6
+			push    esi
+			push    ebp
+			call    FOW_sub_1000C1E0
+			add     esp, 8
+		loc_1000C3F6:
+			pop     edi
+			pop     ebx
+			pop     esi
+			mov     eax, 1
+			pop     ebp
+			pop     ecx
+			retn
+
+		loc_1000C401:
+			mov     ecx, [esi+0x24]
+			mov     eax, [esi+0x50]
+			or      ecx, 0x40000000
+			test    eax, eax
+			mov     [esi+0x24], ecx
+			jz      loc_1000C3F6
+			mov     eax, [esi+0x74]
+			test    eax, 0x0FFFFFF
+			jz      loc_1000C426
+			test    eax, eax
+			js      loc_1000C426
+			test    al, 0x20
+			jz      loc_1000C3F6
+		loc_1000C426:
+			mov     edx, [esi+4]
+			mov     eax, [ebp+4]
+			push    edx
+			push    eax
+			call    FOW_sub_1000B9A0
+			add     esp, 8
+			test    al, al
+			jz      loc_1000C3F6
+		loc_1000C43A:
+			pop     edi
+			pop     ebx
+			pop     esi
+			or      eax, 0x0FFFFFFFF
+			pop     ebp
+			pop     ecx
+			retn
+	}
+}
+
+static void __declspec(naked) FOW_sub_1000B620(void) {
+	__asm {
+			push    ebp
+			mov     ebp, esp
+			push    ebx
+			push    esi
+			push    edi
+			push    esi
+			push    edi
+			mov     ecx, [ebp+0xC]
+			mov     edi, [ebp+0x0]
+			mov     esi, [ebp+0x4]
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			lea     eax, [edi+D__square_offy]
+			pop     edi
+			mov     ebx, [eax]
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			lea     eax, [edi+D__square_offx]
+			pop     edi
+			mov     edx, [eax]
+			sub     esi, ebx
+			sub     edi, edx
+			sub     esi, 0x0C
+			lea     edx, ds:0[edi*4]
+			lea     eax, ds:0[esi*4]
+			sub     edx, edi
+			sub     edx, eax
+			mov     [ecx], edx
+			test    edx, edx
+			jge     loc_1000B671
+			inc     edx
+			mov     ebx, 0x0C0
+			mov     eax, edx
+			sar     edx, 0x1F
+			idiv    ebx
+			dec     eax
+			jmp     loc_1000B67D
+		loc_1000B671:
+			mov     ebx, 0x0C0
+			mov     eax, edx
+			sar     edx, 0x1F
+			idiv    ebx
+		loc_1000B67D:
+			mov     [ecx], eax
+			shl     esi, 2
+			add     edi, esi
+			mov     ebx, [ebp+0x10]
+			mov     [ebx], edi
+			test    edi, edi
+			jge     loc_1000B6A2
+			lea     edx, [edi+1]
+			mov     eax, edx
+			sar     edx, 0x1F
+			shl     edx, 7
+			sbb     eax, edx
+			sar     eax, 7
+			dec     eax
+			jmp     loc_1000B6B1
+		loc_1000B6A2:
+			mov     edx, edi
+			mov     eax, edi
+			sar     edx, 0x1F
+			shl     edx, 7
+			sbb     eax, edx
+			sar     eax, 7
+		loc_1000B6B1:
+			mov     ebx, [ebp+0x10]
+			mov     [ebx], eax
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			lea     eax, [edi+D__square_x]
+			pop     edi
+			mov     eax, [eax]
+			add     [ecx], eax
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			lea     eax, [edi+D__square_y]
+			pop     edi
+			mov     eax, [eax]
+			mov     edi, [ebx]
+			add     edi, eax
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			lea     eax, [edi+D__square_width]
+			pop     edi
+			mov     eax, [eax]
+			mov     [ebx], edi
+			dec     eax
+			mov     ebx, [ecx]
+			sub     eax, ebx
+			mov     [ecx], eax
+			pop     edi
+			pop     esi
+			pop     edi
+			pop     esi
+			pop     ebx
+			pop     ebp
+			retn
+	}
+}
+
+static void __declspec(naked) FOW_sub_1000B6F0(void) {
+	__asm {
+			push    ebp
+			mov     ebp, esp
+			push    ecx
+			push    ebx
+			push    esi
+			push    edi
+			mov     [ebp-0x4], 0
+			push    esi
+			push    edi
+			mov     eax, [ebp+0x0]
+			mov     esi, eax
+			test    eax, eax
+			jl      loc_1000B714
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			lea     edx, [edi+D__square_size]
+			pop     edi
+			cmp     eax, [edx]
+			jl      loc_1000B71E
+		loc_1000B714:
+			mov     eax, 0x0FFFFFFFF
+			jmp     loc_1000B7C2
+		loc_1000B71E:
+			mov     edx, eax
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			lea     ecx, [edi+D__square_width]
+			pop     edi
+			mov     ecx, [ecx]
+			sar     edx, 0x1F
+			idiv    ecx
+			dec     ecx
+			mov     eax, esi
+			sub     ecx, edx
+			mov     edx, esi
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			lea     esi, [edi+D__square_width]
+			pop     edi
+			mov     esi, [esi]
+			sar     edx, 0x1F
+			idiv    esi
+			mov     edx, eax
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			lea     eax, [edi+D__square_offx]
+			pop     edi
+			mov     eax, [eax]
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			lea     ebx, [edi+D__square_x]
+			pop     edi
+			mov     ebx, [ebx]
+			mov     edi, [ebp+0x4]
+			mov     [edi], eax
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			lea     eax, [edi+D__square_offy]
+			pop     edi
+			mov     eax, [eax]
+			sub     ecx, ebx
+			mov     ebx, [ebp+0x8]
+			mov     [ebx], eax
+			mov     eax, ecx
+			lea     esi, ds:0[ecx*4]
+			sub     esi, ecx
+			shl     esi, 4
+			mov     ecx, [edi]
+			add     ecx, esi
+			mov     esi, eax
+			mov     [edi], ecx
+			shl     esi, 2
+			mov     edi, [ebx]
+			sub     esi, eax
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			lea     eax, [edi+D__square_y]
+			pop     edi
+			mov     eax, [eax]
+			shl     esi, 2
+			sub     edx, eax
+			sub     edi, esi
+			mov     eax, edx
+			mov     [ebx], edi
+			shl     edx, 5
+			mov     esi, eax
+			mov     edi, [ebp+0x4]
+			mov     ecx, [edi]
+			shl     esi, 2
+			add     ecx, edx
+			sub     esi, eax
+			mov     [edi], ecx
+			shl     esi, 3
+			mov     edi, [ebx]
+			add     edi, esi
+			xor     eax, eax
+			mov     [ebx], edi
+		loc_1000B7C2:
+			pop     edi
+			pop     esi
+			mov     [ebp-0x4], eax
+			mov     eax, [ebp-0x4]
+			pop     edi
+			pop     esi
+			pop     ebx
+			mov     esp, ebp
+			pop     ebp
+			retn
+	}
+}
+
+static void __declspec(naked) FOW_sub_1000D870(void) {
+	__asm {
+			push    ebp
+			mov     ebp, esp
+			sub     esp, 0x38
+			push    ebx
+			push    esi
+			mov     esi, [ebp+0x0]
+			mov     edx, [esi+4]
+			push    edi
+			lea     eax, [ebp-0x34]
+			push    eax
+			mov     eax, [esi]
+			lea     ecx, [ebp-0x4]
+			push    ecx
+			xor     edi, edi
+			push    edi
+			push    edx
+			push    eax
+			mov     [ebp-0x4], edi
+			call    FOW_sub_1000B620
+			mov     eax, [esi+4]
+			lea     ecx, [ebp-0x4]
+			push    ecx
+			mov     ecx, [esi+8]
+			lea     edx, [ebp-0x30]
+			push    edx
+			push    edi
+			push    eax
+			push    ecx
+			call    FOW_sub_1000B620
+			mov     ecx, [esi+0x0C]
+			lea     edx, [ebp-0x4]
+			push    edx
+			mov     edx, [esi]
+			lea     eax, [ebp-0x38]
+			push    eax
+			push    edi
+			push    ecx
+			push    edx
+			call    FOW_sub_1000B620
+			mov     edx, [esi+0x0C]
+			lea     eax, [ebp-0x2C]
+			push    eax
+			mov     eax, [esi+8]
+			lea     ecx, [ebp-0x4]
+			push    ecx
+			push    edi
+			push    edx
+			push    eax
+			call    FOW_sub_1000B620
+			mov     ebx, [ebp-0x38]
+			mov     eax, [ebp-0x34]
+			mov     esi, [ebp-0x30]
+			mov     ecx, [ebp-0x2C]
+			add     esp, 50h
+			inc     ebx
+			dec     eax
+			dec     esi
+			inc     ecx
+			cmp     esi, edi
+			mov     [ebp-0x2C], ecx
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			lea     ecx, [edi+D__square_width]
+			pop     edi
+			mov     [ebp-0x38], ebx
+			mov     [ebp-0x34], eax
+			mov     [ebp-0x30], esi
+			mov     edx, [ecx]
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			lea     ecx, [edi+D__square_length]
+			pop     edi
+			mov     ecx, [ecx]
+			mov     [ebp-0x28], edx
+			jge     loc_1000D912
+			mov     [ebp-0x30], edi
+			jmp     loc_1000D91C
+		loc_1000D912:
+			cmp     esi, edx
+			jl      loc_1000D91C
+			lea     esi, [edx-1]
+			mov     [ebp-0x30], esi
+		loc_1000D91C:
+			cmp     eax, edi
+			jge     loc_1000D924
+			xor     eax, eax
+			jmp     loc_1000D92B
+		loc_1000D924:
+			cmp     eax, ecx
+			jl      loc_1000D92E
+			lea     eax, [ecx-1]
+		loc_1000D92B:
+			mov     [ebp-0x34], eax
+		loc_1000D92E:
+			cmp     [ebp-0x38], edx
+			jle     loc_1000D936
+			mov     [ebp-0x38], edx
+		loc_1000D936:
+			cmp     [ebp-0x2C], ecx
+			jle     loc_1000D93E
+			mov     [ebp-0x2C], ecx
+		loc_1000D93E:
+			mov     esi, [ebp-0x2C]
+			cmp     esi, eax
+			jl      loc_1000DA49
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			mov     ecx, [edi+FOW_dword_10064374]
+			pop     edi
+			mov     ebx, edx
+			imul    ebx, eax
+			cmp     eax, esi
+			mov     [ebp-0xC], edi
+			mov     [ebp-0x8], edi
+			lea     edi, [ecx+0x38]
+			mov     [ebp-0x18], edi
+			lea     edi, [ecx+0x48]
+			mov     [ebp-0x14], ebx
+			mov     [ebp-0x10], eax
+			jg      loc_1000DA49
+		loc_1000D971:
+			mov     esi, [ebp-0x30]
+			mov     eax, [ebp-0x38]
+			cmp     eax, esi
+			jl      loc_1000DA32
+			mov     ecx, esi
+			cmp     ecx, eax
+			jg      loc_1000DA32
+			lea     esp, [esp+0]
+		loc_1000D990:
+			mov     edx, [ebp-0x18]
+			cmp     esi, [edx]
+			mov     eax, [ebp+0x4]
+			jle     loc_1000D9A6
+			xor     ecx, ecx
+			mov     cl, [edi+3]
+			and     ecx, 1
+			cmp     ecx, eax
+			jz      loc_1000D9DC
+		loc_1000D9A6:
+			mov     ecx, [ebp-0x10]
+			cmp     ecx, [edx+4]
+			jge     loc_1000D9BA
+			xor     ecx, ecx
+			mov     cl, [edi+2]
+			and     ecx, 1
+			cmp     ecx, eax
+			jz      loc_1000D9DC
+		loc_1000D9BA:
+			cmp     esi, [edx+8]
+			jge     loc_1000D9CB
+			mov     ecx, [edi]
+			shr     ecx, 8
+			and     ecx, 1
+			cmp     ecx, eax
+			jz      loc_1000D9DC
+		loc_1000D9CB:
+			mov     ecx, [ebp-0x10]
+			cmp     ecx, [edx+0x0C]
+			jle     loc_1000DA23
+			mov     edx, [edi]
+			and     edx, 1
+			cmp     edx, eax
+			jnz     loc_1000DA23
+		loc_1000D9DC:
+			push    0
+			lea     eax, [ebp-0x8]
+			push    eax
+			lea     ecx, [ebp-0xC]
+			push    ecx
+			lea     edx, [esi+ebx]
+			push    edx
+			call    FOW_sub_1000B6F0
+			mov     eax, [ebp-0x8]
+			mov     ecx, [ebp-0xC]
+			mov     [ebp-0x24], eax
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_floor_draw_]
+			call    edi
+			pop     edi
+			add     esp, 0x10
+			test    eax, eax
+			mov     [ebp-0x20], ecx
+			mov     [ebp-0x1C], 0x4000001
+			jz      loc_1000DA23
+			mov     ecx, [ebp+0x0]
+			mov     ebx, [ebp-0x24]
+			mov     edx, [ebp-0x20]
+			mov     eax, [ebp-0x1C]
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_floor_draw_]
+			call    edi
+			pop     edi
+			mov     ebx, [ebp-0x14]
+		loc_1000DA23:
+			mov     eax, [ebp-0x38]
+			inc     esi
+			cmp     esi, eax
+			jle     loc_1000D990
+			mov     edx, [ebp-0x28]
+		loc_1000DA32:
+			mov     eax, [ebp-0x10]
+			mov     ecx, [ebp-0x2C]
+			add     ebx, edx
+			inc     eax
+			cmp     eax, ecx
+			mov     [ebp-0x14], ebx
+			mov     [ebp-0x10], eax
+			jle     loc_1000D971
+		loc_1000DA49:
+			pop     edi
+			pop     esi
+			pop     ebx
+			mov     esp, ebp
+			pop     ebp
+			retn
+	}
+}
+
+static void __declspec(naked) FOW_sub_1000DCD0(void) {
+	__asm {
+			push    ebp
+			mov     ebp, esp
+			sub     esp, 0x1C
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			lea     eax, [edi+D__ambient_light]
+			lea     ecx, [edi+D__grid_size]
+			pop     edi
+			push    ebx
+			mov     ebx, [eax]
+			push    esi
+			xor     esi, esi
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			mov     [edi+FOW_dword_10064418], esi
+			pop     edi
+			cmp     [ecx], esi
+			push    edi
+			mov     [ebp-0x10], ebx
+			mov     [ebp-0xC], esi
+			mov     [ebp-0x8], esi
+			jle     loc_1000DE3C
+			nop
+		loc_1000DD00:
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     eax, [edi+C_light_get_tile_]
+			pop     edi
+			xor     edi, edi
+			cmp     eax, edi
+			mov     [ebp-0x4], edi
+			jz      loc_1000DD23
+			mov     edx, [ebp-0x8]
+			mov     eax, [ebp+0x4]
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_light_get_tile_]
+			call    edi
+			pop     edi
+			mov     [ebp-0x4], eax
+			mov     edi, [ebp-0x4]
+			mov     [ebp-0x4], edi
+		loc_1000DD23:
+			cmp     edi, ebx
+			jge     loc_1000DD2C
+			mov     edi, ebx
+			mov     [ebp-0x4], edi
+			loc_1000DD2C:
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			lea     edx, [edi+D__objectTable]
+			pop     edi
+			mov     esi, [edx+esi*4]
+			test    esi, esi
+			jz      loc_1000DE22
+			lea     ecx, [ecx+0]
+		loc_1000DD40:
+			mov     eax, [esi]
+			mov     ecx, [eax+0x28]
+			mov     edx, [ebp+0x4]
+			cmp     ecx, edx
+			jg      loc_1000DE22
+			jnz     loc_1000DDE3
+			mov     ecx, [eax+0x24]
+			test    cl, 8
+			jz      loc_1000DE14
+			test    cl, 1
+			jnz     loc_1000DDE3
+			push    eax
+			call    FOW_sub_1000C2D0
+			add     esp, 4
+			test    eax, eax
+			jnz     loc_1000DDF0
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			mov     eax, [edi+FOWLightLevel]
+			pop     edi
+			cmp     edi, eax
+			jl      loc_1000DDF5
+			test    eax, eax
+			jz      loc_1000DDF5
+			mov     ecx, [esi]
+			mov     [ebp-0x18], eax
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     eax, [edi+C_obj_render_object_]
+			pop     edi
+			test    eax, eax
+			mov     [ebp-0x14], ecx
+			jz      loc_1000DDA5
+			mov     ebx, [ebp-0x18]
+			mov     edx, [ebp+0x0]
+			mov     eax, [ebp-0x14]
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_obj_render_object_]
+			call    edi
+			pop     edi
+		loc_1000DDA5:
+			mov     ecx, [esi]
+			mov     eax, [ecx+0x74]
+			test    eax, 0x0FFFFFF
+			jz      loc_1000DDE3
+			test    eax, eax
+			js      loc_1000DDE3
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			mov     edx, [edi+FOWEnable]
+			pop     edi
+			test    edx, edx
+			jz      loc_1000DDCA
+			mov     edx, [ecx+0x50]
+			test    edx, edx
+			jz      loc_1000DDCA
+			test    al, 0x20
+			jnz     loc_1000DDE3
+		loc_1000DDCA:
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			mov     eax, [edi+FOW_dword_10064418]
+			pop     edi
+			cmp     eax, 0x1F4
+			jge     loc_1000DDE3
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			lea     edi, [edi+FOW_dword_1003C908]
+			mov     [edi+eax*4], ecx
+			pop     edi
+			inc     eax
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			mov     [edi+FOW_dword_10064418], eax
+			pop     edi
+		loc_1000DDE3:
+			mov     esi, [esi+4]
+			test    esi, esi
+			jnz     loc_1000DD40
+			jmp     loc_1000DE22
+		loc_1000DDF0:
+			cmp     eax, 1
+			jnz     loc_1000DDA5
+		loc_1000DDF5:
+			mov     eax, [esi]
+			mov     [ebp-0x14], eax
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     eax, [edi+C_obj_render_object_]
+			pop     edi
+			test    eax, eax
+			jz      loc_1000DDA5
+			mov     ebx, [ebp-0x4]
+			mov     edx, [ebp+0x0]
+			mov     eax, [ebp-0x14]
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_obj_render_object_]
+			call    edi
+			pop     edi
+			jmp     loc_1000DDA5
+		loc_1000DE14:
+			mov     eax, [ebp-0xC]
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			lea     edi, [edi+FOW_dword_1003D160]
+			mov     [edi+eax*4], esi
+			pop     edi
+			inc     eax
+			mov     [ebp-0xC], eax
+		loc_1000DE22:
+			mov     esi, [ebp-0x8]
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			lea     edx, [edi+D__grid_size]
+			pop     edi
+			mov     eax, [edx]
+			mov     ebx, [ebp-0x10]
+			inc     esi
+			cmp     esi, eax
+			mov     [ebp-0x8], esi
+			jl      loc_1000DD00
+		loc_1000DE3C:
+			mov     eax, [ebp+0x0]
+			push    0
+			push    eax
+			call    FOW_sub_1000D870
+			mov     ecx, [ebp-0xC]
+			xor     eax, eax
+			add     esp, 8
+			test    ecx, ecx
+			mov     [ebp-0x14], eax
+			jle     loc_1000DF67
+			jmp     loc_1000DE60
+		loc_1000DE5C:
+			mov     ebx, [ebp-0x10]
+			nop
+		loc_1000DE60:
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			lea     edi, [edi+FOW_dword_1003D160]
+			mov     esi, [edi+eax*4]
+			pop     edi
+			xor     edi, edi
+			cmp     esi, edi
+			jz      loc_1000DE75
+			mov     ecx, [esi]
+			mov     edx, [ecx+4]
+			mov     [ebp-0x8], edx
+		loc_1000DE75:
+			push    esi
+			mov     esi, SN_CODE_SEC_EXE_ADDR
+			lea     esi, [esi+C_light_get_tile_]
+			cmp     esi, edi
+			pop     esi
+			mov     [ebp-0x4], edi
+			jz      loc_1000DE95
+			mov     edx, [ebp-0x8]
+			mov     eax, [ebp+0x4]
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_light_get_tile_]
+			call    edi
+			pop     edi
+			mov     [ebp-0x4], eax
+			mov     edi, [ebp-0x4]
+			mov     [ebp-0x4], edi
+		loc_1000DE95:
+			cmp     edi, ebx
+			jge     loc_1000DE9E
+			mov     edi, ebx
+			mov     [ebp-0x4], edi
+		loc_1000DE9E:
+			test    esi, esi
+			jz      loc_1000DF55
+		loc_1000DEA6:
+			mov     eax, [esi]
+			mov     ecx, [eax+0x28]
+			mov     edx, [ebp+0x4]
+			cmp     ecx, edx
+			jg      loc_1000DF55
+			jnz     loc_1000DF4A
+			test    byte ptr [eax+0x24], 1
+			jnz     loc_1000DF4A
+			push    eax
+			call    FOW_sub_1000C2D0
+			add     esp, 4
+			test    eax, eax
+			jnz     loc_1000DF7C
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			mov     eax, [edi+FOWLightLevel]
+			pop     edi
+			cmp     edi, eax
+			jl      loc_1000DF81
+			test    eax, eax
+			jz      loc_1000DF81
+			mov     ecx, [esi]
+			mov     [ebp-0x1C], eax
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     eax, [edi+C_obj_render_object_]
+			pop     edi
+			test    eax, eax
+			mov     [ebp-0x18], ecx
+			jz      loc_1000DF0C
+			mov     ebx, [ebp-0x1C]
+			mov     edx, [ebp+0x0]
+			mov     eax, [ebp-0x18]
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_obj_render_object_]
+			call    edi
+			pop     edi
+		loc_1000DF0C:
+			mov     ecx, [esi]
+			mov     eax, [ecx+0x74]
+			test    eax, 0x0FFFFFF
+			jz      loc_1000DF4A
+			test    eax, eax
+			js      loc_1000DF4A
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			mov     edx, [edi+FOWEnable]
+			pop     edi
+			test    edx, edx
+			jz      loc_1000DF31
+			mov     edx, [ecx+0x50]
+			test    edx, edx
+			jz      loc_1000DF31
+			test    al, 0x20
+			jnz     loc_1000DF4A
+		loc_1000DF31:
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			mov     eax, [edi+FOW_dword_10064418]
+			pop     edi
+			cmp     eax, 0x1F4
+			jge     loc_1000DF4A
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			lea     edi, [edi+FOW_dword_1003C908]
+			mov     esi, [edi+eax*4]
+			pop     edi
+			inc     eax
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			mov     [edi+FOW_dword_10064418], eax
+			pop     edi
+		loc_1000DF4A:
+			mov     esi, [esi+4]
+			test    esi, esi
+			jnz     loc_1000DEA6
+		loc_1000DF55:
+			mov     eax, [ebp-0x14]
+			mov     ecx, [ebp-0xC]
+			inc     eax
+			cmp     eax, ecx
+			mov     [ebp-0x14], eax
+			jl      loc_1000DE5C
+		loc_1000DF67:
+			mov     edx, [ebp+0x0]
+			push    1
+			push    edx
+			call    FOW_sub_1000D870
+			add     esp, 8
+			pop     edi
+			pop     esi
+			pop     ebx
+			mov     esp, ebp
+			pop     ebp
+			retn
+
+		loc_1000DF7C:
+			cmp     eax, 1
+			jnz     loc_1000DF0C
+		loc_1000DF81:
+			mov     eax, [esi]
+			mov     [ebp-0x18], eax
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     eax, [edi+C_obj_render_object_]
+			pop     edi
+			test    eax, eax
+			jz      loc_1000DF0C
+			mov     ebx, [ebp-0x4]
+			mov     edx, [ebp+0x0]
+			mov     eax, [ebp-0x18]
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_obj_render_object_]
+			call    edi
+			pop     edi
+			jmp     loc_1000DF0C
+	}
+}
+
+static void __declspec(naked) FOW_sub_10016380(void) {
+	__asm {
 
 
 
-void initHighResPatches(void) {
+			int     3
+
+
+
+			push    ebx
+			push    ecx
+			push    esi
+			push    edi
+			push    ebp
+			push    edx
+			push    eax
+			call    FOW_sub_1000DCD0
+			add     esp, 8
+			pop     ebp
+			pop     edi
+			pop     esi
+			pop     ecx
+			pop     ebx
+			retn
+	}
+}
+
+// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+static void __declspec(naked) FOW_sub_1000D5D0(void) {
+	__asm {
+			mov     ecx, [esp+0x0]
+			test    ecx, ecx
+			jl      loc_1000D689
+			cmp     ecx, 3
+			jge     loc_1000D689
+			push    edi
+			mov     edi, [esp+4+0x4]
+			test    edi, edi
+			jl      loc_1000D685
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			lea     eax, [edi+D__grid_size]
+			pop     edi
+			mov     eax, [eax]
+			cmp     edi, eax
+			jge     loc_1000D685
+			imul    eax, ecx
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			lea     ecx, [edi+D__tile_intensity]
+			pop     edi
+			add     eax, edi
+			push    esi
+			mov     esi, [ecx+eax*4]
+			mov     ecx, [esp+8+0x8]
+			cmp     esi, ecx
+			jge     loc_1000D61A
+			mov     esi, ecx
+		loc_1000D61A:
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			mov     ecx, [edi+FOWEnable]
+			pop     edi
+			test    ecx, ecx
+			push    ebx
+			jz      loc_1000D66E
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			mov     ecx, [edi+FOWLightLevel]
+			pop     edi
+			cmp     esi, ecx
+			jle     loc_1000D66E
+			test    ecx, ecx
+			jz      loc_1000D66E
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			lea     edx, [edi+D__obj_dude]
+			pop     edi
+			mov     ecx, [edx]
+			mov     ebx, [ecx+4]
+			cmp     ebx, 0x0FFFFFFFF
+			jz      loc_1000D66E
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			mov     ecx, [edi+FOW_dword_100643FC]
+			pop     edi
+			test    ecx, ecx
+			jz      loc_1000D66E
+			push    eax
+			call    FOW_sub_10009E20
+			test    eax, eax
+			jnz     loc_1000D66E
+			push    edi
+			push    ebx
+			call    FOW_sub_1000B9A0
+			add     esp, 8
+			test    al, al
+			jz      loc_1000D66E
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			mov     eax, [edi+FOWLightLevel]
+			pop     edi
+			pop     ebx
+			pop     esi
+			pop     edi
+			retn
+
+		loc_1000D66E:
+			cmp     esi, 0x10000
+			jle     loc_1000D67F
+			pop     ebx
+			pop     esi
+			mov     eax, 0x10000
+			pop     edi
+			retn
+
+		loc_1000D67F:
+			pop     ebx
+			mov     eax, esi
+			pop     esi
+			pop     edi
+			retn
+
+		loc_1000D685:
+			xor     eax, eax
+			pop     edi
+			retn
+
+		loc_1000D689:
+			xor     eax, eax
+			retn
+	}
+}
+
+static void __declspec(naked) FOW_sub_100162A0(void) {
+	__asm {
+			push    ebx
+			push    ecx
+			push    esi
+			push    edi
+			push    ebp
+			push    ebp
+			push    edx
+			push    eax
+			call    FOW_sub_1000D5D0
+			add     esp, 0x0C
+			pop     ebp
+			pop     edi
+			pop     esi
+			pop     ecx
+			pop     ebx
+			retn
+	}
+}
+
+// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+static void __declspec(naked) FOW_sub_1000C450(void) {
+	__asm {
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			mov     eax, [edi+FOWEnable]
+			pop     edi
+			test    eax, eax
+			jz      loc_1000C4C3
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			lea     eax, [edi+D__obj_dude]
+			pop     edi
+			mov     edx, [eax]
+			mov     ecx, [esp+0x0]
+			xor     eax, eax
+			mov     al, [ecx+0x23]
+			and     eax, 0x0F
+			cmp     eax, 1
+			jnz     loc_1000C4A1
+			mov     eax, [ecx+0x50]
+			test    eax, eax
+			jz      loc_1000C4C3
+			mov     eax, [ecx+0x74]
+			test    eax, 0x0FFFFFF
+			jz      loc_1000C48A
+			test    eax, eax
+			js      loc_1000C48A
+			test    al, 0x20
+			jz      loc_1000C4C3
+		loc_1000C48A:
+			mov     ecx, [ecx+4]
+			mov     edx, [edx+4]
+			push    ecx
+			push    edx
+			call    FOW_sub_1000B9A0
+			add     esp, 8
+			test    al, al
+			jz      loc_1000C4C3
+		loc_1000C49E:
+			xor     al, al
+			retn
+
+		loc_1000C4A1:
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			mov     edx, [edi+FOWLightLevel]
+			pop     edi
+			test    edx, edx
+			jnz     loc_1000C4BA
+			cmp     eax, 3
+			jz      loc_1000C4C3
+			cmp     eax, 2
+			jz      loc_1000C4C3
+			cmp     eax, 5
+			jz      loc_1000C4C3
+		loc_1000C4BA:
+			test    dword ptr [ecx+0x24], 0x40000000
+			jz      loc_1000C49E
+		loc_1000C4C3:
+			mov     al, 1
+			retn
+	}
+}
+
+static void __declspec(naked) FOW_sub_1000F190(void) {
+	__asm {
+			push    ebp
+			mov     ebp, esp
+			mov     edx, [ebp+0x4]
+			mov     eax, [ebp+0x0]
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_mem_realloc_]
+			call    edi
+			pop     edi
+			mov     [ebp+0x0], eax
+			mov     eax, [ebp+0x0]
+			pop     ebp
+			retn
+	}
+}
+
+static void __declspec(naked) FOW_sub_1000C4D0(void) {
+	__asm {
+			push    ebp
+			mov     ebp, esp
+			sub     esp, 0x18
+			mov     edx, [ebp+0x10]
+			push    ebx
+			xor     ebx, ebx
+			push    esi
+			mov     [edx], ebx
+			push    edi
+			push    esi
+			mov     esi, SN_DATA_SEC_EXE_ADDR
+			lea     edi, [esi+D__grid_size]
+			pop     esi
+			xor     ecx, ecx
+			xor     eax, eax
+			xor     esi, esi
+			cmp     [edi], ebx
+			mov     [ebp-0xC], ecx
+			mov     [ebp-0x1], bl
+			mov     [ebp-0x14], eax
+			jle     loc_1000C5F7
+			lea     ecx, [ecx+0]
+		loc_1000C500:
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			lea     ecx, [edi+D__objectTable]
+			pop     edi
+			mov     edi, [ecx+eax*4]
+			cmp     edi, ebx
+			lea     edx, ds:8[esi*8]
+			mov     [ebp-0x8], edx
+			jz      loc_1000C5CC
+			jmp     loc_1000C520
+		loc_1000C520:
+			cmp     [ebp-0x1], bl
+			jnz     loc_1000C5CC
+			mov     eax, [edi]
+			mov     ecx, [eax+0x28]
+			mov     edx, [ebp+0x8]
+			cmp     ecx, edx
+			jg      loc_1000C5C0
+			jnz     loc_1000C5B9
+			mov     edx, [ebp+0xC]
+			cmp     edx, 0x0FFFFFFFF
+			jz      loc_1000C54F
+			xor     ecx, ecx
+			mov     cl, [eax+0x23]
+			and     ecx, 0x0F
+			cmp     ecx, edx
+			jnz     loc_1000C5B9
+		loc_1000C54F:
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			lea     ecx, [edi+D__obj_egg]
+			pop     edi
+			cmp     eax, [ecx]
+			jz      loc_1000C5B9
+			push    eax
+			call    FOW_sub_1000C450
+			add     esp, 4
+			test    al, al
+			jz      loc_1000C5B9
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_obj_intersects_with_]
+			cmp     edi, ebx
+			pop     edi
+			mov     edx, [edi]
+			mov     [ebp-0x18], edx
+			jz      loc_1000C5B9
+			mov     [ebp-0x10], ebx
+			mov     ebx, [ebp+0x4]
+			mov     edx, [ebp+0x0] ; _DWORD
+			mov     eax, [ebp-0x18]
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_obj_intersects_with_]
+			call    edi
+			pop     edi
+			mov     [ebp-0x10], eax
+			mov     ebx, [ebp-0x10]
+			test    ebx, ebx
+			jz      loc_1000C5B9
+			mov     eax, [ebp-0x8]
+			mov     ecx, [ebp-0xC]
+			push    eax
+			push    ecx
+			call    FOW_sub_1000F190
+			add     esp, 8
+			test    eax, eax
+			mov     [ebp-0xC], eax
+			jz      loc_1000C5B9
+			mov     edx, [edi]
+			mov     [eax+esi*8+4], edx
+			mov     [eax+esi*8], ebx
+			mov     eax, [ebp-0x8]
+			inc     esi
+			add     eax, 8
+			mov     [ebp-0x8], eax
+		loc_1000C5B9:
+			mov     edi, [edi+4]
+			xor     ebx, ebx
+			jmp     loc_1000C5C4
+		loc_1000C5C0:
+			mov     [ebp-0x1], 1
+		loc_1000C5C4:
+			cmp     edi, ebx
+			jnz     loc_1000C520
+		loc_1000C5CC:
+			mov     eax, [ebp-0x14]
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			lea     ecx, [edi+D__grid_size]
+			pop     edi
+			mov     edx, [ecx]
+			inc     eax
+			cmp     eax, edx
+			mov     [ebp-0x1], bl
+			mov     [ebp-0x14], eax
+			jl      loc_1000C500
+			mov     eax, [ebp+0x10]
+			mov     edx, [ebp-0xC]
+			mov     [eax], edx
+			mov     eax, esi
+			pop     edi
+			pop     esi
+			pop     ebx
+			mov     esp, ebp
+			pop     ebp
+			retn
+
+		loc_1000C5F7:
+			pop     edi
+			mov     eax, esi
+			pop     esi
+			mov     [edx], ecx
+			pop     ebx
+			mov     esp, ebp
+			pop     ebp
+			retn
+	}
+}
+
+static void __declspec(naked) FOW_sub_100163A0(void) {
+	__asm {
+			push    esi
+			push    edi
+			push    ebp
+			push    [esp+0x0C+0x0]
+			push    ecx
+			push    ebx
+			push    edx
+			push    eax
+			call    FOW_sub_1000C4D0
+			add     esp, 0x14
+			pop     ebp
+			pop     edi
+			pop     esi
+			retn    4
+	}
+}
+
+// HOW TO CONTINUE THIS!!!!!!!!!!!!!!
+//
+// Go on the IDA database and look for all the "FOW_dword_"s and FOWEnable references and copy them all to here. All
+// that uses the references needed for FOW must be put here.
+// PS: don't forget to check the length of the code section. With the 40k array, it will increase, and the
+// PatcherPatcher must be updated.
+
+void initHighResPatchPatches(void) {
+	int temp_int = 0;
+	char prop_value[MAX_PROP_VALUE_LEN];
+	memset(prop_value, 0, MAX_PROP_VALUE_LEN);
+
 	// Fog Of War
 
-	*(uint32_t *) getRealBlockAddrData(&FOWEnable) = 1;
-	*(uint32_t *) getRealBlockAddrData(&FOWLightLevel) = 5;
+	getPropValueIni(MAIN_INI_SPEC_SEC_HIGHRES, "MAPS", "FOG_OF_WAR", "0", prop_value, &f1dpatch_ini_info_G);
+	sscanf(prop_value, "%d", &temp_int);
+	*(uint32_t *) getRealBlockAddrData(&FOWEnable) = 0 != temp_int;
 
-	// FOWEnable
-
-
-
-
-
-	// FOWLightLevel
-
-
-
-
-
-
+	getPropValueIni(MAIN_INI_SPEC_SEC_HIGHRES, "MAPS", "FOG_LIGHT_LEVEL", "0", prop_value, &f1dpatch_ini_info_G);
+	sscanf(prop_value, "%d", &temp_int);
+	if ((temp_int < 0) || (temp_int > 10)) {
+		*(uint32_t *) getRealBlockAddrData(&FOWLightLevel) = 0;
+	} else {
+		uint32_t temp = (uint32_t) temp_int;
+		temp <<= (unsigned) 12;
+		*(uint32_t *) getRealBlockAddrData(&FOWLightLevel) = temp;
+	}
 
 	// DLL: 0x10016B67
-	writeMem8EXE(0x47E314, 0xC3);
+	if (0 != *(uint32_t *) getRealBlockAddrData(&FOWEnable)) {
+		writeMem8EXE(0x7DE34, 0xC3);
+	}
 
-	// DLL: 0x10016A7F
-	hookCallEXE(0x4A0250, getRealBlockAddrCode((void *) &sub_100162A0));
+
+	hookCallEXE(0x44B36, getRealBlockAddrCode((void *) &FOW_sub_100163A0));
+
+	(void *) FOW_sub_10016380;
+	//makeCallEXE(0x7B300, getRealBlockAddrCode((void *) &FOW_sub_10016380), true); - Problem here, game will crash
+
+	writeMem32EXE(0x7B5CB+2, (uint32_t) getRealBlockAddrData((void *) &FOW_dword_1003C908));
+	writeMem32EXE(0x7B5BB+2, (uint32_t) getRealBlockAddrData((void *) &FOW_dword_10064418));
+	writeMem32EXE(0x7B5D7+2, (uint32_t) getRealBlockAddrData((void *) &FOW_dword_10064418));
+
+	(void *) FOW_sub_100162A0;
+	hookCallEXE(0x9FD5F, getRealBlockAddrCode((void *) &FOW_sub_100162A0));
+
 }

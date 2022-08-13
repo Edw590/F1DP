@@ -22,7 +22,7 @@
 
 
 
-void initHighResPatches(void);
+void initHighResPatchPatches(void);
 
 
 
