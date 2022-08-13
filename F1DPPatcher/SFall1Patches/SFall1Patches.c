@@ -36,10 +36,10 @@ bool initSFall1Patches(void) {
 	if (getPropValueIni(MAIN_INI_SPEC_SEC_MAIN, NULL, "CraftySFall1SettingsFile", NULL, prop_value, &f1dpatch_ini_info_G)) {
 		if (0 != strcmp(prop_value, F1DP_MAIN_INI)) { // Don't reopen the main INI file, use the one already open.
 			if (readFile(prop_value, &sfall1_ini_info_G)) {
-				printf(LOGGER_STR "File \"%s\" opened for sFall1 settings."NL, prop_value);
+				printf(LOGGER_STR "> File \"%s\" opened for sFall1 settings."NL, prop_value);
 				((struct FileInfo *) getRealBlockAddrData(&sfall1_ini_info_G))->is_main_ini = false;
 			} else {
-				printf(LOGGER_STR "File \"%s\" not found for sFall1 settings. Aborting sFall1 patches."NL, prop_value);
+				printf(LOGGER_STR "> File \"%s\" not found for sFall1 settings. Aborting sFall1 patches."NL, prop_value);
 				memset(&sfall1_ini_info_G, 0, sizeof(sfall1_ini_info_G));
 
 				ret_var = false;
@@ -50,7 +50,7 @@ bool initSFall1Patches(void) {
 					*(struct FileInfo *) getRealBlockAddrData(&f1dpatch_ini_info_G);
 		}
 	} else {
-		printlnStr(LOGGER_ERR_STR "No file specified for sFall1 settings. Aborting sFall1 patches.");
+		printlnStr(LOGGER_ERR_STR "> No file specified for sFall1 settings. Aborting sFall1 patches.");
 
 		ret_var = false;
 		goto funcEnd;

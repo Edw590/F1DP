@@ -31,7 +31,7 @@
 #define SNO_DATA_SEC_BLOCK_ADDR 0x05000000
 #define SNO_BLOCK_ADDR 0x04000000
 
-// The code segment begins in the 16th byte, not on the 0th
+// The code segment begins in the 16th byte, not on the 1st
 #define CODE_SEC_BLOCK_ADDR_OFFSET 0x10
 // The data segment begins some pages (each of 0x1000 bytes) after the code segment. This number can change and must be
 // updated manually each time the code needs one more page in the EXE.
@@ -74,11 +74,6 @@ void patcherPatcher(uint32_t sn_base) {
 	uint32_t bin_file_len = 0;
 	uint32_t code_sec_block_addr = 0;
 	uint32_t data_sec_block_addr = 0;
-	int temp1 = 0;
-	int temp2 = 0;
-	int temp3 = 0;
-	int temp4 = 0;
-	int temp5 = 0;
 	// NO ASSIGNMENTS ABOVE THE __asm DECLARATION!!!!! THE EDI REGISTER MUST BE INTACT INSIDE IT!!!!
 	__asm {
 			mov     [block_addr], edi // Now the block address is decently stored before any code messes with EDI
@@ -90,7 +85,7 @@ void patcherPatcher(uint32_t sn_base) {
 	data_sec_block_addr = block_addr + DATA_SEC_BLOCK_ADDR_OFFSET;
 
 	offset = 0;
-	// Below, -4 because we'll be reading 4 by 4. So the last 4 bytes are the last ones to be ready. Not the last 3 or
+	// Below, -4 because we'll be reading 4 by 4. So the last 4 bytes are the last ones to be read. Not the last 3 or
 	// 2 or 1, which would cause bad things to happen (reading wrong places in memory - because we read 4 by 4).
 	while (offset <= (bin_file_len - 4)) {
 		uint32_t curr_addr = block_addr + offset;
@@ -98,19 +93,14 @@ void patcherPatcher(uint32_t sn_base) {
 
 		if (curr_value == (sn_base + SNO_CODE_SEC_EXE_ADDR)) {
 			*(uint32_t *) curr_addr = code_sec_exe_addr;
-			++temp1;
 		} else if (curr_value == (sn_base + SNO_DATA_SEC_EXE_ADDR)) {
 			*(uint32_t *) curr_addr = data_sec_exe_addr;
-			++temp2;
 		} else if (curr_value == (sn_base + SNO_CODE_SEC_BLOCK_ADDR)) {
 			*(uint32_t *) curr_addr = code_sec_block_addr;
-			++temp3;
 		} else if (curr_value == (sn_base + SNO_DATA_SEC_BLOCK_ADDR)) {
 			*(uint32_t *) curr_addr = data_sec_block_addr;
-			++temp4;
 		} else if (curr_value == (sn_base + SNO_BLOCK_ADDR)) {
 			*(uint32_t *) curr_addr = block_addr;
-			++temp5;
 		} else {
 			// Do nothing if none of the special numbers are found
 		}

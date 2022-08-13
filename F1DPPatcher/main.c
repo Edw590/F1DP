@@ -46,6 +46,7 @@
 #include "Utils/General.h"
 #include "Utils/GlobalEXEAddrs.h"
 #include "Utils/IniUtils.h"
+#include "HighResPatches/HighResPatches.hNOTDONE"
 #include <stdbool.h>
 
 #define SN_MAIN_FUNCTION 0x78563412 // 12 34 56 78 in little endian
@@ -76,8 +77,8 @@ __declspec(naked) int main(void) {
 	__asm {
 			jmp     main1 // Jump over the data in case this program's EXE is executed normally
 			dd      SN_MAIN_FUNCTION
-		main1: // Where code execution begins for the loader
-			// Right before ANYthing else (before the ESI register, which contains the address of the allocated block) is
+		main1: // Where code execution begins for the Loader
+			// Right before ANYthing else (before the EDI register, which contains the address of the allocated block) is
 			// used somewhere), patch the patcher itself - and also before any operations that need the Special Numbers
 			// already replaced.
 			mov     eax, SN_BASE
@@ -261,6 +262,26 @@ bool applyPatches(void) {
 
 		ret_var = false;
 	}
+
+	/*// Enable or disable Mash's High Resolution Patch patches
+	if (getPropValueIni(MAIN_INI_SPEC_SEC_MAIN, NULL, "HighResPatchPatches", NULL, prop_value, &f1dpatch_ini_info_G)) {
+		sscanf(prop_value, "%d", &temp_int);
+		if (0 == temp_int) {
+			printlnStr(LOGGER_STR "HighResPatch patches disabled.");
+		} else if (1 == temp_int) {
+			printlnStr(LOGGER_STR "HighResPatch patches enabled.");
+
+			initHighResPatchPatches();
+		} else {
+			printlnStr(LOGGER_ERR_STR "'HighResPatchPatches' has an invalid value. Aborting HighResPatch patches...");
+
+			ret_var = false;
+		}
+	} else {
+		printlnStr(LOGGER_ERR_STR "'HighResPatchPatches' not specified. Aborting HighResPatch patches...");
+
+		ret_var = false;
+	}*/
 
 	// Enable or disable Crafty's sFall1 patches
 	if (getPropValueIni(MAIN_INI_SPEC_SEC_MAIN, NULL, "CraftySFall1Patches", NULL, prop_value, &f1dpatch_ini_info_G)) {

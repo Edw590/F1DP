@@ -43,6 +43,8 @@ struct CritStruct {
 
 #define SetEntry(a,b,c,d,e) defaultTable[a*9*6 + b*6 + c].values[d]=e
 
+// Entire file updated to version 1.8
+
 void CritInit(void) {
 	struct CritStruct *defaultTable = (struct CritStruct *) getRealEXEAddr(D__crit_succ_eff);
 

@@ -37,8 +37,8 @@ static uint32_t InCredits = 0;
 static uint32_t CreditsLine = 0;
 
 static char const *const ExtraLines[49] = {
-		// The below 2 lines weren't here, but I've added, because as Sduibek mentioned, why are a mod's credits before
-		// even the game name itself? So, as this appears before everything else, I've added the game name to it.
+		// The below 2 lines weren't here, but I've added, because as Sduibek mentioned, why are mod's credits before
+		// game name? So, as this appears before everything else, I've added the game name to it.
 		"#FALLOUT",
 		"-------------",
 		"#sfall1 "VERSION_STRING,
@@ -171,6 +171,8 @@ static void __declspec(naked) credits_get_next_line_hook(void) {
 			retn
 	}
 }
+
+// Entire file updated to version 1.8
 
 void CreditsInit(void) {
 	int temp_int = 0;

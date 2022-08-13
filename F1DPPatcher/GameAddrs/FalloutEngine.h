@@ -123,6 +123,7 @@
 #define C_endgame_movie_                     0x38C6C // Args: non-stack / No prototype
 #define C_endgame_slideshow_                 0x38890 // Args: non-stack / No prototype
 #define C_exec_script_proc_                  0x92904 // Args: non-stack / No prototype
+#define C_floor_draw_                        0x9FB84 // Args: non-stack / No prototype
 #define C_game_get_global_var_               0x3C750 // Args: non-stack / int __usercall game_get_global_var_@<eax>(int GVAR@<eax>)
 #define C_game_set_global_var_               0x3C780 // Args: non-stack / int __usercall game_set_global_var_@<eax>(int GVAR@<eax>, int Value@<edx>)
 #define C_gdialog_display_msg_               0x3E694 // Args: non-stack / No prototype
@@ -174,6 +175,7 @@
 #define C_item_weight_                       0x6A73C // Args: non-stack / int __usercall item_weight_@<eax>(iobj *item@<eax>)
 #define C_is_within_perception_              0x264C0 // Args: non-stack / _BOOL4 __usercall is_within_perception_@<eax>(pobj *source@<eax>, pobj *target@<edx>)
 #define C_is_pc_sneak_working_               0x28D0C // Args: non-stack / _BOOL4 __usercall is_pc_sneak_working_@<eax>()
+#define C_light_get_tile_                    0x6CD78 // Args: non-stack / No prototype
 #define C_ListDrvdStats_                     x
 #define C_ListSkills_                        0x303A4 // Args: non-stack / No prototype
 #define C_ListTraits_                        x
@@ -182,8 +184,10 @@
 #define C_main_game_loop_                    0x72D04 // Args: non-stack / No prototype
 #define C_main_menu_loop_                    0x736CC // Args: non-stack / No prototype
 #define C_make_path_func_                    0x15998 // Args: +stack (auto-clean) / int __userpurge make_path_func_@<eax>(pobj *source@<eax>, int target_tile@<ebx>, void *sad_rotation_ptr@<ecx>, int source_tile@<edx>, int a5, void *func)
+#define C_make_straight_path_func_           0x15DD8 // Args: +stack (auto-clean) / No prototype
 #define C_mem_free_                          0xAED88 // Args: non-stack / No prototype
 #define C_mem_malloc_                        x
+#define C_mem_realloc_                       0xAECC0 // Args: non-stack / No prototype
 #define C_memmove_                           x
 //#define C_memset_                          x - already in CStdFuncs.h
 #define C_message_exit_                      x
@@ -191,18 +195,21 @@
 #define C_message_search_                    x
 #define C_mouse_click_in_                    0xB4930 // Args: non-stack / int __usercall mouse_click_in_@<eax>(int x_start@<eax>, int y_start@<edx>, int x_end@<ebx>, int y_end@<ecx>)
 #define C_move_inventory_                    x
+#define C_obj_blocking_at_                   0x7D2A0 // Args: non-stack / No prototype
 #define C_obj_change_fid_                    x
 #define C_obj_connect_                       0x7BB40 // Args: non-stack / No prototype
 #define C_obj_destroy_                       0x8ACE8 // Args: non-stack / No prototype
 #define C_obj_dist_                          0x7D418 // Args: non-stack / No prototype
 #define C_obj_find_first_at_                 0x7CF9C // Args: non-stack / int __usercall obj_find_first_at_@<eax>(int elev@<eax>)
 #define C_obj_find_next_at_                  0x7D020 // Args: non-stack / No prototype
+#define C_obj_intersects_with_               0x7D9E0 // Args: non-stack / No prototype
 #define C_obj_is_a_portal_                   x
 #define C_obj_outline_object_                0x7D954 // Args: non-stack / No prototype
 #define C_obj_process_seen_                  0x7DE34 // Args: non-stack / No prototype
 #define C_obj_remove_outline_                0x7D990 // Args: non-stack / No prototype
+#define C_obj_render_object_                 0x80818 // Args: non-stack / No prototype
 #define C_obj_save_dude_                     x
-#define C_obj_sight_blocking_at_             0x7D3CC // Args: non-stack / No prototype
+#define C_obj_sight_blocking_at_             0x7D388 // Args: non-stack / No prototype
 #define C_obj_top_environment_               0x7CE14 // Args: non-stack / pobj *__usercall obj_top_environment_@<eax>(pobj *source@<eax>)
 #define C_obj_turn_off_outline_              0x7CA98 // Args: non-stack / No prototype
 #define C_obj_turn_on_outline_               0x7CA7C // Args: non-stack / No prototype
@@ -243,6 +250,7 @@
 #define C_skill_inc_point_                   0x98564 // Args: non-stack / int __usercall skill_inc_point_@<eax>(pobj *source@<eax>, int skill@<edx>)
 #define C_skill_level_                       0x98408 // Args: non-stack / int __usercall skill_level_@<eax>(pobj *source@<eax>, int skill@<edx>)
 #define C_skill_set_tags_                    0x983C0 // Args: non-stack / No prototype
+#define C_soundUpdate_                       0x9C188 // Args: non-stack / No prototype
 //#define C_sprintf_                         x - already in CStdFuncs.h
 #define C_srcCopy_                           x
 #define C_scr_set_objs_                      0x91DE0 // Args: non-stack / signed int __usercall scr_set_objs_@<eax>(int sid@<eax>, pobj *target@<ebx>, pobj *source@<edx>)
@@ -277,6 +285,7 @@
 // //////////////////////////////////////////////////////////////////////////////
 // DATA SECTION HERE
 
+#define D__ambient_light           0x1059EC
 #define D__anim_set                0x15EEFC
 #define D__art_name                x
 #define D__art_skilldex            x
@@ -296,6 +305,8 @@
 #define D__crit_succ_eff           0xFEEA8
 #define D__critter_db_handle       x
 #define D__crnt_func               0x2612A4
+#define D__curr_crit_num           0x16AA4C
+#define D__curr_crit_list          0x16AA50
 #define D__curr_font_num           0x13A374
 #define D__curr_pc_stat            0x263CA0
 #define D__curr_rot                x
@@ -322,6 +333,8 @@
 #define D__glblmode                x
 #define D__gmouse_current_cursor   x
 #define D__GreenColor              0x2A1DF0
+#define D__grid_size               0x2678F4
+#define D__grid_width              0x2678E4
 #define D__grphbmp                 x
 #define D__hash_is_on              x
 #define D__holo_flag               0x261335
@@ -356,8 +369,10 @@
 #define D__name_color              0x16AA74
 #define D__name_font               0x16AA7C
 #define D__obj_dude                0x25DCA8
+#define D__obj_egg                 0x25DC90
 #define D__old_fid1                x
 #define D__old_str1                x
+#define D__objectTable             0x236980
 #define D__outlined_object         0x1055E4
 #define D__patches                 x
 #define D__pc_name                 0x16AA8C
@@ -371,10 +386,18 @@
 #define D__queue                   0x2615DC
 #define D__quick_done              x
 #define D__rad_bonus               0x104F70
+#define D__refresh_enabled         0x1084CC
 #define D__RedColor                0x2A9610
 #define D__sfx_file_name           0x193F11
 #define D__slot_cursor             x
 #define D__sneak_working           0x16AAAC
+#define D__square_length           0x2678F8
+#define D__square_offx             0x2678C4
+#define D__square_offy             0x2678C8
+#define D__square_size             0x2678E0
+#define D__square_width            0x267900
+#define D__square_x                0x2678C0
+#define D__square_y                0x2678BC
 #define D__stack                   0x19B71C
 #define D__stack_offset            0x19B6C4
 #define D__sthreads                0x1073B8
@@ -390,6 +413,7 @@
 #define D__text_to_buf             0x13A37C // Args: +stack (?-clean) / void __userpurge text_to_buf(int ToSurface@<eax>, int TxtWidth@<ebx>, int ToWidth@<ecx>, char *DisplayText@<edx>, int ColorIndex)
 #define D__text_width              0x13A384 // Args: non-stack / int (__fastcall *text_width)(_DWORD, _DWORD)
 #define D__ticker                  x
+#define D__tile_intensity          0x19B86C
 #define D__title_color             0x16AA80
 #define D__title_font              0x16AA78
 

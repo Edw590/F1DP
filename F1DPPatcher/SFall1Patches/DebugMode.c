@@ -45,6 +45,8 @@ static void __declspec(naked) debugMode(void) {
 	}
 }
 
+// Entire file updated to version 1.8
+
 void DebugModeInit(void) {
 	int temp_int = 0;
 	char prop_value[MAX_PROP_VALUE_LEN];

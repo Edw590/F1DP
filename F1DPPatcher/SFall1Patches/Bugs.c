@@ -1162,6 +1162,10 @@ static void __declspec(naked) op_negate_hook(void) {
 	}
 }
 
+// Note to update this to v1.8: almost all game addresses match on 1.7.20 and 1.8, so hopefully the functions match too,
+// or at least don't differ too much. There are just a few addresses different, which almost certainly indicate
+// different functions. Also.... there are various more fixes to include here. Will take time.
+
 void BugsInit(void) {
 	int i = 0;
 

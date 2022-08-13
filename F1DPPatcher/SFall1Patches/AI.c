@@ -51,29 +51,51 @@ static void __declspec(naked) ai_called_shot_hook(void) {
 	}
 }
 
-static void __declspec(naked) is_within_perception_hook(void) {
+static void __declspec(naked) func_4012C7(void) {
 	__asm {
-			test    eax, eax                             // Is there a purpose?
-			jz      end                                  // No
-			xor     eax, eax
-			inc     eax                                  // STAT_pe
-			xchg    eax, edx                             // eax = source, edx = STAT_pe
-			push    edi
-			mov     edi, SN_CODE_SEC_EXE_ADDR
-			lea     edi, [edi+C_stat_level_]
-			call    edi
-			pop     edi
-			mov     ebp, eax                             // ebp = perception source
+			push    ecx
+			cmp     edx, 9C40h
+			jb      loc_4012D4
+			xor     edx, edx
+			jmp     loc_401308
+		loc_4012D4:
 			push    edi
 			mov     edi, SN_DATA_SEC_EXE_ADDR
-			test    byte ptr ds:[edi+D__combat_state], 1 // In battle?
+			mov     edx, ds:[edi+D__objectTable][edx*4]
 			pop     edi
-			jz      notCombat                            // No
-			shl     eax, 1                               // eax = perception * 2
-		notCombat:
-			xchg    esi, eax                             // esi = visibility (at this stage it is audibility)
-			test    byte ptr [ecx+0x44], 0x40            // source.results & DAM_BLIND?
-			jnz     cantSee                              // Yes, blind
+			loc_4012DB:
+			test    edx, edx
+			jz      loc_401308
+			mov     ecx, [edx]
+			cmp     [ecx+28h], ebx
+			jnz     loc_401301
+			test    byte ptr [ecx+24h], 1
+			jnz     loc_401301
+			cmp     ecx, eax
+			jz      loc_401301
+			mov     ecx, [ecx+20h]
+			and     ecx, 0F000000h
+			sar     ecx, 18h
+			sub     ecx, 3
+			jz      loc_401306
+		loc_401301:
+			mov     edx, [edx+4]
+			jmp     loc_4012DB
+		loc_401306:
+			mov     edx, [edx]
+		loc_401308:
+			xchg    eax, edx
+			pop     ecx
+			retn
+	}
+}
+
+static void __declspec(naked) is_within_perception_hook(void) {
+	__asm {
+			sub     esp, 4
+			xor     ebp, ebp
+			test    byte ptr [ecx+0x44], 0x40
+			jnz     loc_401353
 			mov     edx, ebx
 			mov     eax, ecx
 			push    edi
@@ -81,8 +103,9 @@ static void __declspec(naked) is_within_perception_hook(void) {
 			lea     edi, [edi+C_can_see_]
 			call    edi
 			pop     edi
-			dec     eax                                  // In front of face?
-			jnz     cantSee                              // No
+			dec     eax
+			jnz     loc_401353
+			mov     edx, esp
 			push    ecx
 			push    ebx
 			lea     esp, [esp-4] // [DADi590: reserve space to "PUSH EDI"]
@@ -90,55 +113,88 @@ static void __declspec(naked) is_within_perception_hook(void) {
 			lea     esp, [esp-4] // [DADi590] Reserve space for the push
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			lea     edi, [edi+C_obj_sight_blocking_at_]
+			lea     edi, [edi+C_obj_blocking_at_]
 			mov     [esp+4], edi
 			pop     edi
 
-			push    eax
-			xchg    ecx, eax                             // eax = source, ecx = *sad_rotation_ptr (0)
-			mov     ebx, [ebx+0x4]                       // ebx = target.tile_num
-			mov     edx, [eax+0x4]                       // edx = source.tile_num
-			mov     [esp+2*4], edi // [DADi590: "PUSH EDI"]
+			push    0x10
+			mov     [edx], eax
+			push    edx
+			xchg    eax, ecx
+			mov     ebx, [ebx+4]
+			mov     edx, [eax+4]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			lea     edi, [edi+C_make_path_func_]         // Line of sight test
+			lea     edi, [edi+C_make_straight_path_func_]
 			call    edi
 			pop     edi
 			pop     ebx
 			pop     ecx
-			test    eax, eax                             // Are there barriers?
-			jz      cantSee                              // Yes
-			lea     esi, [ebp+ebp*4]                     // esi = perception * 5
-			test    byte ptr [ebx+0x26], 2               // target.flags3 & TransGlass_?
-			jz      cantSee                              // No
-			shr     esi, 1                               // esi = visibility / 2
-		cantSee:
+			cmp     [esp], ebx
+			jnz     loc_401353
+			lea     esi, [esi+esi*4]
+			test    byte ptr [ebx+0x26], 2
+			jz      loc_401384
+			shr     esi, 1
+			jmp     loc_401384
+		loc_401353:
+			shl     esi, 1
 			push    edi
 			mov     edi, SN_DATA_SEC_EXE_ADDR
-			cmp     ebx, ds:[edi+D__obj_dude]            // Goal == YY?
+			test    byte ptr ds:[edi+D__combat_state], 1 // In battle?
 			pop     edi
-			jnz     checkDistance                        // No
+			jnz     loc_401385
+			shr     esi, 1
+			xor     eax, eax
+			mov     edx, esp
+			push    ecx
+			push    ebx
+			lea     esp, [esp-4] // [DADi590: reserve space to "PUSH EDI"]
+
+			lea     esp, [esp-4] // [DADi590] Reserve space for the push
+			push    edi
+			mov     edi, SN_CODE_SEC_BLOCK_ADDR
+			lea     edi, [edi+func_4012C7]
+			mov     [esp+4], edi
+			pop     edi
+
+			push    0x10
+			mov     [edx], eax
+			push    edx
+			xchg    eax, ecx
+			mov     ebx, [ebx+4]
+			mov     edx, [eax+4]
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_make_straight_path_func_]
+			call    edi
+			pop     edi
+			pop     ebx
+			pop     ecx
+			cmp     [esp], ebp
+			jnz     loc_401385
+		loc_401384:
+			inc     ebp
+		loc_401385:
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			cmp     ebx, ds:[edi+D__obj_dude]
+			pop     edi
+			jnz     loc_401399
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_is_pc_sneak_working_]
 			call    edi
 			pop     edi
-			dec     eax                                  // Does stealth work?
-			jnz     checkDistance                        // No
-			shr     esi, 2                               // esi = visibility / 4
-		checkDistance:
-			mov     edx, ecx
-			xchg    eax, ebx
-			push    edi
-			mov     edi, SN_CODE_SEC_EXE_ADDR
-			lea     edi, [edi+C_obj_dist_]
-			call    edi
-			pop     edi
-			xor     edi, edi
-			xchg    edi, eax                             // edi = distance
-			cmp     edi, esi                             // Is the distance greater than visibility?
-			jg      end                                  // Yes
-			inc     eax
-		end:
+			dec     eax
+			jnz     loc_401399
+			shr     esi, 2
+		loc_401399:
+			inc     ebp
+			cmp     edi, esi
+			jbe     loc_4013A0
+			xor     ebp, ebp
+		loc_4013A0:
+			xchg    eax, ebp
+			add     esp, 4
 			pop     ebp
 			pop     edi
 			pop     esi
@@ -163,6 +219,70 @@ static void __declspec(naked) op_obj_can_hear_obj_hook(void) {
 	}
 }
 
+static void __declspec(naked) func_4013BD(void) {
+	__asm {
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_is_within_perception_]
+			call    edi
+			pop     edi
+			cmp     eax, 2
+			jnz     locret_4013CB
+			inc     edi
+			xor     eax, eax
+		locret_4013CB:
+			retn
+	}
+}
+
+static void __declspec(naked) func_4013CC(void) {
+	__asm {
+			push    edi
+			push    ecx
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_soundUpdate_]
+			call    edi
+			pop     edi
+			mov     ecx, [esi+0x50]
+			push    esi
+			mov     esi, SN_DATA_SEC_EXE_ADDR
+			mov     edi, ds:[esi+D__curr_crit_list]
+			pop     esi
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			mov     ebp, ds:[edi+D__curr_crit_num]
+			pop     edi
+			inc     ebp
+		loc_4013E4:
+			dec     ebp
+			jz      loc_40140A
+			mov     ebx, [edi]
+			add     edi, 4
+			test    byte ptr [ebx+0x3C], 1
+			jnz     loc_4013E4
+			cmp     [ebx+0x50], ecx
+			jnz     loc_4013E4
+			mov     edx, esi
+			mov     eax, ebx
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_is_within_perception_]
+			call    edi
+			pop     edi
+			dec     eax
+			jnz     loc_4013E4
+			or      byte ptr [ebx+0x3C], 1
+			jmp     loc_4013E4
+		loc_40140A:
+			pop     ecx
+			pop     edi
+			retn
+	}
+}
+
+// Entire file updated to version 1.8
+
 void AIInit(void) {
 	int temp_int = 0;
 	char prop_value[MAX_PROP_VALUE_LEN];
@@ -179,7 +299,9 @@ void AIInit(void) {
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "CanSeeAndHearFix", "1", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if (0 != temp_int) {
-		makeCallEXE(0x264CD, getRealBlockAddrCode((void *) &is_within_perception_hook), true);
+		makeCallEXE(0x264E2, getRealBlockAddrCode((void *) &is_within_perception_hook), true);
 		hookCallEXE(0x4EFA8, getRealBlockAddrCode((void *) &op_obj_can_hear_obj_hook));
+		hookCallEXE(0x4DC9E, getRealBlockAddrCode((void *) &func_4013BD));
+		hookCallEXE(0x2095D, getRealBlockAddrCode((void *) &func_4013CC));
 	}
 }

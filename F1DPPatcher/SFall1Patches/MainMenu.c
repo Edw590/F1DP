@@ -166,4 +166,7 @@ void MainMenuInit(void) {
 	if (0 != *(uint32_t *) getRealBlockAddrData(&OverrideColour)) {
 		makeCallEXE(0x7332C, getRealBlockAddrCode((void *) &FontColour), false);
 	}
+
+	//hookCallEXE(0x7338B, getRealBlockAddrCode((void *) &func_40B582)); - Disabled because there's usage of
+	// VersionString on it, and that's already taken care of by me. I'll just ignore this.
 }

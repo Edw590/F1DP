@@ -59,6 +59,11 @@
  * // ///////////////////////////////////////////////////////////////
  *         RULES TO FOLLOW IN THE ASSEMBLY PORTS!!!!!!!!!!!
  *
+ * Description of prefixes used below:
+ * - F_: macro containing an address for a standard C function on the code section of the EXE
+ * - C_: macro containing an address for anything else on the code section of the EXE
+ * - D_: macro containing an address for anything on the data section of the EXE
+ *
  * - All absolute addresses must have added to them a Special Number corresponding to where that absolute address refers
  *   to:
  *   - SN_CODE_SEC_EXE_ADDR if it's from the Code section of the game EXE (for example a function)
@@ -77,31 +82,33 @@
  *   and that function requires the parameters on the stack, put the PUSH before all function PUSHes. If ESP is used
  *   with something like `mov ecx, [esp+0x3842]`, don't forget of adding a +4 on it for the PUSH EDI instruction.
  *   If the function requires parameters on the stack and you don't want to make the jump or CALL sooner in code before
- *   all function PUSHes (you want to replace a CALL right there), you can move all the parameters for the function on
- *   the stack down 4 bytes, and put EDI on the 4 bytes that are now free. Example on how to do that, for 6 parameters:
+ *   all function PUSHes (you want to replace a CALL right there, after various PUSHes), you can move all the parameters
+ *   for the function on the stack down 4 bytes, and put EDI on the 4 bytes that are now free. Example on how to do
+ *   that, for 6 parameters:
  * 			lea     esp, [esp-4] // Reserve space on the stack for the last function PUSH
  * 			push    edi
- * 			mov     edi, [(esp+4)+4]
- * 			mov     [(esp+4)+0], edi
- * 			mov     edi, [(esp+4)+8]
- * 			mov     [(esp+4)+4], edi
- * 			mov     edi, [(esp+4)+12]
- * 			mov     [(esp+4)+8], edi
- * 			mov     edi, [(esp+4)+16]
- * 			mov     [(esp+4)+12], edi
- * 			mov     edi, [(esp+4)+20]
- * 			mov     [(esp+4)+16], edi
- * 			mov     edi, [(esp+4)+24]
- * 			mov     [(esp+4)+20], edi
+ * 			mov     edi, [(esp+4)+4*1]
+ * 			mov     [(esp+4)+4*0], edi
+ * 			mov     edi, [(esp+4)+4*2]
+ * 			mov     [(esp+4)+4*1], edi
+ * 			mov     edi, [(esp+4)+4*3]
+ * 			mov     [(esp+4)+4*2], edi
+ * 			mov     edi, [(esp+4)+4*4]
+ * 			mov     [(esp+4)+4*3], edi
+ * 			mov     edi, [(esp+4)+4*5]
+ * 			mov     [(esp+4)+4*4], edi
+ * 			mov     edi, [(esp+4)+4*6]
+ * 			mov     [(esp+4)+4*5], edi
  * 			pop     edi
- * 			mov     [esp+24], edi // This will be the "PUSH" before all the function PUSHes
+ * 			mov     [esp+4*6], edi // This will be the "PUSH" before all the function PUSHes
  *
  * 	 WARNING ABOUT THIS ABOVE!!!! Do NOT make a real PUSH before all the function PUSHes if the arguments are passed on
  * 	 the stack!!!! If you PUSH EDI before everything else and then EDI is changed inside, the value that will be
  * 	 recovered will be the old EDI value before the modifications after the PUSH and before the function call!!!!
- * 	 So a `sub esp, 4` must be done instead, and right before where EDI is used, a `mov [esp+?*4], edi` issued. The "?"
- * 	 is the number of stack parameters the function takes - that will put EDI before all others).
- * 	 ALWAYS CHECK IF ESP IS USED WITHIN THE SUBTRACTION AND THE POP!!!!! If it is, ESP will need 4 added to it every
+ * 	 So a `lea esp, [esp-4]` must be done instead (LEA and not SUB because LEA does not change any flags and SUB does),
+ * 	 and right before where EDI is used, a `mov [esp+4*?], edi` issued. The "?" is the number of stack parameters the
+ * 	 function takes - that will put EDI before all others).
+ * 	 ALWAYS CHECK IF ESP IS USED BETWEEN THE SUBTRACTION AND THE POP!!!!! If it is, ESP will need 4 added to it every
  * 	 time!!!
  *
  * - If you need to PUSH an absolute address to the stack:
@@ -120,19 +127,32 @@
  * - Don't forget near CALLs or near jumps to the Patcher functions can NOT have an SN added to them, because they're
  *   an offset, not an address!!!
  * - Do NOT use ANY instruction that changes the FLAGS registers!!! For example, ADD is one of them. Instead, use LEA.
- *   The SUB instruction is has the same treatment. Do the same for any others required. The flags must not be changed
- *   when porting the code!
+ *   The SUB instruction has the same treatment. Do the same for any others required. The flags must NEVER be changed
+ *   when porting the code (imagine they're used somewhere not immediately noticed...)!
  *
- * --> Steps to have to do the above:
- * - Find all references to the macros and put C_ or D_ on them.
- * - Go on FalloutEngine.h and go do what is required there for every macro (as a start, put the address there).
- * - Put on Ctrl+F (to highlight) "edi" so that it's easy to see where that's being used, because if it's being used
- *   on a `mov edi, ds:[0x23948]`, for example, then EDI can't be used for the SN and must be ESI (in this case).
- * - Find all references to global variables inside the Patcher and use SN_DATA_SEC_BLOCK_ADDR on them.
- * - Find all CALLs and pay attention to the stack (check the documentation of the macro to see what the "Args" are. Use
- *   the corresponding SN depending on the C_ or D_ prefix.
- * - Find all "0x"s, check if they are addresses, and if they are, use the appropriate SN.
- * - Go check all the C_s, D_s and F_s that remained untouched and use the appropriate SN.
+ * --> Steps to ALWAYS follow do the above:
+ * 1. For ports from:
+ *    - source-code: find all references to the macros and put C_ or D_ on them.
+ *    - Assembly code: find all references to variables (which will contain the address of the wanted thing) and replace
+ *    them with the referenced symbol name and put C_ or D_ on them. Find also all hexadecimal numbers in ????h form
+ *    (highlight all "h"s) and replace with the 0x???? form.
+ * 2. Go on FalloutEngine.h and go do what is required there for every macro (as a start, put the address there).
+ * 3. Put on Ctrl+F (to highlight) "edi" so that it's easy to see where that's being used, because if it's being used
+ *    on a `mov edi, ds:[0x23948]`, for example, then EDI can't be used for the SN and must be ESI (in this case).
+ * 4. Find all references to global variables inside the Patcher and use SN_DATA_SEC_BLOCK_ADDR on them. If it's a CALL
+ *    to a function internal to the Patcher, do NOT correct anything. It's a relative CALL, not an absolute one, and the
+ *    offset is correct when the Patcher compiles.
+ * 5. Find all CALLs and pay attention to the stack (check the documentation of the macro to see what the "Args" are.
+ *    Use the corresponding SN depending on the C_ or D_ prefix.
+ * 6. Find all "0x"s, check if they are addresses, and if they are, use the appropriate SN.
+ * 7. Go check all the C_s, D_s and F_s that remained untouched and use the appropriate SN.
+ * 8. Search for all the 4 addresses SN_ constants. For:
+ *    - SN_CODE_SEC_EXE_ADDR and SN_DATA_SEC_EXE_ADDR, check if what's right below them is a macro. If it's not, correct
+ *      the mistake. If it's a macro, check that it's a C_ one if it's the CODE SN in use, or a D_ one if it's the DATA
+ *      SN in use.
+ *    - SN_DATA_SEC_BLOCK_ADDR, check if what's below them is NOT a macro. If it is, correct the mistake. If it's not a
+ *      macro, check if the name below is of global variable if it's the
+ *      DATA SN in use.
  *
  * // ///////////////////////////////////////////////////////////////
  */

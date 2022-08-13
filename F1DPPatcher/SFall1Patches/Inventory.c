@@ -134,7 +134,7 @@ static bool wasReloadWeaponKeyPressed(char c) {
 	// was to go check the key where it is still in the buffer and put that in a global variable which would be checked
 	// in ReloadWeaponHotKey().
 	// Until I realized the key is on EBX on the call to the mentioned function. It's not a key code - it's the
-	// character. So a character must now be checked and not a key code - less options, but it's the easiest without
+	// character. So a character must now be checked and not a key code - less options, but it's the easiest way without
 	// having to go to some place where the key is still in the buffer, check that and put in a global variable.
 
 	return (toupper(c) == toupper(*(char *) getRealBlockAddrData(&ReloadWeaponKey)));
@@ -2271,8 +2271,11 @@ static void __declspec(naked) move_table_source(void) {
 
 static void __declspec(naked) move_table_target(void) {
 	__asm {
-			mov     edx, ds:[D__target_curr_stack]
-			mov     edx, ds:[D__target_stack][edx*4]
+			push    edi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			mov     edx, ds:[edi+D__target_curr_stack]
+			mov     edx, ds:[edi+D__target_stack][edx*4]
+			pop     edi
 			jmp     move_table_source
 	}
 }
@@ -2321,6 +2324,9 @@ static void __declspec(naked) proto_ptr_call(void) {
 			retn
 	}
 }
+
+// Note to update this to v1.8: all game addresses match on 1.7.20 and 1.8, so hopefully the functions match too,
+// or at least don't differ too much. There are just 4 more fixes to include here.
 
 void InventoryInit(void) {
 	int temp_int = 0;
@@ -2387,12 +2393,12 @@ void InventoryInit(void) {
 	makeCallEXE(0x65D1F, getRealBlockAddrCode((void *) &display_stats_hook), true);
 
 	// ""Take All" and "Put All" Buttons"
-	makeCallEXE(0x6352A, getRealBlockAddrCode((void *) &make_loot_drop_button), false);
-	makeCallEXE(0x672C1, getRealBlockAddrCode((void *) &loot_drop_all), false);
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "sfall", "OverloadedLoot", "Sorry, you cannot carry that much.",
 					OverloadedLoot, &translation_ini_info_G);
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "sfall", "OverloadedDrop", "Sorry, there is no space left.",
 					OverloadedDrop, &translation_ini_info_G);
+	makeCallEXE(0x6352A, getRealBlockAddrCode((void *) &make_loot_drop_button), false);
+	makeCallEXE(0x672C1, getRealBlockAddrCode((void *) &loot_drop_all), false);
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "SuperStimExploitFix", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
