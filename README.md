@@ -98,6 +98,10 @@ Command I'm using to assemble: `C:\MASM615\BIN\ml_9.00.21022.08_x86.EXE /omf /Fl
 ### - Contributing
 Anyone is free to contribute to the repository with new patch ports, new patches entirely, port fixes, whatever that is useful.
 
+A very good example is HighResPatch's Fog Of War (my most wanted feature). I've provided my IDA database and a decompiled file to help porting it. It's just really boring to do it. I have to find the functions related to the feature through 2 variables called FOWEnable and FOWLightLevel, and then copy them and adapt them to F1DP. After that, all references that all the copied functions use must also be ported along with its usages on entire functions. Hopefully that works. But it's really boring... If anyone wants to give it a try, go ahead, or tell me something if you don't know how to start (the code gets messy).
+
+Another example is porting what's missing from v1.8 (I also have a database with that analysed). Too much to port and I've got other projects. Will take me time to do it (or I just won't, I don't know). Still, FOW would be amazing, but takes much time too. Damn.
+
 ### - Licensing
 - This project and included sFall1 source code is licensed under GNU GPL-3.0-or-later - https://www.gnu.org/licenses/.
 - All my code is licensed under Apache 2.0 License - http://www.apache.org/licenses/LICENSE-2.0.
