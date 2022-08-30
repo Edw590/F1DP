@@ -97,3 +97,7 @@ void *malloc(size_t size) {
 
 	return ret_var;
 }
+
+int abs(int i) {
+	return i < 0 ? -i : i;
+}

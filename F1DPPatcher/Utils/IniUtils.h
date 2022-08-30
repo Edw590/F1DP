@@ -21,6 +21,7 @@
 #define F1DPPATCHER_INIUTILS_H
 
 
+
 #include <stdbool.h>
 
 #define MAX_LINE_LEN 1000
@@ -30,7 +31,7 @@
 
 #define MAIN_INI_SPEC_SEC_MAIN "F1DP-Main"
 #define MAIN_INI_SPEC_SEC_SFALL1 "F1DP-CraftySFall1"
-#define MAIN_INI_SPEC_SEC_HIGHRES "F1DP-HighResPatch"
+#define MAIN_INI_SPEC_SEC_HIGHRES_PATCH "F1DP-HighResPatch"
 
 #define F1DP_MAIN_INI "F1DPATCH.INI"
 

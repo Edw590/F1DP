@@ -21,8 +21,7 @@
 #include "GlobalEXEAddrs.h"
 #include "EXEPatchUtils.h"
 
-// And right after, the Data section begins
-#define CODE_SEC_EXE_IDA_END_ADDR 0xEAFFF
+#define DATA_SEC_EXE_IDA_BEGIN_ADDR 0xEB000
 
 // All these functions suppose `addr` is an address value seen on IDA as the value if the EXE would load in its supposed
 // address, 0x10000 (for the code section), and something else for the data section. This is important because they
@@ -66,9 +65,8 @@ void blockCallEXE(uint32_t addr) {
 
 
 void *getRealEXEAddr(volatile uint32_t addr) {
-	if (addr <= CODE_SEC_EXE_IDA_END_ADDR) {
-		return (void *) (addr + SN_CODE_SEC_EXE_ADDR);
-	} else {
+	if (addr >= DATA_SEC_EXE_IDA_BEGIN_ADDR) {
 		return (void *) (addr + SN_DATA_SEC_EXE_ADDR);
 	}
+	return (void *) (addr + SN_CODE_SEC_EXE_ADDR);
 }

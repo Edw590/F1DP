@@ -23,49 +23,50 @@
 #include "../Utils/BlockAddrUtils.h"
 #include "../Utils/General.h"
 #include "../Utils/GlobalVars.h"
-#include "SFall1Main.h"
-#include "SFall1Patches.h"
+#include "HighResPatches.h"
+#include "HighResPatchMain.h"
 
-struct FileInfo sfall1_ini_info_G = {0};
+struct FileInfo high_res_patch_ini_info_G = {0};
 
-bool initSFall1Patches(void) {
+bool initHighResPatches(void) {
 	bool ret_var = true;
 	char prop_value[MAX_PROP_VALUE_LEN];
 	memset(prop_value, 0, MAX_PROP_VALUE_LEN);
 
-	if (getPropValueIni(MAIN_INI_SPEC_SEC_MAIN, NULL, "CraftySFall1SettingsFile", NULL, prop_value, &f1dpatch_ini_info_G)) {
+	if (getPropValueIni(MAIN_INI_SPEC_SEC_MAIN, NULL, "HighResPatchSettingsFile", NULL, prop_value, &f1dpatch_ini_info_G)) {
 		if (0 != strcmp(prop_value, F1DP_MAIN_INI)) { // Don't reopen the main INI file, use the one already open.
-			if (readFile(prop_value, &sfall1_ini_info_G)) {
-				printf(LOGGER_STR "> File \"%s\" opened for sFall1 settings."NL, prop_value);
-				((struct FileInfo *) getRealBlockAddrData(&sfall1_ini_info_G))->is_main_ini = false;
+			if (readFile(prop_value, &high_res_patch_ini_info_G)) {
+				printf(LOGGER_STR "> File \"%s\" opened for High-Res patch settings."NL, prop_value);
+				((struct FileInfo *) getRealBlockAddrData(&high_res_patch_ini_info_G))->is_main_ini = false;
 			} else {
-				printf(LOGGER_STR "> File \"%s\" not found for sFall1 settings. Aborting sFall1 patches."NL, prop_value);
-				memset(&sfall1_ini_info_G, 0, sizeof(sfall1_ini_info_G));
+				printf(LOGGER_STR "> File \"%s\" not found for High-Res patch settings. Aborting High-Res patches."NL,
+					   prop_value);
+				memset(&high_res_patch_ini_info_G, 0, sizeof(high_res_patch_ini_info_G));
 
 				ret_var = false;
 				goto funcEnd;
 			}
 		} else {
-			printf(LOGGER_STR "> File "F1DP_MAIN_INI" used for sFall1 settings."NL);
-			*(struct FileInfo *) getRealBlockAddrData(&sfall1_ini_info_G) =
+			printf(LOGGER_STR "> File "F1DP_MAIN_INI" used for High-Res patch settings."NL);
+			*(struct FileInfo *) getRealBlockAddrData(&high_res_patch_ini_info_G) =
 					*(struct FileInfo *) getRealBlockAddrData(&f1dpatch_ini_info_G);
 		}
 	} else {
-		printlnStr(LOGGER_ERR_STR "> No file specified for sFall1 settings. Aborting sFall1 patches.");
+		printlnStr(LOGGER_ERR_STR "> No file specified for High-Res patch settings. Aborting High-res patches.");
 
 		ret_var = false;
 		goto funcEnd;
 	}
 
-	DllMain2();
+	Initialize();
 
 
 	funcEnd:
 
 	// If the file was opened here, release its contents before leaving the function (unless it's the main one, which is
 	// taken care of by realMain()).
-	if (!((struct FileInfo *) getRealBlockAddrData(&sfall1_ini_info_G))->is_main_ini) {
-		free(((struct FileInfo *) getRealBlockAddrData(&sfall1_ini_info_G))->contents);
+	if (!((struct FileInfo *) getRealBlockAddrData(&high_res_patch_ini_info_G))->is_main_ini) {
+		free(((struct FileInfo *) getRealBlockAddrData(&high_res_patch_ini_info_G))->contents);
 	}
 
 	return ret_var;

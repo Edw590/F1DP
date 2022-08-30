@@ -38,6 +38,7 @@
 #include "CLibs/string.h"
 #include "FixtPatches/FixtPatches.h"
 #include "GameAddrs/CStdFuncs.h"
+#include "HighResPatches/HighResPatches.h"
 #include "PatcherPatcher/PatcherPatcher.h"
 #include "SFall1Patches/SFall1Patches.h"
 #include "TeamXPatches/TeamXPatches.h"
@@ -46,7 +47,6 @@
 #include "Utils/General.h"
 #include "Utils/GlobalEXEAddrs.h"
 #include "Utils/IniUtils.h"
-#include "HighResPatches/HighResPatches.hNOTDONE"
 #include <stdbool.h>
 
 #define SN_MAIN_FUNCTION 0x78563412 // 12 34 56 78 in little endian
@@ -220,6 +220,8 @@ bool applyPatches(void) {
 	// patches, not dynamic with a DLL). So those are the first ones to be applied.
 	// Then come Fixt patches, which are also permanent, and came after TeamX's. Finally there's sFall1 patches which
 	// are dynamic, so they are always applied on top of whatever was already on the EXE (the 2 patches mentioned above).
+	// Update: after this there's High-Res patch. I'm putting it after sFall1 because High-Res patch INI file mentions
+	// sFall stuff, and the opposite doesn't happen - so High-Res patch after sFall1.
 
 
 
@@ -263,26 +265,6 @@ bool applyPatches(void) {
 		ret_var = false;
 	}
 
-	/*// Enable or disable Mash's High Resolution Patch patches
-	if (getPropValueIni(MAIN_INI_SPEC_SEC_MAIN, NULL, "HighResPatchPatches", NULL, prop_value, &f1dpatch_ini_info_G)) {
-		sscanf(prop_value, "%d", &temp_int);
-		if (0 == temp_int) {
-			printlnStr(LOGGER_STR "HighResPatch patches disabled.");
-		} else if (1 == temp_int) {
-			printlnStr(LOGGER_STR "HighResPatch patches enabled.");
-
-			initHighResPatchPatches();
-		} else {
-			printlnStr(LOGGER_ERR_STR "'HighResPatchPatches' has an invalid value. Aborting HighResPatch patches...");
-
-			ret_var = false;
-		}
-	} else {
-		printlnStr(LOGGER_ERR_STR "'HighResPatchPatches' not specified. Aborting HighResPatch patches...");
-
-		ret_var = false;
-	}*/
-
 	// Enable or disable Crafty's sFall1 patches
 	if (getPropValueIni(MAIN_INI_SPEC_SEC_MAIN, NULL, "CraftySFall1Patches", NULL, prop_value, &f1dpatch_ini_info_G)) {
 		sscanf(prop_value, "%d", &temp_int);
@@ -299,6 +281,26 @@ bool applyPatches(void) {
 		}
 	} else {
 		printlnStr(LOGGER_ERR_STR "'CraftySFall1Patches' not specified. Aborting Crafty's sFall1 patches...");
+
+		ret_var = false;
+	}
+
+	// Enable or disable Mash's High-Res patches
+	if (getPropValueIni(MAIN_INI_SPEC_SEC_MAIN, NULL, "HighResPatches", NULL, prop_value, &f1dpatch_ini_info_G)) {
+		sscanf(prop_value, "%d", &temp_int);
+		if (0 == temp_int) {
+			printlnStr(LOGGER_STR "High-Res patches disabled.");
+		} else if (1 == temp_int) {
+			printlnStr(LOGGER_STR "High-Res patches enabled.");
+
+			initHighResPatches();
+		} else {
+			printlnStr(LOGGER_ERR_STR "'HighResPatches' has an invalid value. Aborting High-Res patches...");
+
+			ret_var = false;
+		}
+	} else {
+		printlnStr(LOGGER_ERR_STR "'HighResPatches' not specified. Aborting High-Res patches...");
 
 		ret_var = false;
 	}

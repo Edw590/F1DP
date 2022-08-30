@@ -17,13 +17,18 @@
 // specific language governing permissions and limitations
 // under the License.
 
-#ifndef F1DPPATCHER_HIGHRESPATCHES_HNOTDONE
-#define F1DPPATCHER_HIGHRESPATCHES_HNOTDONE
+#ifndef F1DPPATCHER_HIGHRESPATCHES_H
+#define F1DPPATCHER_HIGHRESPATCHES_H
 
 
 
-void initHighResPatchPatches(void);
+#include "../Utils/IniUtils.h"
+#include <stdbool.h>
+
+extern struct FileInfo high_res_patch_ini_info_G;
+
+bool initHighResPatches(void);
 
 
 
-#endif //F1DPPATCHER_HIGHRESPATCHES_HNOTDONE
+#endif //F1DPPATCHER_HIGHRESPATCHES_H

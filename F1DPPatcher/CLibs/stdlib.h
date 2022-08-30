@@ -30,6 +30,7 @@ __declspec(noreturn) void exit(int status);
 char *itoa(int value, char *str, int base);
 void free(void * ptr);
 void *malloc(size_t size);
+int abs(int i);
 
 
 

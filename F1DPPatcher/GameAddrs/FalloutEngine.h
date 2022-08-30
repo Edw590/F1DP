@@ -115,6 +115,7 @@
 #define C_draw_box_                          0xBD1C4 // Args: +stack (auto-clean) / No prototype (3 stack arguments)
 #define C_DrawFolder_                        x
 #define C_DrawInfoWin_                       x
+#define C_dude_run_                          0x17A0C // Args: non-stack / No prototype
 #define C_dude_stand_                        0x17C60 // Args: non-stack / No prototype
 #define C_can_see_                           0x12974 // Args: non-stack / _BOOL4 __usercall can_see_@<eax>(pobj *source@<eax>, pobj *target@<edx>)
 #define C_editor_design_                     x
@@ -124,6 +125,7 @@
 #define C_endgame_slideshow_                 0x38890 // Args: non-stack / No prototype
 #define C_exec_script_proc_                  0x92904 // Args: non-stack / No prototype
 #define C_floor_draw_                        0x9FB84 // Args: non-stack / No prototype
+#define C_game_check_disk_space_             0x3D604 // Args: non-stack / No prototype
 #define C_game_get_global_var_               0x3C750 // Args: non-stack / int __usercall game_get_global_var_@<eax>(int GVAR@<eax>)
 #define C_game_set_global_var_               0x3C780 // Args: non-stack / int __usercall game_set_global_var_@<eax>(int GVAR@<eax>, int Value@<edx>)
 #define C_gdialog_display_msg_               0x3E694 // Args: non-stack / No prototype
@@ -264,6 +266,7 @@
 #define C_switch_hand_                       x
 #define C_talk_to_pressed_barter_            0x41034 // Args: non-stack / No prototype
 #define C_text_font_                         0xC191C // Args: non-stack / int __usercall text_font_@<eax>(int fontnum@<eax>)
+#define C_tile_disable_scroll_blocking_      0x9E8A0 // Args: non-stack / No prototype
 #define C_tile_refresh_display_              0x9DEDC // Args: non-stack / No prototype
 #define C_tile_refresh_rect_                 0x9DEC4 // Args: non-stack / No prototype
 #define C_tile_scroll_to_                    0xA03E4 // Args: non-stack / No prototype
@@ -333,6 +336,7 @@
 #define D__glblmode                x
 #define D__gmouse_current_cursor   x
 #define D__GreenColor              0x2A1DF0
+#define D__grid_length             0x2678F0
 #define D__grid_size               0x2678F4
 #define D__grid_width              0x2678E4
 #define D__grphbmp                 x

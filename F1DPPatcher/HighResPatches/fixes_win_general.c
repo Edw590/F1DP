@@ -17,20 +17,20 @@
 // specific language governing permissions and limitations
 // under the License.
 
-#ifndef F1DPPATCHER_GENERAL_H
-#define F1DPPATCHER_GENERAL_H
+#include "../CLibs/stdio.h"
+#include "../CLibs/string.h"
+#include "../Utils/EXEPatchUtils.h"
+#include "../Utils/IniUtils.h"
+#include "HighResPatches.h"
+#include "fixes_win_general.h"
 
+//____________________
+void WinGeneralFixes(void) {
+	double temp_double = 0;
+	char prop_value[MAX_PROP_VALUE_LEN];
+	memset(prop_value, 0, MAX_PROP_VALUE_LEN);
 
-
-// The Microsoft-chosen newline characters: CR LF
-#define NL "\r\n"
-
-// Maximum path length on DOS, including the NULL character
-#define MAX_DOS_PATH_LEN 80
-
-// 3 chars exactly or change the initial strings with the dashes (so that it's the same length as the Loader)
-#define F1DP_VER_STR "1.2"
-
-
-
-#endif //F1DPPATCHER_GENERAL_H
+	getPropValueIni(MAIN_INI_SPEC_SEC_HIGHRES_PATCH, "OTHER_SETTINGS", "FADE_TIME_MODIFIER", "60", prop_value, &high_res_patch_ini_info_G);
+	sscanf(prop_value, "%lf", &temp_double);
+	*(double *) getRealEXEAddr(0xFB3DC) = temp_double;
+}
