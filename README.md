@@ -90,7 +90,7 @@ Command I'm using to assemble: `C:\MASM615\BIN\ml_9.00.21022.08_x86.EXE /omf /Fl
 
 - DADi590 (me), for making F1DP and adapting all patches the DOS EXE
 - Crafty for his sFall1 modifications
-- Mash for his High-Res patch
+- Mash for his High-Res patches
 - Sduibek for his patches
 - TeamX for their patches
 - Timeslip for the original sFall1 mod
