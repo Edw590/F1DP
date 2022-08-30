@@ -90,10 +90,12 @@ Command I'm using to assemble: `C:\MASM615\BIN\ml_9.00.21022.08_x86.EXE /omf /Fl
 
 - DADi590 (me), for making F1DP and adapting all patches the DOS EXE
 - Crafty for his sFall1 modifications
+- Mash for his High-Res patch
 - Sduibek for his patches
 - TeamX for their patches
 - Timeslip for the original sFall1 mod
 - xttl on the Doomworld forums for his [posted knowledge](https://www.doomworld.com/forum/topic/86380-exe-hacking), which helped making my life MUCH easier while trying to figure out how to get the patcher to work on DOS (or even make this project possible, in case I'd find it too hard to do with my available time without this knowledge)
+- Zunawe for the MD5 checker code I use in the Installer
 
 ### - Contributing
 Anyone is free to contribute to the repository with new patch ports, new patches entirely, port fixes, whatever that is useful.
@@ -103,7 +105,8 @@ A very good example is HighResPatch's Fog Of War (my most wanted feature). I've 
 Another example is porting what's missing from v1.8 (I also have a database with that analysed). Too much to port and I've got other projects. Will take me time to do it (or I just won't, I don't know). Still, FOW would be amazing, but takes much time too. Damn.
 
 ### - Licensing
-- This project and included sFall1 source code is licensed under GNU GPL-3.0-or-later - https://www.gnu.org/licenses/.
+- This project and all included sFall1 source code is licensed under GNU GPL-3.0-or-later - https://www.gnu.org/licenses/.
+- All included High-Res patch code is licensed under the MIT License.
 - All my code is licensed under Apache 2.0 License - http://www.apache.org/licenses/LICENSE-2.0.
 
 ## Support
