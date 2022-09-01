@@ -1,5 +1,5 @@
 # Fallout 1 DOS Patcher (F1DP)
-An engine patcher for the MS-DOS version of Fallout 1 including Crafty's sFall1/sFall, High-Res, TeamX and Fallout Fixt patches
+An engine patcher for the MS-DOS version of Fallout 1 including patches from Crafty's sFall1/sFall, High-Res patch, TeamX, and Fallout Fixt
 
 ## Introduction
 Hi everyone. I've decided to attempt to port all patches made to the Windows version of Fallout 1 to the MS-DOS one. Some Windows patches are DLL mods, and even if DOS recognizes DLLs with help of extenders or whatever it is, the DLL code is for the Windows version only (but anyway, I've no idea how to load and even program a DLL, at least yet). So I've went around that, and this way, those who need to play with the DOS version like me for whatever reason can enjoy the patches that the Windows version players can.
