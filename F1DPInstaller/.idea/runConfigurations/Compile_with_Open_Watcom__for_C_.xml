@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Compile with Open Watcom (for C)" type="CLionExternalRunConfiguration" factoryName="Application" PROGRAM_PARAMS="compile.py" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" WORKING_DIR="file://$ProjectFileDir$/generated_binaries" PASS_PARENT_ENVS_2="true" PROJECT_NAME="F1DPInstaller" TARGET_NAME="Unnamed" CONFIG_NAME="Unnamed" RUN_PATH="$PROJECT_DIR$/../../../../../Program Files/Python39/python.exe">
+  <configuration default="false" name="Compile with Open Watcom (for C)" type="CLionExternalRunConfiguration" factoryName="Application" PROGRAM_PARAMS="compile.py" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" WORKING_DIR="file://$ProjectFileDir$/generated_binaries" PASS_PARENT_ENVS_2="true" PROJECT_NAME="F1DPInstaller" TARGET_NAME="Unnamed" CONFIG_NAME="Unnamed" RUN_PATH="$PROJECT_DIR$/../../../../../Program Files/Python310/python.exe">
     <method v="2" />
   </configuration>
 </component>

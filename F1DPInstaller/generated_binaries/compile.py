@@ -19,7 +19,6 @@ print()
 
 # The exit() call below is so that this script exits with the same error code as Watcom.
 
-# For releases
 print("\n----- DOS -----")
 print("----- DOS -----")
 print("----- DOS -----\n")
@@ -29,15 +28,13 @@ except:
 	pass
 compile_err = os.system("wcl386.exe " + all_C_files_ready + " -fe=F1DPINST -bt=DOS -l=dos4g -fpd -mf -oi -ol+ -oneatx -ot -wcd=119 -wcd=201 -we -wo -wx -ze") == 0
 
-exit(not compile_err)
 
-# Windows version discontinued. Why have one anyway? This will always run on DOS.
 
 print("\n----- NT -----")
 print("----- NT -----")
 print("----- NT -----\n")
 try:
-	os.remove("F1DPInstallerWin.exe")
+	os.remove("F1DPINSTWin.exe")
 except:
 	pass
 compile_err = compile_err and (os.system("wcl386.exe " + all_C_files_ready + " -fe=F1DPInstallerWin -fpd -mf -oi -ol+ -oneatx -ot -wcd=119 -wcd=201 -we -wo -wx -ze") == 0)
@@ -52,7 +49,7 @@ compile_err = compile_err and (os.system("wcl386.exe " + all_C_files_ready + " -
 # run - then of course there is unreachable code. Luckily, CLion already checked and highlights unreachable code.
 
 print("\n")
-os.system("F1DPInstallerWin.exe")
+os.system("F1DPINSTWin.exe")
 print("\n")
 
 # 0 for no error, 1 for error (check the console for more info)
