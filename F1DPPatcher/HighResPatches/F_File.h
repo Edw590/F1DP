@@ -1,6 +1,7 @@
 /*
 The MIT License (MIT)
 Copyright © 2022 Matt Wells
+Copyright © 2022 DADi590
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this
 software and associated documentation files (the “Software”), to deal in the
@@ -22,15 +23,19 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 // Original code modified by me, DADi590, to adapt it to this project, starting on 2022-08-28.
 
-#include "../Utils/EXEPatchUtils.h"
-#include "F_Mapper.h"
-#include "fixes_maps.h"
+#ifndef F1DPPATCHER_F_FILE_H
+#define F1DPPATCHER_F_FILE_H
 
-void MapFixes(void) {
 
-	SetMapGlobals();
 
-	if (0 != FOG_OF_WAR) {
-		writeMem8EXE(0x7DE34, 0xC3);
-	}
-}
+#include <stdint.h>
+
+int32_t F_fclose(void *FileStream);
+void* F_fopen(const char *FileName, const char *flags);
+int32_t FDeleteTmpSaveFiles(const char *path, const char *ext);
+int32_t F_fwrite32(void* FileStream, uint32_t val32);
+int32_t F_fread32(void *FileStream, uint32_t *toMem);
+
+
+
+#endif //F1DPPATCHER_F_FILE_H

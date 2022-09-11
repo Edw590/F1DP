@@ -37,7 +37,7 @@ try:
 	os.remove("F1DPINSTWin.exe")
 except:
 	pass
-compile_err = compile_err and (os.system("wcl386.exe " + all_C_files_ready + " -fe=F1DPInstallerWin -fpd -mf -oi -ol+ -oneatx -ot -wcd=119 -wcd=201 -we -wo -wx -ze") == 0)
+compile_err = compile_err and (os.system("wcl386.exe " + all_C_files_ready + " -fe=F1DPINSTWin -fpd -mf -oi -ol+ -oneatx -ot -wcd=119 -wcd=201 -we -wo -wx -ze") == 0)
 # For testing (no optimizations, so errors come up decently, as already happened an important crash not happening
 # with optimizations, but happen without them, so disable them for debug and testing and only enable for releases (or
 # not even that, doesn't really matter in such a small program).
