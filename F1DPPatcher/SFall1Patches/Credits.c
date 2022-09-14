@@ -92,7 +92,7 @@ static char const *const ExtraLines[49] = {
 
 static uint32_t ExtraLineCount = sizeof(ExtraLines) / 4;
 
-static void __declspec(naked) credits_hook(void) {
+__declspec(naked) static void credits_hook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
@@ -147,7 +147,7 @@ static uint32_t __stdcall CreditsNextLine(char *buf, uint32_t *font, uint32_t *c
 	return 1;
 }
 
-static void __declspec(naked) credits_get_next_line_hook(void) {
+__declspec(naked) static void credits_get_next_line_hook(void) {
 	__asm {
 			pushad
 			push    ebx
@@ -182,8 +182,8 @@ void CreditsInit(void) {
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Debugging", "NoCredits", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if (0 == temp_int) {
-		hookCallEXE(0x72B04, getRealBlockAddrCode((void *) &credits_hook));
-		hookCallEXE(0x38CF4, getRealBlockAddrCode((void *) &credits_hook));
-		hookCallEXE(0x2752A, getRealBlockAddrCode((void *) &credits_get_next_line_hook));
+		hookCallEXE(0x72B04, &credits_hook);
+		hookCallEXE(0x38CF4, &credits_hook);
+		hookCallEXE(0x2752A, &credits_get_next_line_hook);
 	}
 }

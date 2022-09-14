@@ -19,23 +19,27 @@
 
 #include "PatcherPatcher.h"
 
-#define CODE_SEC_EXE_ADDR_OFFSET 4
-#define DATA_SEC_EXE_ADDR_OFFSET 8
-#define BIN_FILE_LEN_OFFSET 12
+enum offsets {
+	CODE_SEC_EXE_ADDR_OFFSET = 4,
+	DATA_SEC_EXE_ADDR_OFFSET = 8,
+	BIN_FILE_LEN_OFFSET = 12
+};
 
 // These are intrinsically related to their SN_ constant relatives. If ANY of those is changed, these must be checked.
 // The O in SNO means offset (relative to SN_BASE).
-#define SNO_CODE_SEC_EXE_ADDR 0x09000000
-#define SNO_DATA_SEC_EXE_ADDR 0x07000000
-#define SNO_CODE_SEC_BLOCK_ADDR 0x06000000
-#define SNO_DATA_SEC_BLOCK_ADDR 0x05000000
-#define SNO_BLOCK_ADDR 0x04000000
+enum SNO_consts {
+	SNO_BLOCK_ADDR = 0x04000000,
+	SNO_DATA_SEC_BLOCK_ADDR = 0x05000000,
+	SNO_CODE_SEC_BLOCK_ADDR = 0x06000000,
+	SNO_DATA_SEC_EXE_ADDR = 0x07000000,
+	SNO_CODE_SEC_EXE_ADDR = 0x09000000,
+};
 
 // The code segment begins in the 16th byte, not on the 1st
 #define CODE_SEC_BLOCK_ADDR_OFFSET 0x10
 // The data segment begins some pages (each of 0x1000 bytes) after the code segment. This number can change and must be
 // updated manually each time the code needs one more page in the EXE.
-#define DATA_SEC_BLOCK_ADDR_OFFSET (0x10000 + CODE_SEC_BLOCK_ADDR_OFFSET)
+#define DATA_SEC_BLOCK_ADDR_OFFSET (0x13000 + CODE_SEC_BLOCK_ADDR_OFFSET)
 
 // Explanation of this file and all the SN_ constants thing around the project files
 //

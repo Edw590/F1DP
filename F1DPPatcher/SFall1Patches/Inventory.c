@@ -43,7 +43,7 @@ static char ReloadWeaponKey = '\0';
 
 static uint32_t StackEmptyWeapons = 0;
 
-static void __declspec(naked) ReloadActiveHand(void) {
+__declspec(naked) static void ReloadActiveHand(void) {
 	__asm {
 			// esi=-1 unless reloading the inactive hand or shifting the inactive hand
 			push    ebx
@@ -140,7 +140,7 @@ static bool wasReloadWeaponKeyPressed(char c) {
 	return (toupper(c) == toupper(*(char *) getRealBlockAddrData(&ReloadWeaponKey)));
 }
 
-static void __declspec(naked) ReloadWeaponHotKey(void) {
+__declspec(naked) static void ReloadWeaponHotKey(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -234,7 +234,7 @@ static void __declspec(naked) ReloadWeaponHotKey(void) {
 	}
 }
 
-static void __declspec(naked) AutoReloadWeapon(void) {
+__declspec(naked) static void AutoReloadWeapon(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -332,7 +332,7 @@ static void __declspec(naked) AutoReloadWeapon(void) {
 	}
 }
 
-static void __declspec(naked) SetDefaultAmmo(void) {
+__declspec(naked) static void SetDefaultAmmo(void) {
 	__asm {
 			push    eax
 			push    ebx
@@ -368,7 +368,7 @@ static void __declspec(naked) SetDefaultAmmo(void) {
 	}
 }
 
-static void __declspec(naked) inven_action_cursor_hook(void) {
+__declspec(naked) static void inven_action_cursor_hook(void) {
 	__asm {
 			mov     edx, [esp+0x1C]
 			call    SetDefaultAmmo
@@ -384,7 +384,7 @@ static void __declspec(naked) inven_action_cursor_hook(void) {
 	}
 }
 
-static void __declspec(naked) fontHeight(void) {
+__declspec(naked) static void fontHeight(void) {
 	__asm {
 			push    ebx
 			push    edi
@@ -414,7 +414,7 @@ static void __declspec(naked) fontHeight(void) {
 }
 
 static char MsgBuf[32];
-static void __declspec(naked) printFreeMaxWeight(void) {
+__declspec(naked) static void printFreeMaxWeight(void) {
 	__asm {
 			// ebx = source, ecx = ToWidth, edi = posOffset, esi = extraWeight
 			push    edi
@@ -660,7 +660,7 @@ static void __declspec(naked) printFreeMaxWeight(void) {
 	}
 }
 
-static void __declspec(naked) display_inventory_hook(void) {
+__declspec(naked) static void display_inventory_hook(void) {
 	__asm {
 			call    fontHeight
 			inc     eax
@@ -725,7 +725,7 @@ static void __declspec(naked) display_inventory_hook(void) {
 	}
 }
 
-static void __declspec(naked) display_target_inventory_hook(void) {
+__declspec(naked) static void display_target_inventory_hook(void) {
 	__asm {
 			call    fontHeight
 			inc     eax
@@ -787,7 +787,7 @@ static void __declspec(naked) display_target_inventory_hook(void) {
 }
 
 static uint32_t isFakeTable = 0;                         // 0 = don't change source, 1 = don't change target
-static void __declspec(naked) display_table_inventories_hook(void) {
+__declspec(naked) static void display_table_inventories_hook(void) {
 	__asm {
 			xor     eax, eax
 			test    edx, edx                             // No source?
@@ -819,7 +819,7 @@ static void __declspec(naked) display_table_inventories_hook(void) {
 	}
 }
 
-static void __declspec(naked) display_table_inventories_hook1(void) {
+__declspec(naked) static void display_table_inventories_hook1(void) {
 	__asm {
 			add     dword ptr [esp+8], 20
 			sub     dword ptr [esp+16], 20*480
@@ -879,7 +879,7 @@ static void __declspec(naked) display_table_inventories_hook1(void) {
 }
 
 // Draw a section of the window
-static void __declspec(naked) display_table_inventories_hook2(void) {
+__declspec(naked) static void display_table_inventories_hook2(void) {
 	__asm {
 			mov     dword ptr [edx+4], 4                 // WinRect.y_start = 4
 			push    edi
@@ -890,7 +890,7 @@ static void __declspec(naked) display_table_inventories_hook2(void) {
 	}
 }
 
-static void __declspec(naked) display_table_inventories_hook4(void) {
+__declspec(naked) static void display_table_inventories_hook4(void) {
 	__asm {
 			and     eax, 0xFF
 			push    edi
@@ -904,7 +904,7 @@ static void __declspec(naked) display_table_inventories_hook4(void) {
 	}
 }
 
-static void __declspec(naked) display_table_inventories_hook5(void) {
+__declspec(naked) static void display_table_inventories_hook5(void) {
 	__asm {
 			and     eax, 0xFF
 			push    edi
@@ -918,7 +918,7 @@ static void __declspec(naked) display_table_inventories_hook5(void) {
 	}
 }
 
-static void __declspec(naked) barter_inventory_hook(void) {
+__declspec(naked) static void barter_inventory_hook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -941,7 +941,7 @@ static void __declspec(naked) barter_inventory_hook(void) {
 	}
 }
 
-static void __declspec(naked) barter_inventory_hook1(void) {
+__declspec(naked) static void barter_inventory_hook1(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -961,7 +961,7 @@ static void __declspec(naked) barter_inventory_hook1(void) {
 	}
 }
 
-static void __declspec(naked) inven_pickup_hook2(void) {
+__declspec(naked) static void inven_pickup_hook2(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_DATA_SEC_EXE_ADDR
@@ -1062,7 +1062,7 @@ static void __declspec(naked) inven_pickup_hook2(void) {
 	}
 }
 
-static void __declspec(naked) display_stats_hook(void) {
+__declspec(naked) static void display_stats_hook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_DATA_SEC_EXE_ADDR
@@ -1207,7 +1207,7 @@ static void __declspec(naked) display_stats_hook(void) {
 	}
 }
 
-static void __declspec(naked) make_loot_drop_button(void) {
+__declspec(naked) static void make_loot_drop_button(void) {
 	__asm {
 			cmp     dword ptr [esp+0x4+0x4], 2
 			jne     end
@@ -1407,7 +1407,7 @@ static void __declspec(naked) make_loot_drop_button(void) {
 
 static char OverloadedLoot[48] = "";
 static char OverloadedDrop[48] = "";
-static void __declspec(naked) loot_drop_all(void) {
+__declspec(naked) static void loot_drop_all(void) {
 	__asm {
 			xor     ebx, ebx
 			cmp     eax, 'A'
@@ -1756,7 +1756,7 @@ static void __declspec(naked) loot_drop_all(void) {
 }
 
 static char SuperStimMsg[128] = "";
-static void __declspec(naked) protinst_use_item_on_hook(void) {
+__declspec(naked) static void protinst_use_item_on_hook(void) {
 	__asm {
 			mov     edx, [ebx+0x64]                      // edx = item pid
 			cmp     edx, PID_SUPER_STIMPAK
@@ -1798,7 +1798,7 @@ static void __declspec(naked) protinst_use_item_on_hook(void) {
 	}
 }
 
-static void __declspec(naked) loot_container_hook(void) {
+__declspec(naked) static void loot_container_hook(void) {
 	__asm {
 			cmp     esi, 0x150                           // source_down
 			je      scroll
@@ -1848,7 +1848,7 @@ static void __declspec(naked) loot_container_hook(void) {
 	}
 }
 
-static void __declspec(naked) barter_inventory_hook2(void) {
+__declspec(naked) static void barter_inventory_hook2(void) {
 	__asm {
 			push    edx
 			push    ecx
@@ -1949,7 +1949,7 @@ static void __declspec(naked) barter_inventory_hook2(void) {
 	}
 }
 
-static void __declspec(naked) handle_inventory_hook(void) {
+__declspec(naked) static void handle_inventory_hook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -1967,7 +1967,7 @@ static void __declspec(naked) handle_inventory_hook(void) {
 	}
 }
 
-static void __declspec(naked) item_add_check(void) {
+__declspec(naked) static void item_add_check(void) {
 	__asm {
 			push    edi
 			push    esi
@@ -2172,7 +2172,7 @@ static void __declspec(naked) item_add_check(void) {
 	}
 }
 
-static void __declspec(naked) item_add_mult(void) {
+__declspec(naked) static void item_add_mult(void) {
 	__asm {
 			mov     ecx, eax
 			call    item_add_check
@@ -2197,7 +2197,7 @@ static void __declspec(naked) item_add_mult(void) {
 	}
 }
 
-static void __declspec(naked) drop_into_container_hook(void) {
+__declspec(naked) static void drop_into_container_hook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_DATA_SEC_EXE_ADDR
@@ -2222,7 +2222,7 @@ static void __declspec(naked) drop_into_container_hook(void) {
 	}
 }
 
-static void __declspec(naked) item_add_force_call(void) {
+__declspec(naked) static void item_add_force_call(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_DATA_SEC_EXE_ADDR
@@ -2242,7 +2242,7 @@ static void __declspec(naked) item_add_force_call(void) {
 	}
 }
 
-static void __declspec(naked) move_table_source(void) {
+__declspec(naked) static void move_table_source(void) {
 	__asm {
 			xchg    ecx, eax                             // ecx = source, eax = count
 			xchg    ebx, eax                             // ebx = count, eax = item
@@ -2269,7 +2269,7 @@ static void __declspec(naked) move_table_source(void) {
 	}
 }
 
-static void __declspec(naked) move_table_target(void) {
+__declspec(naked) static void move_table_target(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_DATA_SEC_EXE_ADDR
@@ -2280,7 +2280,7 @@ static void __declspec(naked) move_table_target(void) {
 	}
 }
 
-static void __declspec(naked) checkContainerSize(void) {
+__declspec(naked) static void checkContainerSize(void) {
 	__asm {
 			push    eax
 			call    item_add_check
@@ -2303,7 +2303,7 @@ static void __declspec(naked) checkContainerSize(void) {
 	}
 }
 
-static void __declspec(naked) proto_ptr_call(void) {
+__declspec(naked) static void proto_ptr_call(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -2336,13 +2336,13 @@ void InventoryInit(void) {
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Input", "ReloadWeaponKey", "NONE", prop_value, &sfall1_ini_info_G);
 	*(char *) getRealBlockAddrData(&ReloadWeaponKey) = (char) (0 == strcmp(prop_value, "NONE") ? '\0' : prop_value[0]);
 	if ('\0' != *(char *) getRealBlockAddrData(&ReloadWeaponKey)) {
-		hookCallEXE(0x3B975, getRealBlockAddrCode((void *) &ReloadWeaponHotKey));
+		hookCallEXE(0x3B975, &ReloadWeaponHotKey);
 	}
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "AutoReloadWeapon", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if (0 != temp_int) {
-		hookCallEXE(0x20D56, getRealBlockAddrCode((void *) &AutoReloadWeapon));
+		hookCallEXE(0x20D56, &AutoReloadWeapon);
 	}
 
 	// "Do not bring up the quantity selection window when dragging ammo to a weapon"
@@ -2360,60 +2360,60 @@ void InventoryInit(void) {
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "StackEmptyWeapons", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", (int *) getRealBlockAddrData(&StackEmptyWeapons));
 	if (0 != *(uint32_t *) getRealBlockAddrData(&StackEmptyWeapons)) {
-		makeCallEXE(0x66B6E, getRealBlockAddrCode((void *) &inven_action_cursor_hook), true);
+		makeCallEXE(0x66B6E, &inven_action_cursor_hook, true);
 	}
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "FreeWeight", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if (0 != temp_int) {
-		makeCallEXE(0x63C20, getRealBlockAddrCode((void *) &display_inventory_hook), true);
-		makeCallEXE(0x63F1B, getRealBlockAddrCode((void *) &display_target_inventory_hook), true);
+		makeCallEXE(0x63C20, &display_inventory_hook, true);
+		makeCallEXE(0x63F1B, &display_target_inventory_hook, true);
 
-		makeCallEXE(0x683E1, getRealBlockAddrCode((void *) &display_table_inventories_hook), false);
+		makeCallEXE(0x683E1, &display_table_inventories_hook, false);
 
 		writeMem16EXE(0x6844A, 0xD231);
-		makeCallEXE(0x6847F, getRealBlockAddrCode((void *) &display_table_inventories_hook1), true);
-		hookCallEXE(0x685A2, getRealBlockAddrCode((void *) &display_table_inventories_hook2));
+		makeCallEXE(0x6847F, &display_table_inventories_hook1, true);
+		hookCallEXE(0x685A2, &display_table_inventories_hook2);
 
-		makeCallEXE(0x684C7, getRealBlockAddrCode((void *) &display_table_inventories_hook4), false);
-		makeCallEXE(0x6867E, getRealBlockAddrCode((void *) &display_table_inventories_hook5), false);
+		makeCallEXE(0x684C7, &display_table_inventories_hook4, false);
+		makeCallEXE(0x6867E, &display_table_inventories_hook5, false);
 
 		getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "F1DPWeightOnBarter", "1", prop_value, &sfall1_ini_info_G);
 		sscanf(prop_value, "%d", &temp_int);
 		if (0 != temp_int) {
-			hookCallEXE(0x688BB, getRealBlockAddrCode((void *) &barter_inventory_hook));
-			hookCallEXE(0x68CB9, getRealBlockAddrCode((void *) &barter_inventory_hook1));
+			hookCallEXE(0x688BB, &barter_inventory_hook);
+			hookCallEXE(0x68CB9, &barter_inventory_hook1);
 		}
 	}
 
 	// "Using chemistry from the inventory on the player's picture"
-	hookCallEXE(0x64E38, getRealBlockAddrCode((void *) &inven_pickup_hook2));
+	hookCallEXE(0x64E38, &inven_pickup_hook2);
 
 	// "Show max weight in inventory"
-	makeCallEXE(0x65D1F, getRealBlockAddrCode((void *) &display_stats_hook), true);
+	makeCallEXE(0x65D1F, &display_stats_hook, true);
 
 	// ""Take All" and "Put All" Buttons"
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "sfall", "OverloadedLoot", "Sorry, you cannot carry that much.",
 					OverloadedLoot, &translation_ini_info_G);
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "sfall", "OverloadedDrop", "Sorry, there is no space left.",
 					OverloadedDrop, &translation_ini_info_G);
-	makeCallEXE(0x6352A, getRealBlockAddrCode((void *) &make_loot_drop_button), false);
-	makeCallEXE(0x672C1, getRealBlockAddrCode((void *) &loot_drop_all), false);
+	makeCallEXE(0x6352A, &make_loot_drop_button, false);
+	makeCallEXE(0x672C1, &loot_drop_all, false);
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "SuperStimExploitFix", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if (0 != temp_int) {
 		getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "sfall", "SuperStimExploitMsg",
 						"You cannot use a super stim on someone who is not injured!", SuperStimMsg, &translation_ini_info_G);
-		makeCallEXE(0x8B34F, getRealBlockAddrCode((void *) &protinst_use_item_on_hook), false);
+		makeCallEXE(0x8B34F, &protinst_use_item_on_hook, false);
 	}
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Input", "UseScrollWheel", "1", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	*(bool *) getRealBlockAddrData(&UseScrollWheel) = (1 == temp_int);
 	if (*(bool *) getRealBlockAddrData(&UseScrollWheel)) {
-		makeCallEXE(0x67251, getRealBlockAddrCode((void *) &loot_container_hook), false);
-		makeCallEXE(0x6896B, getRealBlockAddrCode((void *) &barter_inventory_hook2), false);
+		makeCallEXE(0x67251, &loot_container_hook, false);
+		makeCallEXE(0x6896B, &barter_inventory_hook2, false);
 		// No idea what this below is for (I wish documentation existed on sFall1 source... ;_;), but if I enable it,
 		// the game won't like it (will try to access invalid memory). Though, the scroll (and the rest of the game)
 		// works if I disable it. So I'll keep it disabled. Wonder what it's supposed to do...
@@ -2422,34 +2422,34 @@ void InventoryInit(void) {
 
 
 	// Refreshing data and window (in particular in the tuck) and closing the inner bag
-	hookCallEXE(0x6294E, getRealBlockAddrCode((void *) &handle_inventory_hook));
+	hookCallEXE(0x6294E, &handle_inventory_hook);
 
 	// Whether it is necessary to ink one function
-	makeCallEXE(0x69F19, getRealBlockAddrCode((void *) &item_add_mult), true);
+	makeCallEXE(0x69F19, &item_add_mult, true);
 
 	// Using the correct functions n and the corresponding conditions
-	hookCallEXE(0x6936E, getRealBlockAddrCode((void *) &drop_into_container_hook));
-	hookCallEXE(0x64BEB, getRealBlockAddrCode((void *) &item_add_force_call));
+	hookCallEXE(0x6936E, &drop_into_container_hook);
+	hookCallEXE(0x64BEB, &item_add_force_call);
 
 	// P and confirm whether to use the main backpack and oka, and not the opened bag
 	writeMem32EXE(0x68BF6, (uint32_t) getRealEXEAddr(D__stack));
 
 	// When dragging a smot from the window into the bag, a new free air gap is added, but also a bellow
-	hookCallEXE(0x68318, getRealBlockAddrCode((void *) &move_table_source));
-	hookCallEXE(0x68388, getRealBlockAddrCode((void *) &move_table_target));
+	hookCallEXE(0x68318, &move_table_source);
+	hookCallEXE(0x68388, &move_table_target);
 
 	// Report the absence of a place in the monitor window, and in the ovl window
 	hookCallEXE(0x683B2, getRealEXEAddr(C_gdialog_display_msg_));
 	writeMem16EXE(0x68390, 0x8EEB);             // jmps 0x4684F0
 
 	// You can’t take it out of the bag to your hand / if it gets into the bag last day
-	hookCallEXE(0x64F1E, getRealBlockAddrCode((void *) &checkContainerSize));
-	hookCallEXE(0x64DD2, getRealBlockAddrCode((void *) &checkContainerSize));
+	hookCallEXE(0x64F1E, &checkContainerSize);
+	hookCallEXE(0x64DD2, &checkContainerSize);
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "ContainerSizeFix", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if (0 != temp_int) {
-		hookCallEXE(0x6A729, getRealBlockAddrCode((void *) &proto_ptr_call));
-		hookCallEXE(0x6C073, getRealBlockAddrCode((void *) &proto_ptr_call));
+		hookCallEXE(0x6A729, &proto_ptr_call);
+		hookCallEXE(0x6C073, &proto_ptr_call);
 	}
 }

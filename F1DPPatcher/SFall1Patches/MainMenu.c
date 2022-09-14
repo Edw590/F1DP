@@ -36,7 +36,7 @@ static uint32_t MainMenuTextOffset = 0;
 static uint32_t OverrideColour = 0;
 
 
-static void __declspec(naked) MainMenuButtonYHook(void) {
+__declspec(naked) static void MainMenuButtonYHook(void) {
 	__asm {
 			xor     edi, edi
 			xor     esi, esi
@@ -48,7 +48,7 @@ static void __declspec(naked) MainMenuButtonYHook(void) {
 	}
 }
 
-static void __declspec(naked) MainMenuTextYHook(void) {
+__declspec(naked) static void MainMenuTextYHook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
@@ -58,14 +58,14 @@ static void __declspec(naked) MainMenuTextYHook(void) {
 			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_DATA_SEC_EXE_ADDR
-			lea     edi, ds:[edi+D__text_to_buf]
+			mov     edi, ds:[edi+D__text_to_buf]
 			mov     [esp+4], edi
 			pop     edi
 			retn
 	}
 }
 
-static void __declspec(naked) FontColour(void) {
+__declspec(naked) static void FontColour(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
@@ -88,7 +88,7 @@ static void __declspec(naked) FontColour(void) {
 	}
 }
 
-static void __declspec(naked) MainMenuTextHook(void) {
+__declspec(naked) static void MainMenuTextHook(void) {
 	__asm {
 			// [DADi590: I've changed the implementation here - now it's here only to fix the color for the user chosen one]
 
@@ -151,22 +151,22 @@ void MainMenuInit(void) {
 		*(uint32_t *) getRealBlockAddrData(&MainMenuYOffset) = (uint32_t) temp_int;
 		*(uint32_t *) getRealBlockAddrData(&MainMenuTextOffset) += (uint32_t) temp_int * 640;
 		writeMem8EXE(0x73424, 0x90);
-		makeCallEXE(0x73424 + 1, getRealBlockAddrCode((void *) &MainMenuButtonYHook), false);
+		makeCallEXE(0x73424 + 1, &MainMenuButtonYHook, false);
 	}
 
 	if (0 != *(uint32_t *) getRealBlockAddrData(&MainMenuTextOffset)) {
 		writeMem8EXE(0x73513, 0x90);
-		makeCallEXE(0x73513 + 1, getRealBlockAddrCode((void *) &MainMenuTextYHook), false);
+		makeCallEXE(0x73513 + 1, &MainMenuTextYHook, false);
 	}
 
-	makeCallEXE(0x7338B, getRealBlockAddrCode((void *) &MainMenuTextHook), true);
+	makeCallEXE(0x7338B, &MainMenuTextHook, true);
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "MainMenuFontColour", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%X", (uint32_t *) getRealBlockAddrData(&OverrideColour));
 	if (0 != *(uint32_t *) getRealBlockAddrData(&OverrideColour)) {
-		makeCallEXE(0x7332C, getRealBlockAddrCode((void *) &FontColour), false);
+		makeCallEXE(0x7332C, &FontColour, false);
 	}
 
-	//hookCallEXE(0x7338B, getRealBlockAddrCode((void *) &func_40B582)); - Disabled because there's usage of
+	//hookCallEXE(0x7338B, &func_40B582); - Disabled because there's usage of
 	// VersionString on it, and that's already taken care of by me. I'll just ignore this.
 }

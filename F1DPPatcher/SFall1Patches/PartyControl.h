@@ -33,8 +33,8 @@ extern uint32_t DelayedExperience;
 
 void PartyControlInit(void);
 void __stdcall PartyControlExit(void);
-void __declspec(naked) RestoreDudeState(void);
-void __declspec(naked) SaveDudeState(void);
+__declspec(naked) void RestoreDudeState(void);
+__declspec(naked) void SaveDudeState(void);
 
 
 

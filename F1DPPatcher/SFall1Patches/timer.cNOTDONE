@@ -24,6 +24,7 @@
 #include "../CLibs/string.h"
 #include "../CLibs/math.h"
 #include "../Utils/BlockAddrUtils.h"
+#include "../Utils/GlobalEXEAddrs.h"
 #include "../GameAddrs/FalloutEngine.h"
 #include "dinput.h"
 #include "timer.hNOTDONE"
@@ -67,7 +68,7 @@ static void __declspec(naked) scripts_check_state_hook(void) {
 static uint32_t GetTickCount(void) {
 	uint32_t ret_var = 0;
 	__asm {
-		push    eax
+		pusha
 
 		mov     ah, 0
 		int     0x1A
@@ -78,7 +79,7 @@ static uint32_t GetTickCount(void) {
 
 		mov     [ret_var], eax
 
-		pop     eax
+		popa
 	}
 
 	return ret_var;

@@ -32,7 +32,7 @@
 
 static int AI_Called_Freq_Div = 0;
 
-static void __declspec(naked) ai_called_shot_hook(void) {
+__declspec(naked) static void ai_called_shot_hook(void) {
 	__asm {
 			xchg    edx, eax                             // eax = cap.called_freq
 			cdq
@@ -51,7 +51,7 @@ static void __declspec(naked) ai_called_shot_hook(void) {
 	}
 }
 
-static void __declspec(naked) func_4012C7(void) {
+__declspec(naked) static void func_4012C7(void) {
 	__asm {
 			push    ecx
 			cmp     edx, 9C40h
@@ -90,7 +90,7 @@ static void __declspec(naked) func_4012C7(void) {
 	}
 }
 
-static void __declspec(naked) is_within_perception_hook(void) {
+__declspec(naked) static void is_within_perception_hook(void) {
 	__asm {
 			sub     esp, 4
 			xor     ebp, ebp
@@ -204,7 +204,7 @@ static void __declspec(naked) is_within_perception_hook(void) {
 	}
 }
 
-static void __declspec(naked) op_obj_can_hear_obj_hook(void) {
+__declspec(naked) static void op_obj_can_hear_obj_hook(void) {
 	__asm {
 			mov     esi, eax                             // esi = source
 			mov     ecx, [esi+0x44]
@@ -219,7 +219,7 @@ static void __declspec(naked) op_obj_can_hear_obj_hook(void) {
 	}
 }
 
-static void __declspec(naked) func_4013BD(void) {
+__declspec(naked) static void func_4013BD(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -235,7 +235,7 @@ static void __declspec(naked) func_4013BD(void) {
 	}
 }
 
-static void __declspec(naked) func_4013CC(void) {
+__declspec(naked) static void func_4013CC(void) {
 	__asm {
 			push    edi
 			push    ecx
@@ -292,16 +292,16 @@ void AIInit(void) {
 	sscanf(prop_value, "%d", &temp_int);
 	*(uint32_t *) getRealBlockAddrData(&AI_Called_Freq_Div) = (uint32_t) temp_int;
 	if (temp_int > 1) {
-		makeCallEXE(0x258BE, getRealBlockAddrCode((void *) &ai_called_shot_hook), true);
+		makeCallEXE(0x258BE, &ai_called_shot_hook, true);
 	}
 
 	// Additional checks for blindness and line of sight
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "CanSeeAndHearFix", "1", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if (0 != temp_int) {
-		makeCallEXE(0x264E2, getRealBlockAddrCode((void *) &is_within_perception_hook), true);
-		hookCallEXE(0x4EFA8, getRealBlockAddrCode((void *) &op_obj_can_hear_obj_hook));
-		hookCallEXE(0x4DC9E, getRealBlockAddrCode((void *) &func_4013BD));
-		hookCallEXE(0x2095D, getRealBlockAddrCode((void *) &func_4013CC));
+		makeCallEXE(0x264E2, &is_within_perception_hook, true);
+		hookCallEXE(0x4EFA8, &op_obj_can_hear_obj_hook);
+		hookCallEXE(0x4DC9E, &func_4013BD);
+		hookCallEXE(0x2095D, &func_4013CC);
 	}
 }

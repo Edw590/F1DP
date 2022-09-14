@@ -32,7 +32,7 @@ void initFixtPatches(void) {
 	strncpy(getRealEXEAddr(0xFC0F5), "IS", 2);
 
 	// No idea what this patch does
-	writeMem32EXE((uint32_t) getRealEXEAddr(0x22050), 0xC003C003u);
-	writeMem32EXE((uint32_t) getRealEXEAddr(0x22050+4), 0x04244429u);
-	writeMem32EXE((uint32_t) getRealEXEAddr(0x22050+8), 0x90909090u);
+	writeMem32EXE(0x22050, 0xC003C003u);
+	writeMem32EXE(0x22050+4, 0x04244429u);
+	writeMem32EXE(0x22050+8, 0x90909090u);
 }

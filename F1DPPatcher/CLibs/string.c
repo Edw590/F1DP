@@ -18,10 +18,34 @@
 // under the License.
 
 #include "../GameAddrs/CStdFuncs.h"
-#include "../Utils/GlobalEXEAddrs.h"
 #include "../Utils/BlockAddrUtils.h"
+#include "../Utils/GlobalEXEAddrs.h"
 #include "string.h"
 #include <stddef.h>
+
+void *memcpy(void *s1, const void *s2, size_t n) {
+	void *ret_var = NULL;
+
+	// Pointer correction
+	s1 = getRealBlockAddrData(s1);
+	s2 = getRealBlockAddrData(s2);
+
+	__asm {
+			pusha
+
+			mov     eax, [s1]
+			mov     edx, [s2]
+			mov     ebx, [n]
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+F_memcpy_]
+			call    edi
+			mov     [ret_var], eax
+
+			popa
+	}
+
+	return ret_var;
+}
 
 void *memset(void *s, int c, size_t n) {
 	void *ret_var = NULL;
@@ -42,8 +66,6 @@ void *memset(void *s, int c, size_t n) {
 
 			popa
 	}
-
-	ret_var = getRealBlockAddrData(ret_var);
 
 	return ret_var;
 }
@@ -115,8 +137,6 @@ char *strcpy(char *s1, char const *s2) {
 	popa
 	}
 
-	ret_var = getRealBlockAddrData(ret_var);
-
 	return ret_var;
 }
 
@@ -140,8 +160,6 @@ char *strncpy(char *s1, char const *s2, size_t n) {
 
 			popa
 	}
-
-	ret_var = getRealBlockAddrData(ret_var);
 
 	return ret_var;
 }
@@ -227,8 +245,6 @@ char *strrchr(char const *s, int c) {
 
 			popa
 	}
-
-	ret_var = getRealBlockAddrData(ret_var);
 
 	return ret_var;
 }

@@ -45,9 +45,8 @@ __declspec(naked) int printf(char const *format, ...) {
 			push    edi
 
 			mov     edi, [esp+4] // Return address
-			lea     eax, [ret_addr]
-			add     eax, SN_DATA_SEC_BLOCK_ADDR
-			mov     [eax], edi
+			mov     eax, SN_DATA_SEC_BLOCK_ADDR
+			mov     [eax+ret_addr], edi
 
 			pop     edi
 			add     esp, 4 // Remove the return address from the stack (so the stack can be what it was before calling printf())
@@ -55,19 +54,17 @@ __declspec(naked) int printf(char const *format, ...) {
 			// Now we call printf_() with the arguments passed to printf() and nothing else on the stack - it's like we had
 			// jumped to printf_() and not called a wrapper at all.
 			mov     eax, SN_CODE_SEC_EXE_ADDR
-			add     eax, F_printf_
+			lea     eax, [eax+F_printf_]
 			call    eax
 
 			lea     esp, [esp-4] // Get space on the stack to put the return address back on
 			push    edi
-			lea     edi, [ret_addr]
-			lea     edi, [edi+SN_DATA_SEC_BLOCK_ADDR]
-			mov     edi, [edi]
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			mov     edi, [edi+ret_addr]
 			mov     [esp+4], edi // Store the return address on the stack again
 
-			lea     edi, [ret_addr]
-			lea     edi, [edi+SN_DATA_SEC_BLOCK_ADDR]
-			mov     dword ptr [edi], 0 // Empty ret_addr just in case I ever use it elsewhere and check its value(?)
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			mov     dword ptr [edi+ret_addr], 0 // Empty ret_addr just in case I ever use it elsewhere and check its value(?)
 
 			pop     edi
 
@@ -92,27 +89,24 @@ __declspec(naked) int sprintf(char *s, char const *format, ...) {
 			push    edi
 
 			mov     edi, [esp+4] // Return address
-			lea     eax, [ret_addr]
-			add     eax, SN_DATA_SEC_BLOCK_ADDR
-			mov     [eax], edi
+			mov     eax, SN_DATA_SEC_BLOCK_ADDR
+			mov     [eax+ret_addr], edi
 
 			pop     edi
 			add     esp, 4 // Remove the return address from the stack
 
 			mov     eax, SN_CODE_SEC_EXE_ADDR
-			add     eax, F_sprintf_
+			lea     eax, [eax+F_sprintf_]
 			call    eax
 
 			lea     esp, [esp-4] // Get space on the stack to put the return address back on
 			push    edi
-			lea     edi, [ret_addr]
-			lea     edi, [edi+SN_DATA_SEC_BLOCK_ADDR]
-			mov     edi, [edi]
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			mov     edi, [edi+ret_addr]
 			mov     [esp+4], edi // Store the return address on the stack again
 
-			lea     edi, [ret_addr]
-			lea     edi, [edi+SN_DATA_SEC_BLOCK_ADDR]
-			mov     dword ptr [edi], 0 // Empty ret_addr just in case I ever use it elsewhere and check its value(?)
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			mov     dword ptr [edi+ret_addr], 0 // Empty ret_addr just in case I ever use it elsewhere and check its value(?)
 
 			pop     edi
 
@@ -137,27 +131,24 @@ __declspec(naked) int sscanf(char *s, char const *format, ...) {
 			push    edi
 
 			mov     edi, [esp+4] // Return address
-			lea     eax, [ret_addr]
-			add     eax, SN_DATA_SEC_BLOCK_ADDR
-			mov     [eax], edi
+			mov     eax, SN_DATA_SEC_BLOCK_ADDR
+			mov     [eax+ret_addr], edi
 
 			pop     edi
 			add     esp, 4 // Remove the return address from the stack
 
 			mov     eax, SN_CODE_SEC_EXE_ADDR
-			add     eax, F_sscanf_
+			lea     eax, [eax+F_sscanf_]
 			call    eax
 
 			lea     esp, [esp-4] // Get space on the stack to put the return address back on
 			push    edi
-			lea     edi, [ret_addr]
-			lea     edi, [edi+SN_DATA_SEC_BLOCK_ADDR]
-			mov     edi, [edi]
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			mov     edi, [edi+ret_addr]
 			mov     [esp+4], edi // Store the return address on the stack again
 
-			lea     edi, [ret_addr]
-			lea     edi, [edi+SN_DATA_SEC_BLOCK_ADDR]
-			mov     dword ptr [edi], 0 // Empty ret_addr just in case I ever use it elsewhere and check its value(?)
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			mov     dword ptr [edi+ret_addr], 0 // Empty ret_addr just in case I ever use it elsewhere and check its value(?)
 
 			pop     edi
 
@@ -169,28 +160,8 @@ __declspec(naked) int sscanf(char *s, char const *format, ...) {
 // Non-standard functions
 
 int printlnStr(char const *string) {
-	int ret_var = 0;
-
 	// Pointer correction
 	string = getRealBlockAddrData(string);
 
-	__asm {
-			pusha
-
-			push    dword ptr [string]
-
-			lea     eax, [fmt_strln]
-			add     eax, SN_DATA_SEC_BLOCK_ADDR
-			push    eax
-
-			call    printf
-
-			add     esp, 8
-
-			mov     [ret_var], eax
-
-			popa
-	}
-
-	return ret_var;
+	return printf(fmt_strln, string);
 }

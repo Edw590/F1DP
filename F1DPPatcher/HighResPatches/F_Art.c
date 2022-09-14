@@ -23,13 +23,22 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 // Original code modified by me, DADi590, to adapt it to this project, starting on 2022-08-28.
 
-#ifndef F1DPPATCHER_FIXES_DIALOG_H
-#define F1DPPATCHER_FIXES_DIALOG_H
+#include "../GameAddrs/FalloutEngine.h"
+#include "../Utils/EXEPatchUtils.h"
+#include <stdint.h>
 
-
-
-void DialogInventoryFixes(void);
-
-
-
-#endif //F1DPPATCHER_FIXES_DIALOG_H
+//____________________________________________________________________________
+uint32_t F_GetFrmID(uint32_t objType, uint32_t lstNum, uint32_t id2, uint32_t id1, uint32_t id3) {
+	uint32_t FID = 0;
+	uint32_t F_LOAD_FRM = (uint32_t) getRealEXEAddr(C_art_id_);
+	__asm {
+			push    id3
+			mov     ecx, id1
+			mov     ebx, id2
+			MOV     edx, lstNum
+			MOV     eax, objType
+			call    F_LOAD_FRM
+			mov     FID, eax
+	}
+	return FID;
+}

@@ -1,6 +1,7 @@
 /*
 The MIT License (MIT)
 Copyright © 2022 Matt Wells
+Copyright © 2022 DADi590
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this
 software and associated documentation files (the “Software”), to deal in the
@@ -28,6 +29,14 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 #include <stdint.h>
+
+// Microsoft's RECT structure in windef.h
+typedef struct tagRECT {
+	int32_t left;
+	int32_t top;
+	int32_t right;
+	int32_t bottom;
+} RECT, *PRECT, *NPRECT, *LPRECT;
 
 struct DAMAGEstats
 {
@@ -393,6 +402,70 @@ struct OBJNode {
 	struct OBJStruct*obj;
 	struct OBJNode*next;
 };
+
+
+///OBJStruct.flags-------
+#define FLG_Disabled       0x00000001 //???
+#define FLG_Flat           0x00000008
+#define FLG_NoBlock        0x00000010
+#define FLG_MultiHex       0x00000800
+#define FLG_NoHighlight    0x00001000
+#define FLG_TransRed       0x00004000
+#define FLG_TransNone      0x00008000
+#define FLG_TransWall      0x00010000
+#define FLG_TransGlass     0x00020000
+#define FLG_TransSteam     0x00040000
+#define FLG_TransEnergy    0x00080000
+#define FLG_LightThru      0x20000000
+#define FLG_ShootThru      0x80000000
+#define FLG_WallTransEnd   0x10000000
+
+#define FLG_MarkedByPC  0x40000000
+//items
+#define FLG_IsHeldSlot1 0x01000000
+#define FLG_IsHeldSlot2 0x02000000
+#define FLG_IsWornArmor 0x04000000
+
+
+///OBJStruct.combatFlags-------
+#define FLG_NotVisByPC           0x00000020
+#define FLG_PCTeamMem            0x00000008
+#define FLG_NonPCTeamMem         0x00000001
+#define FLG_IsNotPC              0x00FFFFFF //check if any above flags set
+#define FLG_IsPC                 0x00000000
+#define FLG_IsNotFightable       0x80000000
+
+
+///Scenery Types--------
+#define FLG_Portal           0x00000000
+#define FLG_Stairs           0x00000001
+#define FLG_Elevators        0x00000002
+#define FLG_LadderBottom     0x00000003
+#define FLG_LadderTop        0x00000004
+#define FLG_Generic          0x00000005
+
+
+extern struct OBJStruct **lpObj_PC;
+extern struct OBJStruct **lpObj_ActiveCritter;
+extern struct OBJStruct **lpObj_Mouse2;
+extern struct OBJStruct **lpObj_Mouse;
+
+int32_t GetProListSize(int32_t proType);
+
+uint32_t GetProID(int32_t proType, int32_t listNum);
+int32_t F_GetPro(uint32_t proID, struct PROTOall **proto);
+
+struct OBJStruct* FGetMapObjUnderMouse(int type, uint32_t flag, int level);
+
+int32_t F_MapObj_Create(struct OBJStruct **lpObj, uint32_t frmID, uint32_t proID);
+int32_t F_MapObj_Move(struct OBJStruct *obj, uint32_t hexPos, int32_t level, RECT *pRect);
+int32_t F_MapObj_Destroy(struct OBJStruct *obj, RECT *pRect);
+
+int F_Obj_ClearAnimation(struct OBJStruct *obj);
+
+int32_t F_Obj_SetFrmId(struct OBJStruct *obj, uint32_t frmID, RECT *rcOut);
+
+void F_ObjectsSetup();
 
 
 

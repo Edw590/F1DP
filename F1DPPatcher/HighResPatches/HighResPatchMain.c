@@ -1,6 +1,7 @@
 /*
 The MIT License (MIT)
 Copyright © 2022 Matt Wells
+Copyright © 2022 DADi590
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this
 software and associated documentation files (the “Software”), to deal in the
@@ -23,10 +24,15 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // Original code modified by me, DADi590, to adapt it to this project, starting on 2022-08-28.
 
 #include "HighResPatchMain.h"
+#include "F_Mapper.h"
 #include "fixes_dialog.h"
+#include "fixes_maps.h"
 #include "fixes_other.h"
 #include "fixes_win_general.h"
 
+// BE CAREFUL PORTING ASSEMBLY FUNCTIONS!!!! PAY ATTENTION TO THE CALLING CONVENTION!!!
+// On MSVC it's parameters on the stack from right to left --> on Watcom it's not like that! Correct the parameters
+// when calling functions on the Patcher.
 
 void Initialize(void) {
 
@@ -37,7 +43,7 @@ void Initialize(void) {
 	//FWindowsSetup();
 	//F_ObjectsSetup();
 	//FScriptsSetup();
-	//FMapperSetup();
+	FMapperSetup();
 
 	//WinFallFixes();
 	//DirectDraw7_Fixes();

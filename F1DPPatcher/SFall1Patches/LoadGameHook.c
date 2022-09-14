@@ -36,7 +36,7 @@
 
 uint32_t InLoop = 0;
 
-static void __declspec(naked) ResetState(void) {
+__declspec(naked) static void ResetState(void) {
 	__asm {
 			pushad
 			xor     eax, eax
@@ -56,7 +56,7 @@ static void __declspec(naked) ResetState(void) {
 	}
 }
 
-static void __declspec(naked) LoadGame_hook(void) {
+__declspec(naked) static void LoadGame_hook(void) {
 	__asm {
 			call ResetState
 
@@ -70,7 +70,7 @@ static void __declspec(naked) LoadGame_hook(void) {
 	}
 }
 
-static void __declspec(naked) gnw_main_hook(void) {
+__declspec(naked) static void gnw_main_hook(void) {
 	__asm {
 			call ResetState
 
@@ -84,7 +84,7 @@ static void __declspec(naked) gnw_main_hook(void) {
 	}
 }
 
-static void __declspec(naked) gnw_main_hook1(void) {
+__declspec(naked) static void gnw_main_hook1(void) {
 	__asm {
 			call ResetState
 
@@ -100,7 +100,7 @@ static void __declspec(naked) gnw_main_hook1(void) {
 
 static char SaveFailMsg[128] = {0};
 static uint32_t SaveInCombatFix = 0;
-static void __declspec(naked) SaveGame_hook(void) {
+__declspec(naked) static void SaveGame_hook(void) {
 	__asm {
 			xor     esi, esi
 			push    edi
@@ -178,7 +178,7 @@ static void __declspec(naked) SaveGame_hook(void) {
 	}
 }
 
-static void __declspec(naked) setup_inventory_hook(void) {
+__declspec(naked) static void setup_inventory_hook(void) {
 	__asm {
 			mov     esi, 6
 			test    eax, eax
@@ -221,18 +221,18 @@ void LoadGameHookInit(void) {
 	char prop_value[MAX_PROP_VALUE_LEN];
 	memset(prop_value, 0, MAX_PROP_VALUE_LEN);
 
-	hookCallEXE(0x6EAEC, getRealBlockAddrCode((void *) &LoadGame_hook));
-	hookCallEXE(0x6F562, getRealBlockAddrCode((void *) &LoadGame_hook));
-	hookCallEXE(0x7291B, getRealBlockAddrCode((void *) &gnw_main_hook));
-	hookCallEXE(0x7299F, getRealBlockAddrCode((void *) &gnw_main_hook1));
+	hookCallEXE(0x6EAEC, &LoadGame_hook);
+	hookCallEXE(0x6F562, &LoadGame_hook);
+	hookCallEXE(0x7291B, &gnw_main_hook);
+	hookCallEXE(0x7299F, &gnw_main_hook1);
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "sfall", "SaveInCombat", "Cannot save at this time.", SaveFailMsg,
 					&translation_ini_info_G);
-	makeCallEXE(0x6DC87, getRealBlockAddrCode((void *) &SaveGame_hook), false);
+	makeCallEXE(0x6DC87, &SaveGame_hook, false);
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "SaveInCombatFix", "1", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	*(uint32_t *) getRealBlockAddrData(&SaveInCombatFix) = (uint32_t) (temp_int <= 2 ? temp_int : 0);
 
-	makeCallEXE(0x62AB5, getRealBlockAddrCode((void *) &setup_inventory_hook), false);// INVENTORY + INTFACEUSE + INTFACELOOT + BARTER
+	makeCallEXE(0x62AB5, &setup_inventory_hook, false);// INVENTORY + INTFACEUSE + INTFACELOOT + BARTER
 }

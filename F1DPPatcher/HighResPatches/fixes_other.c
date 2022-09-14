@@ -1,6 +1,7 @@
 /*
 The MIT License (MIT)
 Copyright © 2022 Matt Wells
+Copyright © 2022 DADi590
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this
 software and associated documentation files (the “Software”), to deal in the
@@ -40,7 +41,7 @@ void __declspec(naked) double_click_running(void) {
 	//in PC_WALK(EAX actionPoints) function.
 	__asm {
 			push    edi
-			mov     edi, SN_DATA_SEC_EXE_ADDR
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
 			cmp     eax, ds:[edi+destHexPos]
 			pop     edi
 			jne     exitFunc
@@ -56,7 +57,7 @@ void __declspec(naked) double_click_running(void) {
 
 			exitFunc:
 			push    edi
-			mov     edi, SN_DATA_SEC_EXE_ADDR
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
 			mov     [edi+destHexPos], eax
 			pop     edi
 			mov     eax, 0x2
@@ -74,11 +75,11 @@ void OtherFixes(void) {
 	getPropValueIni(MAIN_INI_SPEC_SEC_HIGHRES_PATCH, "OTHER_SETTINGS", "DOUBLE_CLICK_RUNNING", "1", prop_value, &high_res_patch_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if (0 != temp_int) {
-		makeCallEXE(0x179E3, getRealBlockAddrCode((void *) &double_click_running), false);
+		makeCallEXE(0x179E3, &double_click_running, false);
 	}
 
 	//Bypass hard drive space check - can cause a false error.
 	//"Not enough free hard disk space.  Fallout requires at least %.1f megabytes of free hard disk space."
 	writeMem16EXE(C_game_check_disk_space_, 0xC031);//xor eax, eax
-	writeMem8EXE(C_game_check_disk_space_+2, 0xC3);//return
+	writeMem8EXE(C_game_check_disk_space_ + 2, 0xC3);//return
 }

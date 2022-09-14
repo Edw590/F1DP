@@ -303,7 +303,7 @@ void GetTileXY(int32_t scrnX, int32_t scrnY, int32_t level, int32_t* tileX, int3
 			PUSH    ESI                                //GET_TILE_COOR(EAX scrnX, EDX scrnY, EBX level, ECX *tileX, Arg1 *tileY)
 			PUSH    EDI
 			//PUSH    EBP
-			//MOV     EBX,tileY
+			//MOV     EBX, tileY
 			MOV     ECX, tileX
 			MOV     EDI, scrnX
 			MOV     ESI, scrnY
@@ -793,13 +793,19 @@ int32_t hexStep2[6][3] = {
 
 //____________________________________________________________
 int32_t GetNextHexPos(int32_t hexPos, uint32_t direction, int32_t distance) {
+	int32_t xMax = 0;
+	int32_t yMax = 0;
+	int32_t y = 0;
+	int32_t x = 0;
+	int32_t hexNew = hexPos;
+
 	//if(hexPos<=0 || hexPos>40000) return hexPos;
 
-	int32_t xMax = *(*(int32_t * *) getRealBlockAddrData(&pNUM_HEX_X));
-	int32_t yMax = *(*(int32_t * *) getRealBlockAddrData(&pNUM_HEX_Y));
-	int32_t y = hexPos / xMax;
-	int32_t x = hexPos % xMax;
-	int32_t hexNew = hexPos;
+	xMax = *(*(int32_t * *) getRealBlockAddrData(&pNUM_HEX_X));
+	yMax = *(*(int32_t * *) getRealBlockAddrData(&pNUM_HEX_Y));
+	y = hexPos / xMax;
+	x = hexPos % xMax;
+
 	while (distance > 0) {
 
 		y += (*(int32_t** *) getRealBlockAddrData(&hexStep))[direction][(x & 0x01)];
@@ -908,7 +914,7 @@ void ReDrawViewWin() {
 
 
 //________________________________________________________
-bool FogOfWarMap_CopyFiles(char* pFromPath, char* pToPath) {
+bool FogOfWarMap_CopyFiles(char* pToPath, char* pFromPath) {
 	char* fromPath = NULL;
 	char* toPath = NULL;
 	void* FileStream_From = NULL;

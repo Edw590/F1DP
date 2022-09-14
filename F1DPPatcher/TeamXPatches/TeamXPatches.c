@@ -24,7 +24,7 @@
 #include "../Utils/GlobalEXEAddrs.h"
 #include "TeamXPatches.h"
 
-static void __declspec(naked) patch1(void) {
+__declspec(naked) static void patch1(void) {
 	__asm {
 			mov     eax, 0x10
 			push    edi
@@ -97,7 +97,7 @@ void initTeamXPatches(void) {
 	// Nothing related to the DOS EXE (it's only the SizeOfImage in the PE header that changed).
 
 	// From Restoration Mod EXE
-	makeCallEXE(0x38AFB, getRealBlockAddrCode((void *) &patch1), true);
+	makeCallEXE(0x38AFB, &patch1, true);
 	strncpy(getRealEXEAddr(0xF131C), "nar_31\0\0", 8);
 	// There's another patch, but that has to do with screen resolutions, so I'll leave it.
 }

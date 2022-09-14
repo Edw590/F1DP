@@ -23,13 +23,39 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 // Original code modified by me, DADi590, to adapt it to this project, starting on 2022-08-28.
 
-#ifndef F1DPPATCHER_FIXES_DIALOG_H
-#define F1DPPATCHER_FIXES_DIALOG_H
+#include "../CLibs/stdlib.h"
+#include "../GameAddrs/FalloutEngine.h"
+#include "../Utils/GlobalEXEAddrs.h"
+#include "F_Windows.h"
+
+//__________________________________________________
+uint8_t* FReallocateMemory(uint8_t * mem, uint32_t sizeBytes) {
+	__asm {
+			mov     edx, sizeBytes
+			mov     eax, mem
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_mem_realloc_]
+			call    edi
+			pop     edi
+			mov     mem, eax
+	}
+	return mem;
+}
 
 
+//__________________________________
+struct WinStruct* GetWinStruct(int32_t WinRef) {
 
-void DialogInventoryFixes(void);
-
-
-
-#endif //F1DPPATCHER_FIXES_DIALOG_H
+	struct WinStruct* winStruct = NULL;
+	__asm {
+			mov     eax, WinRef
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_GNW_find_]
+			call    edi
+			pop     edi
+			mov     winStruct, eax
+	}
+	return winStruct;
+}

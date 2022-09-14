@@ -1,6 +1,7 @@
 /*
 The MIT License (MIT)
 Copyright © 2022 Matt Wells
+Copyright © 2022 DADi590
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this
 software and associated documentation files (the “Software”), to deal in the
@@ -24,7 +25,6 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "../CLibs/stdio.h"
 #include "../CLibs/string.h"
-#include "../GameAddrs/FalloutEngine.h"
 #include "../Utils/BlockAddrUtils.h"
 #include "../Utils/EXEPatchUtils.h"
 #include "../Utils/IniUtils.h"
@@ -50,7 +50,7 @@ void InvInsertItem(struct OBJStruct* item, int32_t numItems, struct PUD_GENERAL*
 
 
 //______________________________________
-void __declspec(naked) inv_insert_item(void) {
+__declspec(naked) void inv_insert_item(void) {
 
 	__asm {
 			mov     edx, dword ptr ss:[esp+0x20]//num items to insert
@@ -58,6 +58,8 @@ void __declspec(naked) inv_insert_item(void) {
 			push    ecx//pObjPud_To
 			push    edx
 			push    edi//*pObjItem
+			mov     eax, edi
+			mov     ebx, ecx
 			call    InvInsertItem
 			add     esp, 0xC
 			popad
@@ -71,15 +73,14 @@ void DialogInventoryFixes(void) {
 	char prop_value[MAX_PROP_VALUE_LEN];
 	memset(prop_value, 0, MAX_PROP_VALUE_LEN);
 
-	// Doesn't work, no idea why (crashes the game after the Overseer speaks)
-	//getPropValueIni(MAIN_INI_SPEC_SEC_HIGHRES_PATCH, "OTHER_SETTINGS", "INV_ADD_ITEMS_AT_TOP", "0", prop_value, &high_res_patch_ini_info_G);
-	//sscanf(prop_value, "%d", &temp_int);
-	//if (0 != temp_int) {
-	//	makeCallEXE(0x6A1EB, getRealBlockAddrCode((void *) &inv_insert_item), false);
-	//	//0006A1F0     /EB 12         JMP SHORT 0006A204                       ; invItemList->invItem[invItemList->inv_size].obj = obj_item
-	//	writeMem16EXE(0x6A1F0, 0x12EB);
-	//	writeMem8EXE(0x6A1F0+2, 0x90);
-	//}
+	getPropValueIni(MAIN_INI_SPEC_SEC_HIGHRES_PATCH, "OTHER_SETTINGS", "INV_ADD_ITEMS_AT_TOP", "0", prop_value, &high_res_patch_ini_info_G);
+	sscanf(prop_value, "%d", &temp_int);
+	if (0 != temp_int) {
+		makeCallEXE(0x6A1EB, &inv_insert_item, false);
+		//0006A1F0     /EB 12         JMP SHORT 0006A204                       ; invItemList->invItem[invItemList->inv_size].obj = obj_item
+		writeMem16EXE(0x6A1F0, 0x12EB);
+		writeMem8EXE(0x6A1F0+2, 0x90);
+	}
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_HIGHRES_PATCH, "OTHER_SETTINGS", "BARTER_PC_INV_DROP_FIX", "1", prop_value, &high_res_patch_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);

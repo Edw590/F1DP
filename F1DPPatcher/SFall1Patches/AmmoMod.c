@@ -32,7 +32,7 @@
 #include "Define.h"
 #include "SFall1Patches.h"
 
-static void __declspec(naked) item_w_damage_hook(void) {
+__declspec(naked) static void item_w_damage_hook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_DATA_SEC_EXE_ADDR
@@ -53,7 +53,7 @@ static void __declspec(naked) item_w_damage_hook(void) {
 	}
 }
 
-static void __declspec(naked) item_w_damage_hook1(void) {
+__declspec(naked) static void item_w_damage_hook1(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -80,7 +80,7 @@ static void __declspec(naked) item_w_damage_hook1(void) {
 	}
 }
 
-static void __declspec(naked) display_stats_hook(void) {
+__declspec(naked) static void display_stats_hook(void) {
 	__asm {
 			mov     eax, PERK_bonus_hth_damage
 			push    edi
@@ -101,7 +101,7 @@ static void __declspec(naked) display_stats_hook(void) {
 	}
 }
 
-static void __declspec(naked) display_stats_hook1(void) {
+__declspec(naked) static void display_stats_hook1(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -149,7 +149,7 @@ static void __declspec(naked) display_stats_hook1(void) {
 	}
 }
 
-static void __declspec(naked) display_stats_hook2(void) {
+__declspec(naked) static void display_stats_hook2(void) {
 	__asm {
 			mov     eax, PERK_bonus_ranged_damage
 			push    edi
@@ -180,12 +180,12 @@ void AmmoModInit(void) {
 	sscanf(prop_value, "%d", &temp_int);
 	if (0 != temp_int) {
 		// Bonus HtH Damage Perk fix
-		makeCallEXE(0x6AF56, getRealBlockAddrCode((void *) &item_w_damage_hook), false);
-		hookCallEXE(0x6AFA8, getRealBlockAddrCode((void *) &item_w_damage_hook1));
-		hookCallEXE(0x65AA1, getRealBlockAddrCode((void *) &display_stats_hook));
-		makeCallEXE(0x65CA1, getRealBlockAddrCode((void *) &display_stats_hook1), true);
+		makeCallEXE(0x6AF56, &item_w_damage_hook, false);
+		hookCallEXE(0x6AFA8, &item_w_damage_hook1);
+		hookCallEXE(0x65AA1, &display_stats_hook);
+		makeCallEXE(0x65CA1, &display_stats_hook1, true);
 	}
 
 	// "Show changes min./max. damage to the weapon if the perk "Bonus damage at distance" is taken."
-	hookCallEXE(0x65A75, getRealBlockAddrCode((void *) &display_stats_hook2));
+	hookCallEXE(0x65A75, &display_stats_hook2);
 }

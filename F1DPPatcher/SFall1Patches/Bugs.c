@@ -37,7 +37,7 @@ static const uint32_t QWordToDWord[4] = {
 		0x5E39B, 0x5E3E3, 0x5E4AB, 0x5E526,
 };
 
-static void __declspec(naked) determine_to_hit_func_hook(void) {
+__declspec(naked) static void determine_to_hit_func_hook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -63,7 +63,7 @@ static void __declspec(naked) determine_to_hit_func_hook(void) {
 	}
 }
 
-static void __declspec(naked) perform_withdrawal_start_hook(void) {
+__declspec(naked) static void perform_withdrawal_start_hook(void) {
 	__asm {
 			test    eax, eax
 			jnz     end
@@ -80,7 +80,7 @@ static void __declspec(naked) perform_withdrawal_start_hook(void) {
 	}
 }
 
-static void __declspec(naked) pipboy_hook(void) {
+__declspec(naked) static void pipboy_hook(void) {
 	__asm {
 			cmp     ebx, 0x20E                           // BACK button?
 			je      end
@@ -99,7 +99,7 @@ static void __declspec(naked) pipboy_hook(void) {
 	}
 }
 
-static void __declspec(naked) PipAlarm_hook(void) {
+__declspec(naked) static void PipAlarm_hook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_DATA_SEC_EXE_ADDR
@@ -119,7 +119,7 @@ static void __declspec(naked) PipAlarm_hook(void) {
 	}
 }
 
-static void __declspec(naked) scr_save_hook(void) {
+__declspec(naked) static void scr_save_hook(void) {
 	__asm {
 			mov     ecx, 16
 			cmp     [esp+0xDC+4], ecx                    // number_of_scripts
@@ -147,7 +147,7 @@ static void __declspec(naked) scr_save_hook(void) {
 	}
 }
 
-static void __declspec(naked) item_d_check_addict_hook(void) {
+__declspec(naked) static void item_d_check_addict_hook(void) {
 	__asm {
 			xor     edx, edx
 			inc     edx
@@ -181,7 +181,7 @@ static void __declspec(naked) item_d_check_addict_hook(void) {
 	}
 }
 
-static void __declspec(naked) queue_clear_type_hook(void) {
+__declspec(naked) static void queue_clear_type_hook(void) {
 	__asm {
 			mov     ebx, [esi]
 
@@ -195,7 +195,7 @@ static void __declspec(naked) queue_clear_type_hook(void) {
 	}
 }
 
-static void __declspec(naked) invenWieldFunc_hook(void) {
+__declspec(naked) static void invenWieldFunc_hook(void) {
 	__asm {
 			pushad
 			mov     edi, ecx
@@ -256,7 +256,7 @@ static void __declspec(naked) invenWieldFunc_hook(void) {
 	}
 }
 
-static void __declspec(naked) inven_item_wearing(void) {
+__declspec(naked) static void inven_item_wearing(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_DATA_SEC_EXE_ADDR
@@ -299,7 +299,7 @@ static void __declspec(naked) inven_item_wearing(void) {
 	}
 }
 
-static void __declspec(naked) inven_right_hand_hook(void) {
+__declspec(naked) static void inven_right_hand_hook(void) {
 	__asm {
 			call    inven_item_wearing
 			push    edi
@@ -317,7 +317,7 @@ static void __declspec(naked) inven_right_hand_hook(void) {
 	}
 }
 
-static void __declspec(naked) inven_left_hand_hook(void) {
+__declspec(naked) static void inven_left_hand_hook(void) {
 	__asm {
 			call    inven_item_wearing
 			push    edi
@@ -335,7 +335,7 @@ static void __declspec(naked) inven_left_hand_hook(void) {
 	}
 }
 
-static void __declspec(naked) inven_worn_hook(void) {
+__declspec(naked) static void inven_worn_hook(void) {
 	__asm {
 			call    inven_item_wearing
 			push    edi
@@ -353,7 +353,7 @@ static void __declspec(naked) inven_worn_hook(void) {
 	}
 }
 
-static void __declspec(naked) loot_container_hook(void) {
+__declspec(naked) static void loot_container_hook(void) {
 	__asm {
 			mov     eax, [esp+0x110+0x4]
 			test    eax, eax
@@ -401,7 +401,7 @@ static void __declspec(naked) loot_container_hook(void) {
 	}
 }
 
-static void __declspec(naked) inven_pickup_hook(void) {
+__declspec(naked) static void inven_pickup_hook(void) {
 	__asm {
 			test    eax, eax
 			jz      end
@@ -477,7 +477,7 @@ static void __declspec(naked) inven_pickup_hook(void) {
 	}
 }
 
-static void __declspec(naked) drop_ammo_into_weapon_hook(void) {
+__declspec(naked) static void drop_ammo_into_weapon_hook(void) {
 	__asm {
 			push    ecx
 			mov     esi, ecx
@@ -525,7 +525,7 @@ static void __declspec(naked) drop_ammo_into_weapon_hook(void) {
 	}
 }
 
-static void __declspec(naked) PipStatus_hook(void) {
+__declspec(naked) static void PipStatus_hook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -542,7 +542,7 @@ static void __declspec(naked) PipStatus_hook(void) {
 }
 
 //checks if an attacked object is a critter before attempting dodge animation
-static void __declspec(naked) action_melee_hook(void) {
+__declspec(naked) static void action_melee_hook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -564,7 +564,7 @@ static void __declspec(naked) action_melee_hook(void) {
 	}
 }
 
-static void __declspec(naked) action_ranged_hook(void) {
+__declspec(naked) static void action_ranged_hook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -588,7 +588,7 @@ static void __declspec(naked) action_ranged_hook(void) {
 
 
 static uint32_t XPWithSwiftLearner = 0;
-static void __declspec(naked) stat_pc_add_experience_hook(void) {
+__declspec(naked) static void stat_pc_add_experience_hook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
@@ -602,7 +602,7 @@ static void __declspec(naked) stat_pc_add_experience_hook(void) {
 	}
 }
 
-static void __declspec(naked) combat_give_exps_hook(void) {
+__declspec(naked) static void combat_give_exps_hook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -617,7 +617,7 @@ static void __declspec(naked) combat_give_exps_hook(void) {
 	}
 }
 
-static void __declspec(naked) loot_container_hook1(void) {
+__declspec(naked) static void loot_container_hook1(void) {
 	__asm {
 			xchg    edi, eax
 			push    edi
@@ -632,7 +632,7 @@ static void __declspec(naked) loot_container_hook1(void) {
 			lea     esp, [esp-4] // [DADi590] Reserve space for the push
 			push    edi
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
-			lea     edi, [edi+XPWithSwiftLearner]
+			mov     edi, [edi+XPWithSwiftLearner]
 			mov     [esp+4], edi
 			pop     edi
 
@@ -663,7 +663,7 @@ static void __declspec(naked) loot_container_hook1(void) {
 	}
 }
 
-static void __declspec(naked) set_new_results_hook(void) {
+__declspec(naked) static void set_new_results_hook(void) {
 	__asm {
 			test    ah, 0x1                              // DAM_KNOCKED_OUT?
 			jz      end                                  // No
@@ -690,7 +690,7 @@ static void __declspec(naked) set_new_results_hook(void) {
 	}
 }
 
-static void __declspec(naked) critter_wake_clear_hook(void) {
+__declspec(naked) static void critter_wake_clear_hook(void) {
 	__asm {
 			test    dl, 0x80                             // DAM_DEAD?
 			jnz     end                                  // This is a corpse
@@ -707,7 +707,7 @@ static void __declspec(naked) critter_wake_clear_hook(void) {
 	}
 }
 
-static void __declspec(naked) obj_load_func_hook(void) {
+__declspec(naked) static void obj_load_func_hook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -740,7 +740,7 @@ static void __declspec(naked) obj_load_func_hook(void) {
 	}
 }
 
-static void __declspec(naked) partyMemberPrepLoad_hook(void) {
+__declspec(naked) static void partyMemberPrepLoad_hook(void) {
 	__asm {
 			test    byte ptr [ecx+0x44], 0x2             // DAM_KNOCKED_DOWN
 			jz      skip
@@ -761,7 +761,7 @@ static void __declspec(naked) partyMemberPrepLoad_hook(void) {
 	}
 }
 
-static void __declspec(naked) combat_ctd_init_hook(void) {
+__declspec(naked) static void combat_ctd_init_hook(void) {
 	__asm {
 			mov     [esi+0x24], eax                      // ctd.targetTile
 			mov     eax, [ebx+0x54]                      // pobj.who_hit_me
@@ -779,7 +779,7 @@ static void __declspec(naked) combat_ctd_init_hook(void) {
 	}
 }
 
-static void __declspec(naked) obj_save_hook(void) {
+__declspec(naked) static void obj_save_hook(void) {
 	__asm {
 			inc     eax
 			jz      end
@@ -809,7 +809,7 @@ static void __declspec(naked) obj_save_hook(void) {
 	}
 }
 
-static void __declspec(naked) explode_critter_kill(void) {
+__declspec(naked) static void explode_critter_kill(void) {
 	__asm {
 			push    edx
 			push    ecx
@@ -868,7 +868,7 @@ static void __declspec(naked) explode_critter_kill(void) {
 	}
 }
 
-static void __declspec(naked) action_use_an_item_on_object_hook(void) {
+__declspec(naked) static void action_use_an_item_on_object_hook(void) {
 	__asm {
 			test    ebp, ebp
 			jz      end
@@ -883,7 +883,7 @@ static void __declspec(naked) action_use_an_item_on_object_hook(void) {
 	}
 }
 
-static void __declspec(naked) use_inventory_on_hook(void) {
+__declspec(naked) static void use_inventory_on_hook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_DATA_SEC_EXE_ADDR
@@ -920,7 +920,7 @@ static void __declspec(naked) use_inventory_on_hook(void) {
 	}
 }
 
-static void __declspec(naked) compute_damage_hook(void) {
+__declspec(naked) static void compute_damage_hook(void) {
 	__asm {
 			test    byte ptr [esi+0x14], 0x80            // ctd.flagsSource & DAM_DEAD?
 			jz      skipSource                           // No
@@ -948,7 +948,7 @@ static void __declspec(naked) compute_damage_hook(void) {
 	}
 }
 
-static void __declspec(naked) op_obj_can_see_obj_hook(void) {
+__declspec(naked) static void op_obj_can_see_obj_hook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -972,7 +972,7 @@ static void __declspec(naked) op_obj_can_see_obj_hook(void) {
 	}
 }
 
-static void __declspec(naked) op_obj_can_hear_obj_hook(void) {
+__declspec(naked) static void op_obj_can_hear_obj_hook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -1000,7 +1000,7 @@ static void __declspec(naked) op_obj_can_hear_obj_hook(void) {
 	}
 }
 
-static void __declspec(naked) switch_hand_hook(void) {
+__declspec(naked) static void switch_hand_hook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_DATA_SEC_EXE_ADDR
@@ -1037,7 +1037,7 @@ static void __declspec(naked) switch_hand_hook(void) {
 	}
 }
 
-static void __declspec(naked) combat_display_hook(void) {
+__declspec(naked) static void combat_display_hook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -1055,7 +1055,7 @@ static void __declspec(naked) combat_display_hook(void) {
 	}
 }
 
-static void __declspec(naked) inven_action_cursor_hook(void) {
+__declspec(naked) static void inven_action_cursor_hook(void) {
 	__asm {
 			cmp     dword ptr [esp+0x40+0x4], item_type_container
 			jne     end
@@ -1079,7 +1079,7 @@ static void __declspec(naked) inven_action_cursor_hook(void) {
 	}
 }
 
-static void __declspec(naked) exec_script_proc_hook(void) {
+__declspec(naked) static void exec_script_proc_hook(void) {
 	__asm {
 			mov     eax, [esp+0x10+0x4]
 			mov     eax, [eax+0x58]
@@ -1091,7 +1091,7 @@ static void __declspec(naked) exec_script_proc_hook(void) {
 	}
 }
 
-static void __declspec(naked) gdActivateBarter_hook(void) {
+__declspec(naked) static void gdActivateBarter_hook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -1125,7 +1125,7 @@ static void __declspec(naked) gdActivateBarter_hook(void) {
 	}
 }
 
-static void __declspec(naked) op_negate_hook(void) {
+__declspec(naked) static void op_negate_hook(void) {
 	__asm {
 			mov     edx, ecx
 			cmp     ax, VAR_TYPE_FLOAT
@@ -1170,80 +1170,80 @@ void BugsInit(void) {
 	int i = 0;
 
 	// Applying sharpshooter patch.
-	hookCallEXE(0x2200D, getRealBlockAddrCode((void *) &determine_to_hit_func_hook));
+	hookCallEXE(0x2200D, &determine_to_hit_func_hook);
 	writeMem8EXE(0x22044, 0xEB);
 
 	// Applying withdrawal perk description crash fix.
-	hookCallEXE(0x6C8B7, getRealBlockAddrCode((void *) &perform_withdrawal_start_hook));
+	hookCallEXE(0x6C8B7, &perform_withdrawal_start_hook);
 
 	// Fixing clickability bugs in pipboy
-	makeCallEXE(0x86BAE, getRealBlockAddrCode((void *) &pipboy_hook), false);
-	makeCallEXE(0x88E5C, getRealBlockAddrCode((void *) &PipAlarm_hook), false);
+	makeCallEXE(0x86BAE, &pipboy_hook, false);
+	makeCallEXE(0x88E5C, &PipAlarm_hook, false);
 
 	// Fix "Too Many Items Bug"
-	hookCallEXE(0x93AE6, getRealBlockAddrCode((void *) &scr_save_hook));
-	hookCallEXE(0x93B3D, getRealBlockAddrCode((void *) &scr_save_hook));
+	hookCallEXE(0x93AE6, &scr_save_hook);
+	hookCallEXE(0x93B3D, &scr_save_hook);
 
 	// Correction of drug addiction treatment
-	makeCallEXE(0x6CA30, getRealBlockAddrCode((void *) &item_d_check_addict_hook), true);
+	makeCallEXE(0x6CA30, &item_d_check_addict_hook, true);
 
 	// Fixed a crash (which is not here) when using stimpacks on a victim and then exiting the map
-	hookCallEXE(0x90AAB, getRealBlockAddrCode((void *) &queue_clear_type_hook));
+	hookCallEXE(0x90AAB, &queue_clear_type_hook);
 
 	// Fix "Unlimited Ammo bug"
-	hookCallEXE(0x65F0B, getRealBlockAddrCode((void *) &invenWieldFunc_hook));
+	hookCallEXE(0x65F0B, &invenWieldFunc_hook);
 
 	// Fixed display of negative values in the skill window ("S")
 	writeMem8EXE(0x99987, 0x7F);                // jg
 
 	// Fixed return of equipped armor and weapons in hands
-	makeCallEXE(0x65386, getRealBlockAddrCode((void *) &inven_right_hand_hook), true);
-	makeCallEXE(0x653C6, getRealBlockAddrCode((void *) &inven_left_hand_hook), true);
-	makeCallEXE(0x65406, getRealBlockAddrCode((void *) &inven_worn_hook), true);
+	makeCallEXE(0x65386, &inven_right_hand_hook, true);
+	makeCallEXE(0x653C6, &inven_left_hand_hook, true);
+	makeCallEXE(0x65406, &inven_worn_hook, true);
 
 	// Correction of the error of not taking into account the weight of dressed things
-	makeCallEXE(0x66F62, getRealBlockAddrCode((void *) &loot_container_hook), false);
+	makeCallEXE(0x66F62, &loot_container_hook, false);
 
 	// Text width 64, not 80
 	writeMem8EXE(0x6855C+1, 64);
 	writeMem8EXE(0x68704+1, 64);
 
 	// Fix bug in player inventory related to IFACE_BAR_MODE=1 from f1_res.ini
-	makeCallEXE(0x64B35, getRealBlockAddrCode((void *) &inven_pickup_hook), true);
+	makeCallEXE(0x64B35, &inven_pickup_hook, true);
 
 	// Fix for using only one pack of ammo when weapon is in front of ammo
-	hookCallEXE(0x6943B, getRealBlockAddrCode((void *) &drop_ammo_into_weapon_hook));
+	hookCallEXE(0x6943B, &drop_ammo_into_weapon_hook);
 
 	// Applying black skilldex patch.
-	hookCallEXE(0x876D0, getRealBlockAddrCode((void *) &PipStatus_hook));
+	hookCallEXE(0x876D0, &PipStatus_hook);
 
 	// Applying Dodgy Door Fix.
-	makeCallEXE(0x112E6, getRealBlockAddrCode((void *) &action_melee_hook), true);
-	makeCallEXE(0x11A50, getRealBlockAddrCode((void *) &action_ranged_hook), true);
+	makeCallEXE(0x112E6, &action_melee_hook, true);
+	makeCallEXE(0x11A50, &action_ranged_hook, true);
 
 	// When displaying the number of experience points received, take into account the perk 'Diligent student'
-	makeCallEXE(0x9CC88, getRealBlockAddrCode((void *) &stat_pc_add_experience_hook), false);
-	hookCallEXE(0x20223, getRealBlockAddrCode((void *) &combat_give_exps_hook));
-	makeCallEXE(0x677FC, getRealBlockAddrCode((void *) &loot_container_hook1), true);
+	makeCallEXE(0x9CC88, &stat_pc_add_experience_hook, false);
+	hookCallEXE(0x20223, &combat_give_exps_hook);
+	makeCallEXE(0x677FC, &loot_container_hook1, true);
 
 	// "NPC turns into a container" fix
-	makeCallEXE(0x227E9, getRealBlockAddrCode((void *) &set_new_results_hook), false);
-	makeCallEXE(0x28D80, getRealBlockAddrCode((void *) &critter_wake_clear_hook), true);
-	makeCallEXE(0x7ACA1, getRealBlockAddrCode((void *) &obj_load_func_hook), true);
-	makeCallEXE(0x8561C, getRealBlockAddrCode((void *) &partyMemberPrepLoad_hook), false);
+	makeCallEXE(0x227E9, &set_new_results_hook, false);
+	makeCallEXE(0x28D80, &critter_wake_clear_hook, true);
+	makeCallEXE(0x7ACA1, &obj_load_func_hook, true);
+	makeCallEXE(0x8561C, &partyMemberPrepLoad_hook, false);
 
 	// Fix explosives bugs
-	makeCallEXE(0x20DF5, getRealBlockAddrCode((void *) &combat_ctd_init_hook), true);
-	makeCallEXE(0x7B1C3, getRealBlockAddrCode((void *) &obj_save_hook), true);
-	hookCallEXE(0x12E44, getRealBlockAddrCode((void *) &explode_critter_kill));
-	hookCallEXE(0x12E67, getRealBlockAddrCode((void *) &explode_critter_kill));
+	makeCallEXE(0x20DF5, &combat_ctd_init_hook, true);
+	makeCallEXE(0x7B1C3, &obj_save_hook, true);
+	hookCallEXE(0x12E44, &explode_critter_kill);
+	hookCallEXE(0x12E67, &explode_critter_kill);
 
 	// Fixed a bug where action points were lost when using chemistry from the hand in battle
-	makeCallEXE(0x11E91, getRealBlockAddrCode((void *) &action_use_an_item_on_object_hook), false);
-	hookCallEXE(0x65320, getRealBlockAddrCode((void *) &use_inventory_on_hook));
+	makeCallEXE(0x11E91, &action_use_an_item_on_object_hook, false);
+	hookCallEXE(0x65320, &use_inventory_on_hook);
 
 	// Fixed display of received damage on instant death
-	makeCallEXE(0x22471, getRealBlockAddrCode((void *) &compute_damage_hook), true);
+	makeCallEXE(0x22471, &compute_damage_hook, true);
 
 	// [DADi590]: This below was commented out, but on release 1.7.17 it wasn't, so here it is enabled.
 	// Applying imported procedure patch (http://teamx.ru/site_arc/smf/index.php-topic=398.0.htm)
@@ -1253,36 +1253,36 @@ void BugsInit(void) {
 	writeMem8EXE(0x3A21B+1, 0x00);              // prevent crash on re-export
 
 	// Fix op_obj_can_see_obj_ and op_obj_can_hear_obj_
-	makeCallEXE(0x4DC5B, getRealBlockAddrCode((void *) &op_obj_can_see_obj_hook), true);
-	makeCallEXE(0x4EF7F, getRealBlockAddrCode((void *) &op_obj_can_hear_obj_hook), true);
+	makeCallEXE(0x4DC5B, &op_obj_can_see_obj_hook, true);
+	makeCallEXE(0x4EF7F, &op_obj_can_hear_obj_hook, true);
 
 	// Fix disappearing items in the inventory when trying to place them in an enclosed bag if the player is overloaded
 	hookCallEXE(0x693AE, getRealEXEAddr(C_item_add_force_));
 	// Restoring a bag to a player after placing it in a hand
-	makeCallEXE(0x64F87, getRealBlockAddrCode((void *) &switch_hand_hook), true);
+	makeCallEXE(0x64F87, &switch_hand_hook, true);
 
 	// Fixed displaying a message in the monitor window when hitting a random scripted target if it is not a character
-	makeCallEXE(0x22B4B, getRealBlockAddrCode((void *) &combat_display_hook), true);
+	makeCallEXE(0x22B4B, &combat_display_hook, true);
 
 	// Fixed a potential crash when trying to open a bag/backpack in the trade/trade window
-	makeCallEXE(0x66630, getRealBlockAddrCode((void *) &inven_action_cursor_hook), false);
+	makeCallEXE(0x66630, &inven_action_cursor_hook, false);
 
 	// Fixed bug of dead characters freezing when using kill_critter_type
 	writeMem32EXE(0x4EB1E+1, 0x0);
 	writeMem32EXE(0x4E9CD, 0x30BE0075);
 
 	// Correction of using a fixed position to call the start script procedure in the absence of a standard handler
-	makeCallEXE(0x929FB, getRealBlockAddrCode((void *) &exec_script_proc_hook), false);
+	makeCallEXE(0x929FB, &exec_script_proc_hook, false);
 
 	// Hide unused windows when calling gdialog_mod_barter
-	hookCallEXE(0x40B88, getRealBlockAddrCode((void *) &gdActivateBarter_hook));
+	hookCallEXE(0x40B88, &gdActivateBarter_hook);
 
 	// Fix for negate operator not working on float values
-	makeCallEXE(0x5EA53, getRealBlockAddrCode((void *) &op_negate_hook), false);
+	makeCallEXE(0x5EA53, &op_negate_hook, false);
 
 	// Fix incorrect int-to-float conversion, replace "fild qword ptr [esp]" to "fild dword ptr [esp]"
 	for (i = 0; i < ((int) sizeof(QWordToDWord) / 4); ++i) {
-		writeMem16EXE(((uint32_t *) getRealBlockAddrData(QWordToDWord))[i], 0x04DB);
+		*(uint16_t *) (((uint32_t *) getRealBlockAddrData(QWordToDWord))[i]) = 0x04DB;
 	}
 
 	// Fix handling of mood parameter in start_gdialog function

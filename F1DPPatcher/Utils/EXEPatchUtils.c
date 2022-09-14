@@ -18,8 +18,9 @@
 // under the License.
 
 #include "../CLibs/string.h"
-#include "GlobalEXEAddrs.h"
+#include "BlockAddrUtils.h"
 #include "EXEPatchUtils.h"
+#include "GlobalEXEAddrs.h"
 
 #define DATA_SEC_EXE_IDA_BEGIN_ADDR 0xEB000
 
@@ -38,19 +39,10 @@ void writeMem8EXE(uint32_t addr, uint8_t data) {
 	*(uint8_t *) getRealEXEAddr(addr) = data;
 }
 
-uint32_t readMem32EXE(uint32_t addr) {
-	return *(uint32_t *) getRealEXEAddr(addr);
-}
-uint16_t readMem16EXE(uint32_t addr) {
-	return *(uint16_t *) getRealEXEAddr(addr);
-}
-uint8_t readMem8EXE(uint32_t addr) {
-	return *(uint8_t *) getRealEXEAddr(addr);
-}
-
 
 void hookCallEXE(uint32_t addr, void const *func) {
-	writeMem32EXE(addr + 1, (uint32_t) func - ((uint32_t) getRealEXEAddr(addr) + 5));
+	// Pointer correction below on `func`.
+	writeMem32EXE(addr + 1, (uint32_t) getRealBlockAddrCode(func) - ((uint32_t) getRealEXEAddr(addr) + 5));
 }
 
 void makeCallEXE(uint32_t addr, void const *func, bool jump) {

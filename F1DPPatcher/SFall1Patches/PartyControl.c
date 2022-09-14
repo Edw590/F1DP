@@ -64,7 +64,7 @@ static uint32_t real_bbox_sneak = 0;
 
 static uint8_t *NameBox = NULL;
 
-static void __declspec(naked) PartyControl_CanUseWeapon(void) {
+__declspec(naked) static void PartyControl_CanUseWeapon(void) {
 	__asm {
 			push    edi
 			push    esi
@@ -165,7 +165,7 @@ static bool __stdcall IsInPidList(uint32_t const *npc) {
 }
 
 // save "real" dude state
-void __declspec(naked) SaveDudeState(void) {
+__declspec(naked) void SaveDudeState(void) {
 	__asm {
 			pushad
 			push    edi
@@ -564,7 +564,7 @@ void __declspec(naked) SaveDudeState(void) {
 }
 
 // restore dude state
-void __declspec(naked) RestoreDudeState(void) {
+__declspec(naked) void RestoreDudeState(void) {
 	__asm {
 			pushad
 			push    esi
@@ -725,7 +725,7 @@ void __declspec(naked) RestoreDudeState(void) {
 	}
 }
 
-static void __declspec(naked) CombatWrapper_v2(void) {
+__declspec(naked) static void CombatWrapper_v2(void) {
 	__asm {
 			pushad
 			push    edi
@@ -838,7 +838,7 @@ static void __declspec(naked) CombatWrapper_v2(void) {
 }
 
 // hack to exit from this function safely when you load game during NPC turn
-static void __declspec(naked) combat_add_noncoms_hook(void) {
+__declspec(naked) static void combat_add_noncoms_hook(void) {
 	__asm {
 			call    CombatWrapper_v2
 			inc     eax
@@ -853,7 +853,7 @@ static void __declspec(naked) combat_add_noncoms_hook(void) {
 	}
 }
 
-static void __declspec(naked) stat_pc_min_exp_hook(void) {
+__declspec(naked) static void stat_pc_min_exp_hook(void) {
 	__asm {
 			xor     eax, eax
 			push    edi
@@ -875,7 +875,7 @@ static void __declspec(naked) stat_pc_min_exp_hook(void) {
 	}
 }
 
-static void __declspec(naked) inven_pickup_hook(void) {
+__declspec(naked) static void inven_pickup_hook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
@@ -895,7 +895,7 @@ static void __declspec(naked) inven_pickup_hook(void) {
 	}
 }
 
-static void __declspec(naked) handle_inventory_hook(void) {
+__declspec(naked) static void handle_inventory_hook(void) {
 	__asm {
 			xor     ebx, ebx
 			mov     edx, eax                             // edx = _inven_dude
@@ -947,7 +947,7 @@ static void __declspec(naked) handle_inventory_hook(void) {
 	}
 }
 
-static void __declspec(naked) handle_inventory_hook1(void) {
+__declspec(naked) static void handle_inventory_hook1(void) {
 	__asm {
 			xor     edx, edx
 			push    edi
@@ -988,7 +988,7 @@ static void __declspec(naked) handle_inventory_hook1(void) {
 	}
 }
 
-static void __declspec(naked) switch_hand_hook(void) {
+__declspec(naked) static void switch_hand_hook(void) {
 	__asm {
 			call    PartyControl_CanUseWeapon
 			dec     eax
@@ -1006,7 +1006,7 @@ static void __declspec(naked) switch_hand_hook(void) {
 	}
 }
 
-static void __declspec(naked) combat_input_hook(void) {
+__declspec(naked) static void combat_input_hook(void) {
 	__asm {
 			xor     ebx, ebx
 			push    edi
@@ -1024,7 +1024,7 @@ static void __declspec(naked) combat_input_hook(void) {
 	}
 }
 
-static void __declspec(naked) action_skill_use_hook(void) {
+__declspec(naked) static void action_skill_use_hook(void) {
 	__asm {
 			cmp     eax, SKILL_SNEAK
 			jne     skip
@@ -1043,7 +1043,7 @@ static void __declspec(naked) action_skill_use_hook(void) {
 	}
 }
 
-static void __declspec(naked) action_use_skill_on_hook(void) {
+__declspec(naked) static void action_use_skill_on_hook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
@@ -1060,7 +1060,7 @@ static void __declspec(naked) action_use_skill_on_hook(void) {
 	}
 }
 
-static void __declspec(naked) damage_object_hook(void) {
+__declspec(naked) static void damage_object_hook(void) {
 	__asm {
 			push    ecx
 			xor     ecx, ecx
@@ -1124,7 +1124,7 @@ static void __declspec(naked) damage_object_hook(void) {
 	}
 }
 
-static void __declspec(naked) op_give_exp_points_hook(void) {
+__declspec(naked) static void op_give_exp_points_hook(void) {
 	__asm {
 			xor     eax, eax
 			push    edi
@@ -1151,7 +1151,7 @@ static void __declspec(naked) op_give_exp_points_hook(void) {
 	}
 }
 
-static void __declspec(naked) adjust_fid_hook(void) {
+__declspec(naked) static void adjust_fid_hook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_DATA_SEC_EXE_ADDR
@@ -1181,7 +1181,7 @@ static void __declspec(naked) adjust_fid_hook(void) {
 	}
 }
 
-static void __declspec(naked) refresh_box_bar_win_hook(void) {
+__declspec(naked) static void refresh_box_bar_win_hook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
@@ -1250,22 +1250,22 @@ void PartyControlInit(void) {
 				}
 			}
 		}
-		hookCallEXE(0x20351, getRealBlockAddrCode((void *) &combat_add_noncoms_hook));
-		hookCallEXE(0x20D67, getRealBlockAddrCode((void *) &CombatWrapper_v2));
-		hookCallEXE(0x2ED6F, getRealBlockAddrCode((void *) &stat_pc_min_exp_hook));// PrintLevelWin_
-		hookCallEXE(0x339C3, getRealBlockAddrCode((void *) &stat_pc_min_exp_hook));// Save_as_ASCII_
-		hookCallEXE(0x64D7D, getRealBlockAddrCode((void *) &inven_pickup_hook));
-		hookCallEXE(0x62813, getRealBlockAddrCode((void *) &handle_inventory_hook));
-		hookCallEXE(0x62A2B, getRealBlockAddrCode((void *) &handle_inventory_hook1));
-		makeCallEXE(0x64E93, getRealBlockAddrCode((void *) &switch_hand_hook), false);
+		hookCallEXE(0x20351, &combat_add_noncoms_hook);
+		hookCallEXE(0x20D67, &CombatWrapper_v2);
+		hookCallEXE(0x2ED6F, &stat_pc_min_exp_hook);// PrintLevelWin_
+		hookCallEXE(0x339C3, &stat_pc_min_exp_hook);// Save_as_ASCII_
+		hookCallEXE(0x64D7D, &inven_pickup_hook);
+		hookCallEXE(0x62813, &handle_inventory_hook);
+		hookCallEXE(0x62A2B, &handle_inventory_hook1);
+		makeCallEXE(0x64E93, &switch_hand_hook, false);
 		writeMem32EXE(0x655DF+1, 152);               // Text width 152, not 80
-		makeCallEXE(0x20833, getRealBlockAddrCode((void *) &combat_input_hook), false);
-		makeCallEXE(0x1234C, getRealBlockAddrCode((void *) &action_skill_use_hook), false);
-		hookCallEXE(0x12603, getRealBlockAddrCode((void *) &action_use_skill_on_hook));
-		hookCallEXE(0x228E4, getRealBlockAddrCode((void *) &damage_object_hook));
-		hookCallEXE(0x4BA12, getRealBlockAddrCode((void *) &op_give_exp_points_hook));
-		makeCallEXE(0x650DF, getRealBlockAddrCode((void *) &adjust_fid_hook), true);
-		hookCallEXE(0x56D32, getRealBlockAddrCode((void *) &refresh_box_bar_win_hook));
+		makeCallEXE(0x20833, &combat_input_hook, false);
+		makeCallEXE(0x1234C, &action_skill_use_hook, false);
+		hookCallEXE(0x12603, &action_use_skill_on_hook);
+		hookCallEXE(0x228E4, &damage_object_hook);
+		hookCallEXE(0x4BA12, &op_give_exp_points_hook);
+		makeCallEXE(0x650DF, &adjust_fid_hook, true);
+		hookCallEXE(0x56D32, &refresh_box_bar_win_hook);
 	}
 }
 

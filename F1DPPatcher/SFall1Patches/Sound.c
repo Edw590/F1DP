@@ -28,7 +28,7 @@
 #include "Sound.h"
 #include <stdint.h>
 
-/*static void __declspec(naked) gsnd_build_weapon_sfx_name_hook(void) {
+/*__declspec(naked) static void gsnd_build_weapon_sfx_name_hook(void) {
 	__asm {
 			push    edx
 			inc     eax
@@ -148,5 +148,5 @@ void SoundInit(void) {
 	}
 
 	// No idea what this does, but the game crashes with it enabled after firing the pistol, so I've disabled it.
-	//makeCallEXE(0x493DB, getRealBlockAddrCode((void *) &gsnd_build_weapon_sfx_name_hook), false);
+	//makeCallEXE(0x493DB, &gsnd_build_weapon_sfx_name_hook, false);
 }

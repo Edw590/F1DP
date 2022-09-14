@@ -24,6 +24,7 @@
 
 #include <sys/types.h>
 
+void *memcpy(void *s1, const void *s2, size_t n);
 void * memset(void *s, int c, size_t n);
 char *strchr(char const *s, int c);
 int strcmp(char const *s1, char const *s2);

@@ -47,7 +47,6 @@
 #include "Utils/General.h"
 #include "Utils/GlobalEXEAddrs.h"
 #include "Utils/IniUtils.h"
-#include <stdbool.h>
 
 #define SN_MAIN_FUNCTION 0x78563412 // 12 34 56 78 in little endian
 
@@ -58,6 +57,7 @@ static char version_str[] = "F1DP v"F1DP_VER_STR" by DADi590";
 bool realMain(void);
 static void patchVerStr(void);
 bool applyPatches(void);
+void fixPSPNotSaving(void);
 
 __declspec(naked) int main(void) {
 	// The special number declaration below is for the loader to look for it and start the execution right there.
@@ -104,9 +104,9 @@ bool realMain(void) {
 	// So ONLY initialize if it can be initialized with "= number", OR if it can't, ask for memset()'s help.
 	bool ret_var = true;
 	char prop_value[MAX_PROP_VALUE_LEN];
+	memset(prop_value, 0, MAX_PROP_VALUE_LEN);
 
 	memset(&f1dpatch_ini_info_G, 0, sizeof(f1dpatch_ini_info_G));
-	memset(prop_value, 0, MAX_PROP_VALUE_LEN);
 
 	((struct FileInfo *) getRealBlockAddrData(&f1dpatch_ini_info_G))->is_main_ini = true;
 
@@ -161,7 +161,7 @@ bool realMain(void) {
 	return ret_var;
 }
 
-static __declspec(naked) void getverstr_hook(void) {
+__declspec(naked) static void getverstr_hook(void) {
 	__asm {
 			push    edx
 			push    edi
@@ -198,7 +198,7 @@ static void patchVerStr(void) {
 
 	writeMem32EXE(0x73373+1, 0x1BD); // Change the string height (445)
 
-	hookCallEXE(0x73358, getRealBlockAddrCode((void *) &getverstr_hook));
+	hookCallEXE(0x73358, &getverstr_hook);
 }
 
 /**
@@ -307,3 +307,177 @@ bool applyPatches(void) {
 
 	return ret_var;
 }
+
+// This below was used to try to see why the PSP wouldn't save the game in the conditions I say in
+// https://www.reddit.com/r/PSP/comments/crfeuf/running_fallout_1_on_the_psp_with_dosbox_fast/.
+// Though, while on this, I found another build of DOSBox for PSP, which finally fixed the problem, and I stopped
+// with this - and I left the code here in case it's ever useful again.
+
+// It counts the number of opened files and the error flag in case it was not possible to open or close some file, and
+// also prints a usage of db_fopen_().
+
+/*uint32_t curr_opened_files = 0;
+int prev_was_inc = 0;
+char const fmt_str_inc[] = "\n+F:%d; sopen_; previous errno=%d\n";
+char const fmt_str_dec[] = "\n-F:%d; __close_; previous errno=%d\n";
+void printNumOpenFiles(bool inc) {
+	char *fmt_str = NULL;
+	int curr_opened_files_local = 0;
+	int prev_errno = *(int *) getRealEXEAddr(0x2AE668);
+
+	*(uint32_t *) getRealEXEAddr(0x2AE668) = 0;
+
+	if (0 == prev_errno) {
+		if (1 == *(int *) getRealBlockAddrData(&prev_was_inc)) {
+			++(*(uint32_t *) getRealBlockAddrData(&curr_opened_files));
+		} else if (2 == *(int *) getRealBlockAddrData(&prev_was_inc)) {
+			--(*(uint32_t *) getRealBlockAddrData(&curr_opened_files));
+		}
+	}
+	if (inc) {
+		*(int *) getRealBlockAddrData(&prev_was_inc) = 1;
+		curr_opened_files_local = *(uint32_t *) getRealBlockAddrData(&curr_opened_files);
+		fmt_str = getRealBlockAddrData(&fmt_str_inc);
+
+		__asm {
+				lea     esp, [esp-4] // [DADi590: reserve space to "PUSH EDI"]
+
+				push    [prev_errno]
+				push    [curr_opened_files_local]
+				push    [fmt_str]
+
+				mov     [esp+5*4], edi // [DADi590: "PUSH EDI"]
+				mov     edi, SN_CODE_SEC_EXE_ADDR
+				lea     edi, [edi+C_debug_printf_]
+				call    edi
+				pop     edi
+				add     esp, 5*4
+		}
+	} else {
+		*(int *) getRealBlockAddrData(&prev_was_inc) = 2;
+		curr_opened_files_local = *(uint32_t *) getRealBlockAddrData(&curr_opened_files);
+		fmt_str = getRealBlockAddrData(&fmt_str_dec);
+
+		__asm {
+				lea     esp, [esp-4] // [DADi590: reserve space to "PUSH EDI"]
+
+				push    [prev_errno]
+				push    [curr_opened_files_local]
+				push    [fmt_str]
+
+				mov     [esp+4*4], edi // [DADi590: "PUSH EDI"]
+				mov     edi, SN_CODE_SEC_EXE_ADDR
+				lea     edi, [edi+C_debug_printf_]
+				call    edi
+				pop     edi
+				add     esp, 4*4
+		}
+	}
+}
+__declspec(naked) static void sopen_hook(void) {
+	__asm {
+			pusha
+
+			mov     al, 1
+			call    printNumOpenFiles
+
+			popa
+
+			// Function stuff
+			push    ebx
+			push    ecx
+			push    edx
+			push    esi
+			push    edi
+
+			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+0xD5583]
+			mov     [esp+4], edi
+			pop     edi
+			retn
+	}
+}
+__declspec(naked) static void __close_hook(void) {
+	__asm {
+			pusha
+
+			mov     al, 0
+			call    printNumOpenFiles
+
+			popa
+
+			// Function stuff
+			push    ebx
+			push    ecx
+			push    edx
+			mov     ecx, eax
+
+			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+0xDF494]
+			mov     [esp+4], edi
+			pop     edi
+			retn
+	}
+}
+
+char const fmt_str_db_fopen[] = "\ndb_fopen_(%s, %s) %d; errno=%d\n";
+static int db_fopen_map_save_hook(char *filename, char *mode) {
+	int ret_var = 0;
+	int errno = 0;
+	char *fmt_str = getRealBlockAddrData(&fmt_str_db_fopen);
+
+	*(uint32_t *) getRealEXEAddr(0x2AE668) = 0;
+
+	__asm {
+			mov     eax, [filename]
+			mov     edx, [mode]
+
+			push    edi
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_db_fopen_]
+			call    edi
+			pop     edi
+
+			mov     [ret_var], eax
+	}
+	errno = *(uint32_t *) getRealEXEAddr(0x2AE668);
+	__asm {
+			pusha
+
+			lea     esp, [esp-4] // [DADi590: reserve space to "PUSH EDI"]
+
+			push    [errno]
+			push    [ret_var]
+			push    [mode]
+			push    [filename]
+			push    [fmt_str]
+
+			mov     [esp+5*4], edi // [DADi590: "PUSH EDI"]
+			mov     edi, SN_CODE_SEC_EXE_ADDR
+			lea     edi, [edi+C_debug_printf_]
+			call    edi
+			pop     edi
+			add     esp, 5*4
+
+			popa
+	}
+
+	return ret_var;
+}
+
+void fixPSPNotSaving(void) {
+	(void *) __close_hook;
+	(void *) sopen_hook;
+	(void *) db_fopen_map_save_hook;
+
+	writeMem8EXE(C_gmovie_play_, 0xC3);
+
+	makeCallEXE(0xDF48F, &__close_hook, true);
+	makeCallEXE(0xD557E, &sopen_hook, true);
+
+	hookCallEXE(0x757D4, &db_fopen_map_save_hook);
+}*/

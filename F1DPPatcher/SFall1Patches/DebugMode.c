@@ -30,7 +30,7 @@
 #include "DebugMode.h"
 #include "SFall1Patches.h"
 
-static void __declspec(naked) debugMode(void) {
+__declspec(naked) static void debugMode(void) {
 	__asm {
 			pusha
 			push    edi
@@ -58,7 +58,7 @@ void DebugModeInit(void) {
 		uint32_t str_addr = 0;
 		// This is a modification of the patch (DADi590) - this one doesn't cut code, because it's put right when main()
 		// starts.
-		makeCallEXE(0x728A7, getRealBlockAddrCode((void *) &debugMode), false);
+		makeCallEXE(0x728A7, &debugMode, false);
 
 		writeMem8EXE(0xB308B, 0xB8);               // mov  eax, offset ???
 		if (1 == temp_int) {

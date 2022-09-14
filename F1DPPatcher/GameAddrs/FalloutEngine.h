@@ -95,13 +95,17 @@
 #define C_db_create_database_                x
 #define C_db_current_                        x
 #define C_db_dir_entry_                      0xAF168 // Args: non-stack / signed int __usercall db_dir_entry_@<eax>(char *filename@<eax>, DWORD *filesize@<edx>)
-#define C_db_fclose_                         x
+#define C_db_fclose_                         0xB27E0 // Args: non-stack / No prototype
+#define C_db_fopen_                          0xAFAC4 // Args: non-stack / int __usercall db_fopen_@<eax>(char *fullname@<eax>, char *mode@<edx>)
+#define C_db_freadInt_                       0xB099C // Args: non-stack / No prototype
 #define C_db_freadIntCount_                  x
+#define C_db_fwriteInt_                      0xB0A68 // Args: non-stack / No prototype
 #define C_db_fwriteIntCount_                 x
 #define C_db_init_database_                  x
 #define C_db_init_hash_table_                x
 #define C_db_init_patches_                   x
 #define C_db_select_                         x
+#define C_debug_printf_                      0xB3238 // Args: +stack (no-cleaning) / No prototype
 #define C_debug_register_env_                0xB3080 // Args: non-stack / No prototype
 #define C_dialog_out_                        0x1BFA0 // Args: +stack (auto-clean) / No prototype (5 stack arguments)
 #define C_display_inventory_                 0x639E8 // Args: non-stack / int __usercall display_inventory_@<eax>(int inventory_offset@<eax>, int mode@<ebx>, int visible_offset@<edx>)
@@ -118,6 +122,7 @@
 #define C_dude_run_                          0x17A0C // Args: non-stack / No prototype
 #define C_dude_stand_                        0x17C60 // Args: non-stack / No prototype
 #define C_can_see_                           0x12974 // Args: non-stack / _BOOL4 __usercall can_see_@<eax>(pobj *source@<eax>, pobj *target@<edx>)
+#define C_copy_file_                         0x71D3C // Args: non-stack / No prototype
 #define C_editor_design_                     x
 #define C_elapsed_time_                      x
 #define C_EndLoad_                           x
@@ -134,7 +139,7 @@
 #define C_getmsg_                            0x7711C // Args: non-stack / char *__usercall getmsg_@<eax>(int *msgfile@<eax>, int number@<ebx>, sMessage *msgdata@<edx>)
 #define C_GetSlotList_                       x
 #define C_gmouse_is_scrolling_               0x432AC // Args: non-stack / No prototype
-#define C_gmovie_play_                       x
+#define C_gmovie_play_                       0x46230 // Args: non-stack / No prototype
 #define C_GNW_find_                          0xC3868 // Args: non-stack / No prototype
 #define C_gsnd_build_weapon_sfx_name_        x
 #define C_gsound_get_sound_ready_for_effect_ x
@@ -187,6 +192,7 @@
 #define C_main_menu_loop_                    0x736CC // Args: non-stack / No prototype
 #define C_make_path_func_                    0x15998 // Args: +stack (auto-clean) / int __userpurge make_path_func_@<eax>(pobj *source@<eax>, int target_tile@<ebx>, void *sad_rotation_ptr@<ecx>, int source_tile@<edx>, int a5, void *func)
 #define C_make_straight_path_func_           0x15DD8 // Args: +stack (auto-clean) / No prototype
+#define C_MapDirErase_                       0x71F1C // Args: non-stack / No prototype
 #define C_mem_free_                          0xAED88 // Args: non-stack / No prototype
 #define C_mem_malloc_                        x
 #define C_mem_realloc_                       0xAECC0 // Args: non-stack / No prototype
@@ -319,6 +325,7 @@
 #define D__DARK_GREY_Color         x
 #define D__dialogue_state          0x1051F4
 #define D__dialogue_switch_mode    0x1051F8
+#define D__display_win             0x22EAD8
 #define D__drug_pid                0x1059CC
 #define D__edit_win                x
 #define D__Educated                0x16D1B8
@@ -366,6 +373,7 @@
 #define D__lsgwin                  x
 #define D__main_window             0x105C1C
 #define D__map_elevation           0x105C90
+#define D__map_ent_tile            0x22E9F4
 #define D__max_ptr                 0x16CE70
 #define D__mesg                    x
 #define D__msg_path                x
@@ -402,6 +410,7 @@
 #define D__square_width            0x267900
 #define D__square_x                0x2678C0
 #define D__square_y                0x2678BC
+#define D__squares                 0x2678E8
 #define D__stack                   0x19B71C
 #define D__stack_offset            0x19B6C4
 #define D__sthreads                0x1073B8
@@ -420,5 +429,6 @@
 #define D__tile_intensity          0x19B86C
 #define D__title_color             0x16AA80
 #define D__title_font              0x16AA78
+#define D__tile_refresh            0x1084C8
 
 #endif //F1DPPATCHER_FALLOUTENGINE_H

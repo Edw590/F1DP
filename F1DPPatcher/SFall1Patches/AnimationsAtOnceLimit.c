@@ -36,19 +36,19 @@
 static int AnimationsLimit = 21;
 
 //pointers to new animation struct arrays
-static uint8_t *anim_set;
-static uint8_t *sad;
+static uint8_t *anim_set = NULL;
+static uint8_t *sad = NULL;
 
 static uint32_t const AnimMove[5] = {
 		0x1673B+2, 0x1688E+2, 0x16A6D+2, 0x16B82+6, 0x172E2+2,
 };
 
 static uint32_t const AnimMaxCheck[7] = {
-		0x413500, 0x41356D, 0x41368D, 0x413998, 0x413A2E, 0x418029,
+		0x134AE+2, 0x1351B+2, 0x1363B+2, 0x13946+2, 0x139DC+2, 0x17FD7+2,
 };
 
 static uint32_t const AnimMaxSizeCheck[4] = {
-		0x413539, 0x413773, 0x4138A2, 0x4178A2,
+		0x134E8+2, 0x13721+2, 0x13850+2, 0x17851+2,
 };
 
 static uint32_t const fake_anim_set_C[2] = {
@@ -150,7 +150,7 @@ static uint32_t const sad_28[4] = {
 		0x416D4A, 0x416E3D, 0x416F6D, 0x417099,
 };
 
-static void __declspec(naked) anim_set_end_hook(void) {
+__declspec(naked) static void anim_set_end_hook(void) {
 	__asm {
 			push    esi
 			mov     esi, SN_DATA_SEC_EXE_ADDR
@@ -161,7 +161,10 @@ static void __declspec(naked) anim_set_end_hook(void) {
 			cmp     dword ptr [edi+AnimationsLimit], 21
 			pop     edi
 			jbe     skip
-			mov     edi, anim_set
+			push    esi
+			mov     esi, SN_DATA_SEC_BLOCK_ADDR
+			mov     edi, [esi+anim_set]
+			pop     esi
 			add     edi, 1936                            // We take into account the dummy
 		skip:
 			xor     edx, edx
@@ -188,7 +191,7 @@ static void __declspec(naked) anim_set_end_hook(void) {
 	}
 }
 
-/*static void __declspec(naked) op_anim_hook(void) {
+/*__declspec(naked) static void op_anim_hook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_DATA_SEC_EXE_ADDR
@@ -214,7 +217,9 @@ void AnimationsAtOnceInit(void) {
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "AnimationsAtOnceLimit", "21", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
-	*(uint32_t *) getRealBlockAddrData(&AnimationsLimit) = (uint32_t) temp_int > 127 ? 127 : (uint32_t) temp_int;
+	*(uint32_t *) getRealBlockAddrData(&AnimationsLimit) = (uint32_t) temp_int > 21 ? 21 : (uint32_t) temp_int;
+	// Original: *(uint32_t *) getRealBlockAddrData(&AnimationsLimit) = (uint32_t) temp_int > 127 ? 127 : (uint32_t) temp_int;
+	// todo ATTENTION - This comment just above is waiting for all the addresses on the arrays are corrected for DOS
 	if (temp_int > 21) {
 		int i = 0;
 		int AnimationsLimit_local = 0;
@@ -275,19 +280,19 @@ void AnimationsAtOnceInit(void) {
 		//movement animation limit checks (old 16)
 		temp_int = sizeof(*AnimMove_local) / 4;
 		for (i = 0; i < temp_int; ++i) {
-			writeMem8EXE(*AnimMove_local[i], (uint8_t) AnimationsLimit_local - 5);
+			*(uint8_t *) (*AnimMove_local[i]) = (uint8_t) AnimationsLimit_local - 5;
 		}
 
 		//Max animation limit checks (old 21) AnimationsLimit
 		temp_int = sizeof(*AnimMaxCheck_local) / 4;
 		for (i = 0; i < temp_int; ++i) {
-			writeMem8EXE(*AnimMaxCheck_local[i], (uint8_t) AnimationsLimit_local);
+			*(uint8_t *) (*AnimMaxCheck_local[i]) = (uint8_t) AnimationsLimit_local;
 		}
 
 		//Max animations checks - animation struct size * max num of animations (old 1936*21=40656)
 		temp_int = sizeof(*AnimMaxSizeCheck_local) / 4;
 		for (i = 0; i < temp_int; ++i) {
-			writeMem32EXE(*AnimMaxSizeCheck_local[i], 1936 * (uint32_t) AnimationsLimit_local);
+			*(uint32_t *) (*AnimMaxSizeCheck_local[i]) = 1936 * (uint32_t) AnimationsLimit_local;
 		}
 
 		//divert old animation structure list pointers to newly alocated memory
@@ -300,43 +305,43 @@ void AnimationsAtOnceInit(void) {
 		//old addr 0x55FB90
 		temp_int = sizeof(*fake_anim_set_C_local) / 4;
 		for (i = 0; i < temp_int; ++i) {
-			writeMem32EXE(*fake_anim_set_C_local[i], 12 + (uint32_t) anim_set);
+			*(uint32_t *) (*fake_anim_set_C_local[i]) = 12 + (uint32_t) anim_set;
 		}
 
 		//old addr 0x560314
 		temp_int = sizeof(*anim_set_0_local) / 4;
 		for (i = 0; i < temp_int; ++i) {
-			writeMem32EXE(*anim_set_0_local[i], 1936 + (uint32_t) anim_set);
+			*(uint32_t *) (*anim_set_0_local[i]) = 1936 + (uint32_t) anim_set;
 		}
 
 		//old addr 0x560318
 		temp_int = sizeof(*anim_set_4_local) / 4;
 		for (i = 0; i < temp_int; ++i) {
-			writeMem32EXE(*anim_set_4_local[i], 1936 + 4 + (uint32_t) anim_set);
+			*(uint32_t *) (*anim_set_4_local[i]) = 1936 + 4 + (uint32_t) anim_set;
 		}
 
 		//old addr 0x56031C
 		temp_int = sizeof(*anim_set_8_local) / 4;
 		for (i = 0; i < temp_int; ++i) {
-			writeMem32EXE(*anim_set_8_local[i], 1936 + 8 + (uint32_t) anim_set);
+			*(uint32_t *) (*anim_set_8_local[i]) = 1936 + 8 + (uint32_t) anim_set;
 		}
 
 		//old addr 0x560320
 		temp_int = sizeof(*anim_set_C_local) / 4;
 		for (i = 0; i < temp_int; ++i) {
-			writeMem32EXE(*anim_set_C_local[i], 1936 + 12 + (uint32_t) anim_set);
+			*(uint32_t *) (*anim_set_C_local[i]) = 1936 + 12 + (uint32_t) anim_set;
 		}
 
 		//old addr 0x560324
 		temp_int = sizeof(*anim_set_10_local) / 4;
 		for (i = 0; i < temp_int; ++i) {
-			writeMem32EXE(*anim_set_10_local[i], 1936 + 16 + (uint32_t) anim_set);
+			*(uint32_t *) (*anim_set_10_local[i]) = 1936 + 16 + (uint32_t) anim_set;
 		}
 
 		//old addr 0x560328
 		temp_int = sizeof(*anim_set_14_local) / 4;
 		for (i = 0; i < temp_int; ++i) {
-			writeMem32EXE(*anim_set_14_local[i], 1936 + 20 + (uint32_t) anim_set);
+			*(uint32_t *) (*anim_set_14_local[i]) = 1936 + 20 + (uint32_t) anim_set;
 		}
 
 		//old addr 0x560338
@@ -345,7 +350,7 @@ void AnimationsAtOnceInit(void) {
 		//old addr 0x56033C
 		temp_int = sizeof(*anim_set_28_local) / 4;
 		for (i = 0; i < temp_int; ++i) {
-			writeMem32EXE(*anim_set_28_local[i], 1936 + 40 + (uint32_t) anim_set);
+			*(uint32_t *) (*anim_set_28_local[i]) = 1936 + 40 + (uint32_t) anim_set;
 		}
 
 		//old addr 0x560348
@@ -356,61 +361,61 @@ void AnimationsAtOnceInit(void) {
 		//old addr 0x540014
 		temp_int = sizeof(*sad_0_local) / 4;
 		for (i = 0; i < temp_int; ++i) {
-			writeMem32EXE(*sad_0_local[i], (uint32_t) sad);
+			*(uint32_t *) (*sad_0_local[i]) = (uint32_t) sad;
 		}
 
 		//old addr 0x540018
 		temp_int = sizeof(*sad_4_local) / 4;
 		for (i = 0; i < temp_int; ++i) {
-			writeMem32EXE(*sad_4_local[i], 4 + (uint32_t) sad);
+			*(uint32_t *) (*sad_4_local[i]) = 4 + (uint32_t) sad;
 		}
 
 		//old addr 0x54001C
 		temp_int = sizeof(*sad_8_local) / 4;
 		for (i = 0; i < temp_int; ++i) {
-			writeMem32EXE(*sad_8_local[i], 8 + (uint32_t) sad);
+			*(uint32_t *) (*sad_8_local[i]) = 8 + (uint32_t) sad;
 		}
 
 		//old addr 0x540020
 		temp_int = sizeof(*sad_C_local) / 4;
 		for (i = 0; i < temp_int; ++i) {
-			writeMem32EXE(*sad_C_local[i], 12 + (uint32_t) sad);
+			*(uint32_t *) (*sad_C_local[i]) = 12 + (uint32_t) sad;
 		}
 
 		//old addr 0x540024
 		temp_int = sizeof(*sad_10_local) / 4;
 		for (i = 0; i < temp_int; ++i) {
-			writeMem32EXE(*sad_10_local[i], 16 + (uint32_t) sad);
+			*(uint32_t *) (*sad_10_local[i]) = 16 + (uint32_t) sad;
 		}
 
 		//old addr 0x540028
 		temp_int = sizeof(*sad_14_local) / 4;
 		for (i = 0; i < temp_int; ++i) {
-			writeMem32EXE(*sad_14_local[i], 20 + (uint32_t) sad);
+			*(uint32_t *) (*sad_14_local[i]) = 20 + (uint32_t) sad;
 		}
 
 		//old addr 0x54002C
 		temp_int = sizeof(*sad_18_local) / 4;
 		for (i = 0; i < temp_int; ++i) {
-			writeMem32EXE(*sad_18_local[i], 24 + (uint32_t) sad);
+			*(uint32_t *) (*sad_18_local[i]) = 24 + (uint32_t) sad;
 		}
 
 		//old addr 0x540030
 		temp_int = sizeof(*sad_1C_local) / 4;
 		for (i = 0; i < temp_int; ++i) {
-			writeMem32EXE(*sad_1C_local[i], 28 + (uint32_t) sad);
+			*(uint32_t *) (*sad_1C_local[i]) = 28 + (uint32_t) sad;
 		}
 
 		//old addr 0x540034
 		temp_int = sizeof(*sad_20_local) / 4;
 		for (i = 0; i < temp_int; ++i) {
-			writeMem32EXE(*sad_20_local[i], 32 + (uint32_t) sad);
+			*(uint32_t *) (*sad_20_local[i]) = 32 + (uint32_t) sad;
 		}
 
 		//old addr 0x540038
 		temp_int = sizeof(*sad_24_local) / 4;
 		for (i = 0; i < temp_int; ++i) {
-			writeMem32EXE(*sad_24_local[i], 36 + (uint32_t) sad);
+			*(uint32_t *) (*sad_24_local[i]) = 36 + (uint32_t) sad;
 		}
 
 		//old addr 0x54003A
@@ -422,12 +427,12 @@ void AnimationsAtOnceInit(void) {
 		//old addr 0x54003C
 		temp_int = sizeof(*sad_28_local) / 4;
 		for (i = 0; i < temp_int; ++i) {
-			writeMem32EXE(*sad_28_local[i], 40 + (uint32_t) sad);
+			*(uint32_t *) (*sad_28_local[i]) = 40 + (uint32_t) sad;
 		}
 	}
 
-	makeCallEXE(0x1588D, getRealBlockAddrCode((void *) &anim_set_end_hook), true);
-	//hookCallEXE(0x4FE65, getRealBlockAddrCode((void *) &op_anim_hook)); - [DADi590] Already commented out
+	makeCallEXE(0x1588D, &anim_set_end_hook, true);
+	//hookCallEXE(0x4FE65, &op_anim_hook); - [DADi590] Already commented out
 }
 
 void AnimationsAtOnceExit(void) {
