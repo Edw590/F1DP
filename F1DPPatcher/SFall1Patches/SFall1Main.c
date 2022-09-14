@@ -2185,8 +2185,8 @@ void DllMain2(void) {
 	// Patch ereg call - I think the purpose of this is only for Windows, so I've disabled it here
 	//blockCallEXE(0x3B25F);
 
-	// todo The below has parts disabled until ALL the addresses are corrected for the DOS EXE
-	AnimationsAtOnceInit();
+	// todo The below is disabled until ALL the addresses are corrected for the DOS EXE
+	//AnimationsAtOnceInit();
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "CombatPanelAnimDelay", "1000", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);

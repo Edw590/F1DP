@@ -217,9 +217,7 @@ void AnimationsAtOnceInit(void) {
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "AnimationsAtOnceLimit", "21", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
-	*(uint32_t *) getRealBlockAddrData(&AnimationsLimit) = (uint32_t) temp_int > 21 ? 21 : (uint32_t) temp_int;
-	// Original: *(uint32_t *) getRealBlockAddrData(&AnimationsLimit) = (uint32_t) temp_int > 127 ? 127 : (uint32_t) temp_int;
-	// todo ATTENTION - This comment just above is waiting for all the addresses on the arrays are corrected for DOS
+	*(uint32_t *) getRealBlockAddrData(&AnimationsLimit) = (uint32_t) temp_int > 127 ? 127 : (uint32_t) temp_int;
 	if (temp_int > 21) {
 		int i = 0;
 		int AnimationsLimit_local = 0;
