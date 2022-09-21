@@ -44,9 +44,10 @@ void writeMem32EXE(uint32_t addr, uint32_t data);
 void writeMem16EXE(uint32_t addr, uint16_t data);
 void writeMem8EXE(uint32_t addr, uint8_t data);
 
-void hookCallEXE(uint32_t addr, void const *func);
+void hookCallEXE(uint32_t addr, const funcptr_t (func_ptr));
 
-void makeCallEXE(uint32_t addr, void const *func, bool jump);
+void makeCallEXE(uint32_t addr, const funcptr_t (), bool jump);
+//void makeCallEXE(uint32_t addr, const funcptr_t (func_ptr), bool jump); - throws an error, no idea why
 
 void blockCallEXE(uint32_t addr);
 

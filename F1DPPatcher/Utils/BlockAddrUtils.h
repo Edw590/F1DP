@@ -21,13 +21,14 @@
 #define F1DPPATCHER_BLOCKADDRUTILS_H
 
 
+#include "General.h"
 
 #define SN_CODE_SEC_BLOCK_ADDR 0x76563412 // 12 34 56 75 in little endian
 #define SN_DATA_SEC_BLOCK_ADDR 0x75563412 // 12 34 56 74 in little endian
 #define SN_BLOCK_ADDR 0x74563412 // 12 34 56 74 in little endian
 
-void *getRealBlockAddrCode(volatile void const *addr);
-void *getRealBlockAddrData(volatile void const *addr);
+funcptr_t (getRealBlockAddrCode(volatile const funcptr_t(func_ptr)));
+void *getRealBlockAddrData(volatile void const *data_ptr);
 
 
 

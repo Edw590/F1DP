@@ -51,20 +51,21 @@
 // others if it is an obvious things that "should" be optimized --> except there can be no optimizations here, or the
 // patcherPatcher() won't replace them because the Special Number is gone.
 
-void *getRealBlockAddrCode(volatile void const *addr) {
+//void (*getRealBlockAddrCode(volatile const void(*func_ptr)(void)))(void) { - the wtf way without typedef...
+funcptr_t (getRealBlockAddrCode(volatile const funcptr_t (func_ptr))) {
 	// Inside the EXE segments address space already, or it's a NULL pointer? Then return the original. Else, correct it.
 	// A more in-depth explanation is in the text above.
-	if (((uint32_t) addr >= SN_CODE_SEC_EXE_ADDR) || (NULL == addr)) {
-		return (void *) addr;
+	if (((uint32_t) func_ptr >= SN_CODE_SEC_EXE_ADDR) || (NULL == func_ptr)) {
+		return (funcptr_t()) func_ptr;
 	}
 
-	return (void *) ((uint32_t) addr + SN_CODE_SEC_BLOCK_ADDR);
+	return (funcptr_t()) ((uint32_t) func_ptr + SN_CODE_SEC_BLOCK_ADDR);
 }
 
-void *getRealBlockAddrData(volatile void const *addr) {
-	if (((uint32_t) addr >= SN_CODE_SEC_EXE_ADDR) || (NULL == addr)) {
-		return (void *) addr;
+void *getRealBlockAddrData(volatile void const *data_ptr) {
+	if (((uint32_t) data_ptr >= SN_CODE_SEC_EXE_ADDR) || (NULL == data_ptr)) {
+		return (void *) data_ptr;
 	}
 
-	return (void *) ((uint32_t) addr + SN_DATA_SEC_BLOCK_ADDR);
+	return (void *) ((uint32_t) data_ptr + SN_DATA_SEC_BLOCK_ADDR);
 }

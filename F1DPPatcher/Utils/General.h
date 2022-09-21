@@ -31,6 +31,9 @@
 // 3 chars exactly or change the initial strings with the dashes (so that it's the same length as the Loader)
 #define F1DP_VER_STR "1.2"
 
+// Generic function pointer type, like void* for data pointers
+#define funcptr_t(var_name) void (*var_name)(void)
+
 
 
 #endif //F1DPPATCHER_GENERAL_H

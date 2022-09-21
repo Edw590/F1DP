@@ -40,14 +40,14 @@ void writeMem8EXE(uint32_t addr, uint8_t data) {
 }
 
 
-void hookCallEXE(uint32_t addr, void const *func) {
+void hookCallEXE(uint32_t addr, const funcptr_t (func_ptr)) {
 	// Pointer correction below on `func`.
-	writeMem32EXE(addr + 1, (uint32_t) getRealBlockAddrCode(func) - ((uint32_t) getRealEXEAddr(addr) + 5));
+	writeMem32EXE(addr + 1, (uint32_t) getRealBlockAddrCode(func_ptr) - ((uint32_t) getRealEXEAddr(addr) + 5));
 }
 
-void makeCallEXE(uint32_t addr, void const *func, bool jump) {
+void makeCallEXE(uint32_t addr, const funcptr_t (func_ptr), bool jump) {
 	writeMem8EXE(addr, jump ? 0xE9 : 0xE8);
-	hookCallEXE(addr, func);
+	hookCallEXE(addr, func_ptr);
 }
 
 void blockCallEXE(uint32_t addr) {
@@ -57,6 +57,10 @@ void blockCallEXE(uint32_t addr) {
 
 
 void *getRealEXEAddr(volatile uint32_t addr) {
+	// I should make 2 functions for data vs code, to have it return void* or function_ptr_type, but one of ideas of
+	// this function is to not worry about if it's data or code and it will get the address anyway.
+	// But I got the point, learned something, which is good. Not needed in this case, as the code doesn't need to be
+	// portable, nor it already is anyway.
 	if (addr >= DATA_SEC_EXE_IDA_BEGIN_ADDR) {
 		return (void *) (addr + SN_DATA_SEC_EXE_ADDR);
 	}

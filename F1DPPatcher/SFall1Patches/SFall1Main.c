@@ -2448,12 +2448,10 @@ void DllMain2(void) {
 		makeCallEXE(0x918D4, &inc_game_time_in_seconds_hook, true);
 		makeCallEXE(0x920C3, &script_chk_timed_events_hook, true);
 		for (j = 0; j < ((int) sizeof(TimedRest) / 4); ++j) {
-			(void *) TimedRest_hook;
 			*(uint32_t *) (((uint32_t *) getRealBlockAddrData(&TimedRest))[j] + 1) =
 					(uint32_t) getRealBlockAddrCode(&TimedRest_hook);
 		}
 		for (j = 0; j < ((int) sizeof(world_map) / 4); ++j) {
-			(void *) world_map_hook;
 			*(uint32_t *) (((uint32_t *) getRealBlockAddrData(&world_map))[j] + 1) =
 					(uint32_t) getRealBlockAddrCode(&world_map_hook);
 		}
