@@ -26,7 +26,6 @@ compilers:
     code-insight-target-name: x86
     include-dirs:
       - "${compiler-exe-dir}/../h"
-      - "${compiler-exe-dir}/../h/os2"
     defines-text: "
 #define __X86__ 1
 #define __386__ 1
@@ -55,7 +54,6 @@ compilers:
 #define _M_I386 1
 #define _M_IX86 500
 #define __NT__ 1
-#define __WINDOWS_386__ 1
 #define _WIN32 1
 #define __FLAT__ 1
 #define M_386FM 1
@@ -81,7 +79,7 @@ compilers:
 #define _M_I86LM 1
 #define __WATCOMC__ 1280
 #define _INTEGRAL_MAX_BITS 64"
-  - description: OpenWatcom DOS target
+  - description: OpenWatcom 16-bit DOS target
     match-args: "-bt=dos"
     match-compiler-exe: "(.*/)?wcl(\\.exe)?"
     code-insight-target-name: x86
@@ -105,8 +103,7 @@ compilers:
     match-compiler-exe: "(.*/)?wcl386(\\.exe)?"
     code-insight-target-name: x86
     include-dirs:
-      - "${compiler-exe-dir}/../h"
-      - "${compiler-exe-dir}/../h/nt"
+      - "${compiler-exe-dir}/../lh"
     defines-text: "
 #define __X86__ 1
 #define __386__ 1
@@ -114,6 +111,7 @@ compilers:
 #define _M_I386 1
 #define _M_IX86 500
 #define __LINUX__ 1
+#define __UNIX__ 1
 #define __FLAT__ 1
 #define M_386FM 1
 #define _M_386FM 1

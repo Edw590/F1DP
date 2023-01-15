@@ -39,7 +39,8 @@ void exitNew(int exit_code);
 int getFolderPathFromFilePath(char const *file_path);
 void listSupportedFiles(void);
 
-uint8_t const correct_md5[16] = {0x3d, 0xcf, 0x41, 0xfa, 0x67, 0x84, 0x03, 0x0b, 0xd5, 0xc7, 0x1b, 0xe8, 0x19, 0x54, 0xc8, 0x99};
+uint8_t const correct_md5[16] = {0x3d, 0xcf, 0x41, 0xfa, 0x67, 0x84, 0x03, 0x0b, 0xd5, 0xc7, 0x1b, 0xe8, 0x19, 0x54,
+                                 0xc8, 0x99};
 char const * const new_file_name = "F1DPATCH.EXE";
 
 enum Errors {
@@ -51,15 +52,8 @@ enum Errors {
 };
 
 int main(int argc, char *argv[]) {
+    char *file_path = argv[1];
 	int err_code = ERR_NONE;
-	char *file_path = argv[1];
-	uint8_t *file_md5 = 0;
-	bool md5_matches = true;
-	FILE *old_file = NULL;
-	FILE *new_file = NULL;
-	uint8_t *file_bytes = NULL;
-	uint32_t filelen = 0;
-	char new_file_path[MAX_PATH_LEN] = {0};
 
 	printInitialScreen();
 	printf(NL);
@@ -74,7 +68,7 @@ int main(int argc, char *argv[]) {
 		goto funcEnd;
 	}
 
-	old_file = fopen(file_path, "rbe");
+    FILE *old_file = fopen(file_path, "rbe");
 	if (NULL == old_file) {
 		printf("> File \"%s\" not found"NL, file_path);
 
@@ -84,23 +78,28 @@ int main(int argc, char *argv[]) {
 
 	// Get length of the file and read it entirely
 	fseek(old_file, 0, SEEK_END);
-	filelen = (uint32_t) ftell(old_file);
+    uint32_t file_len = (uint32_t) ftell(old_file);
 	rewind(old_file);
-	file_bytes = malloc(filelen * sizeof(*file_bytes));
-	fread(file_bytes, filelen, sizeof(uint8_t), old_file);
+    uint8_t *file_bytes = malloc(file_len * sizeof(*file_bytes));
+	fread(file_bytes, file_len, sizeof(uint8_t), old_file);
 	rewind(old_file);
-	file_md5 = md5File(old_file);
+    uint8_t *file_md5 = md5File(old_file);
 	fclose(old_file);
 
-	{
-		int i = 0;
-		for (i = 0; i < 16; ++i) {
-			if (file_md5[i] != correct_md5[i]) {
-				md5_matches = false;
-				break;
-			}
-		}
-	}
+    bool md5_matches = true;
+
+	for (int i = 0; i < 16; ++i) {
+        if (file_md5[i] != correct_md5[i]) {
+            md5_matches = false;
+            break;
+        }
+    }
+    for (int i = 0; i < 16; ++i) {
+        if (file_md5[i] != correct_md5[i]) {
+            md5_matches = false;
+            break;
+        }
+    }
 	printf("File path: \"%s\""NL, file_path);
 	printf("File MD5 hash: "); print_hash(file_md5); printf(NL);
 	free(file_md5);
@@ -122,6 +121,7 @@ int main(int argc, char *argv[]) {
 
 	prepareLoader(file_bytes);
 
+    char new_file_path[MAX_PATH_LEN] = {0};
 	if (NULL != strstr(file_path, "\\")) {
 		strncpy(new_file_path, file_path, (size_t) getFolderPathFromFilePath(file_path));
 		new_file_path[strlen(new_file_path)] = '\\';
@@ -129,14 +129,14 @@ int main(int argc, char *argv[]) {
 	} else {
 		strcpy(new_file_path, new_file_name);
 	}
-	new_file = fopen(new_file_path, "wbe");
+    FILE *new_file = fopen(new_file_path, "wbe");
 	if (NULL == new_file) {
 		printf("> Error - Could not create and/or write to the patched DOS file."NL);
 
 		err_code = ERR_CANT_WRITE_FILE;
 		goto funcEnd;
 	} else {
-		fwrite(file_bytes, sizeof(uint8_t), (size_t) filelen, new_file);
+		fwrite(file_bytes, sizeof(uint8_t), (size_t) file_len, new_file);
 		printf(NL"> Loader installed successfully to a new file: \"%s\".", new_file_path);
 	}
 	printf(NL);
@@ -174,9 +174,9 @@ void listSupportedFiles(void) {
  * @param file_bytes the file bytes to patch
  */
 void prepareLoader(uint8_t *file_bytes) {
-	uint32_t initial_offset = 0;
-
 	printf("Patches made to the game EXE:"NL);
+
+    uint32_t initial_offset = 0;
 
 	// /////////////////////
 	printf("- Mark the code section as RWX"NL); // Data executable for the allocated block, and Code writable to patch it
@@ -268,8 +268,7 @@ void prepareLoader(uint8_t *file_bytes) {
  * @param num_new_bytes the length of 'new_bytes'
  */
 void patchBytes(uint8_t *file_bytes, uint32_t initial_offset, uint8_t const *new_bytes, uint32_t num_new_bytes) {
-	uint32_t i = 0;
-	for (i = 0; i < num_new_bytes; ++i) {
+	for (uint32_t i = 0; i < num_new_bytes; ++i) {
 		file_bytes[initial_offset+i] = new_bytes[i];
 	}
 }
@@ -347,9 +346,8 @@ void exitNew(int exit_code) {
  * @return the index of the last backslash on the given file path, or -1 if not found
  */
 int getFolderPathFromFilePath(char const *file_path) {
-	int i = 0;
 	int last_backslash_index = -1;
-	for (i = 0; '\0' != file_path[i]; ++i) {
+	for (int i = 0; '\0' != file_path[i]; ++i) {
 		if ('\\' == file_path[i]) {
 			last_backslash_index = i;
 		}
