@@ -94,12 +94,6 @@ int main(int argc, char *argv[]) {
             break;
         }
     }
-    for (int i = 0; i < 16; ++i) {
-        if (file_md5[i] != correct_md5[i]) {
-            md5_matches = false;
-            break;
-        }
-    }
 	printf("File path: \"%s\""NL, file_path);
 	printf("File MD5 hash: "); print_hash(file_md5); printf(NL);
 	free(file_md5);
