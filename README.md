@@ -19,6 +19,9 @@ Notes:
 - The versions are in the opposite order - the first is in the end.
 - They are big texts, but which explain everything that went through my head to get everything to be how it is, however that is.
 
+### HT Editor
+Btw, a very useful program I used to analyze the Fallout EXE file: HT Editor. Along with random documentation I found about the LE EXE header, the program allowed me to decently analyze and edit the file without 34 headaches of doing it on a hex editor (also it has more information that I couldn't find on the documentations I found about the header - there's much more on LX than on LE). Love the program. Links for it: https://hte.sourceforge.net or https://github.com/sebastianbiallas/ht. I thank the author for it!
+
 <details> 
   <summary><h3>Second version</h3></summary>
 
