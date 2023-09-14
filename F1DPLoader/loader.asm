@@ -1,4 +1,4 @@
-; Copyright 2022 DADi590
+; Copyright 2022-2023 Edw590
 ;
 ; Licensed to the Apache Software Foundation (ASF) under one
 ; or more contributor license agreements.  See the NOTICE file
@@ -38,10 +38,10 @@
 	nop
 	nop
 
-	START_DADI590:
+	START_EDW590:
 	; These things below are to be used for things only known when the code is in place. They're noticeble enough.
 	; One is a weird number, the other, all near calls and some jumps are to the same function - suspicious.
-	;whateverDadi590
+	;whateverEdw590
 	;12345678h
 
 
@@ -214,7 +214,7 @@
 		push    edi
 
 		; Parameters for the Patcher
-		mov     edi, edx ; ESI = block address (the Patcher requires ESI to be the block address)
+		mov     edi, edx ; EDI = block address (the Patcher requires ESI to be the block address)
 
 		; In case anything goes wrong inside the Patcher (wrong out of what is expected - not an error and return false, I mean
 		; a serious unexpected error related with stack or Special Numbers or something like that) and it is able to return
@@ -406,8 +406,8 @@
 
 		INIT_STR db "----------------------------",0Dh,0Ah,"----- F1DP v1.0 Loader -----",0Dh,0Ah, 0
 
-		PRT_BIN_FILE_NAME db "- BIN file containing the Patcher: f1dpatch.bin",0Dh,0Ah, 0
-		BIN_FILE_NAME db "f1dpatch.bin", 0 ; At most 12 characters excluding the NULL one (DOS' 8.3 file names - 8 name chars, one dot, 3 extension chars)
+		PRT_BIN_FILE_NAME db "- BIN file containing the Patcher: F1DPATCH.BIN",0Dh,0Ah, 0
+		BIN_FILE_NAME db "F1DPATCH.BIN", 0 ; At most 12 characters excluding the NULL one (DOS' 8.3 file names - 8 name chars, one dot, 3 extension chars)
 		START_PATCHER_STR db "- Patcher ready for action. Starting it...",0Dh,0Ah, 0
 
 		ERR_OPEN_STR db "- [X] Error opening the BIN file.",0Dh,0Ah, 0
@@ -595,6 +595,6 @@
 	nop
 	nop
 	nop
-	whateverDadi590:
+	whateverEdw590:
 
-end START_DADI590
+end START_EDW590
