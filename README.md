@@ -1,6 +1,10 @@
 # Fallout 1 DOS Patcher (F1DP)
 An engine patcher for the MS-DOS version of Fallout 1 including patches from Crafty's sFall1/sFall, High-Res patch, TeamX, and Fallout Fixt
 
+## Download
+
+To download, go to [Releases](https://github.com/Edw590/F1DP/releases).
+
 ## Introduction
 Hi everyone. I've decided to attempt to port all patches made to the Windows version of Fallout 1 to the MS-DOS one. Some Windows patches are DLL mods, and even if DOS recognizes DLLs with help of extenders or whatever it is, the DLL code is for the Windows version only (but anyway, I've no idea how to load and even program a DLL, at least yet). So I've went around that, and this way, those who need to play with the DOS version like me for whatever reason can enjoy the patches that the Windows version players can.
 
@@ -10,9 +14,6 @@ This repository contains the code for everything involved with F1DP:
 - and the Loader, in Assembly (a file compiled from Sublime Text 3 using MASM 9.0 and using the compilation assistant and Sublime Text stuff from this repository of mine: https://github.com/DADi590/Chrome-Dino-Game-in-Assembly).
 
 Small note about the naming: I know it's kind of awful. But I'm not sure of a better naming. The Installer installs only the Loader into the game EXE. The Patcher comes in its own file. But the project is (or was) called Fallout 1 DOS Patcher (best name I came up with). So I've reduced the name to F1DP, and now I can say F1DP Patcher more normally (don't think too much about it... xD).
-
-## Download
-Download any version you'd like (preferably the most recent one) here: https://github.com/DADi590/F1DP/releases.
 
 ## History of ideas for this to work
 Notes:
