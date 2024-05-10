@@ -2045,30 +2045,30 @@ void DllMain2(void) {
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "StartingMap", "", mapName, &sfall1_ini_info_G);
 	if (0 != strcmp(mapName, "")) {
-		writeMem32EXE(0x72995, (uint32_t) getRealBlockAddrData(&mapName));
+		writeMem32EXE(0x72995, (uint32_t) getRealBlockAddrData(&mapName), true);
 	}
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "VersionString", "", versionString, &sfall1_ini_info_G);
 	if (0 != strcmp(versionString, "")) {
-		writeMem32EXE(0xA10E7+1, (uint32_t) getRealBlockAddrData(&versionString));
+		writeMem32EXE(0xA10E7 + 1, (uint32_t) getRealBlockAddrData(&versionString), true);
 	}
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "WindowName", "", windowName, &sfall1_ini_info_G);
 	if (0 != strcmp(windowName, "")) {
-		writeMem32EXE(0x72B86+1, (uint32_t) getRealBlockAddrData(&windowName));
+		writeMem32EXE(0x72B86 + 1, (uint32_t) getRealBlockAddrData(&windowName), true);
 	}
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "ConfigFile", "", configName, &sfall1_ini_info_G);
 	if (0 != strcmp(configName, "")) {
-		writeMem32EXE(0x3DE14+1, (uint32_t) getRealBlockAddrData(&configName));
-		writeMem32EXE(0x3DE39+1, (uint32_t) getRealBlockAddrData(&configName));
+		writeMem32EXE(0x3DE14 + 1, (uint32_t) getRealBlockAddrData(&configName), true);
+		writeMem32EXE(0x3DE39 + 1, (uint32_t) getRealBlockAddrData(&configName), true);
 	}
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "MaleDefaultModel", "hmjmps", dmModelName, &sfall1_ini_info_G);
-	writeMem32EXE(0x183BD+1, (uint32_t) getRealBlockAddrData(&dmModelName));
+	writeMem32EXE(0x183BD + 1, (uint32_t) getRealBlockAddrData(&dmModelName), true);
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "FemaleDefaultModel", "hfjmps", dfModelName, &sfall1_ini_info_G);
-	writeMem32EXE(0x183E0+1, (uint32_t) getRealBlockAddrData(&dfModelName));
+	writeMem32EXE(0x183E0 + 1, (uint32_t) getRealBlockAddrData(&dfModelName), true);
 
 	for (i = 0; i < 14; ++i) {
 		char ininame[8];
@@ -2080,43 +2080,43 @@ void DllMain2(void) {
 		getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", ininame, ((char **) getRealBlockAddrData(&origMovieNames))[i],
 						&((char *) getRealBlockAddrData(&MovieNames))[i * 65], &sfall1_ini_info_G);
 		writeMem32EXE(0x1055F0 + ((uint32_t) i * 4),
-					  (uint32_t) getRealBlockAddrData(&((char *) getRealBlockAddrData(&MovieNames))[i * 65]));
+					  (uint32_t) getRealBlockAddrData(&((char *) getRealBlockAddrData(&MovieNames))[i * 65]), true);
 	}
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "StartYear", "-1", prop_value, &sfall1_ini_info_G);
 	// I'd use stdtol() for the conversion, but that's not available on the game EXE...
 	sscanf(prop_value, "%d", &temp_int);
 	if (temp_int >= 0) {
-		writeMem32EXE(0x9175A+2, (uint32_t) temp_int);
+		writeMem32EXE(0x9175A + 2, (uint32_t) temp_int, true);
 	}
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "StartMonth", "-1", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if ((temp_int >= 1) && (temp_int <= 12)) {
-		writeMem32EXE(0x91771+1, (uint32_t) temp_int);
+		writeMem32EXE(0x91771 + 1, (uint32_t) temp_int, true);
 	}
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "StartDay", "-1", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if ((temp_int >= 1) && (temp_int <= 31)) {
-		writeMem8EXE(0x91744+2, (uint8_t) temp_int);
+		writeMem8EXE(0x91744 + 2, (uint8_t) temp_int, true);
 	}
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "LocalMapXLimit", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if (0 != temp_int) {
-		writeMem32EXE(0x9DFB9+4, (uint32_t) temp_int);
+		writeMem32EXE(0x9DFB9 + 4, (uint32_t) temp_int, true);
 	}
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "LocalMapYLimit", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if (0 != temp_int) {
-		writeMem32EXE(0x9DFC7+4, (uint32_t) temp_int);
+		writeMem32EXE(0x9DFC7 + 4, (uint32_t) temp_int, true);
 	}
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "DialogueFix", "1", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if (0 != temp_int) {
-		writeMem8EXE(0x3EFA4+2, 0x31);
+		writeMem8EXE(0x3EFA4 + 2, 0x31, true);
 	}
 
 	CritInit();
@@ -2141,7 +2141,7 @@ void DllMain2(void) {
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "SkipOpeningMovies", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if (0 != temp_int) {
-		writeMem16EXE(0x728C3, 0x13EB);            // jmps 0x472A88
+		writeMem16EXE(0x728C3, 0x13EB, true);            // jmps 0x472A88
 	}
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "NPCsTryToSpendExtraAP", "0", prop_value, &sfall1_ini_info_G);
@@ -2155,7 +2155,7 @@ void DllMain2(void) {
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "RemoveWindowRounding", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if (0 != temp_int) {
-		writeMem16EXE(0xA4BD0, 0x04EB);// jmps 0x4A50C6
+		writeMem16EXE(0xA4BD0, 0x04EB, true);// jmps 0x4A50C6
 	}
 
 	// Disabled
@@ -2166,20 +2166,20 @@ void DllMain2(void) {
 	if (1 == temp_int) {
 		makeCallEXE(0x563F1, &intface_rotate_numbers_hook, true);
 	} else if (2 == temp_int) {
-		writeMem32EXE(0x56406, 0x90DB3190u);
+		writeMem32EXE(0x56406, 0x90DB3190u, true);
 	}
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "SpeedInventoryPCRotation", "166", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if ((temp_int != 166) && (temp_int <= 1000)) {
-		writeMem32EXE(0x6415A+1, (uint32_t) temp_int);
+		writeMem32EXE(0x6415A + 1, (uint32_t) temp_int, true);
 	}
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "RemoveCriticalTimelimits", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if (0 != temp_int) {
-		writeMem8EXE(0x91412+1, 0x0);
-		writeMem8EXE(0x91453+1, 0x0);
+		writeMem8EXE(0x91412 + 1, 0x0, true);
+		writeMem8EXE(0x91453 + 1, 0x0, true);
 	}
 
 	// Patch ereg call - I think the purpose of this is only for Windows, so I've disabled it here
@@ -2191,15 +2191,15 @@ void DllMain2(void) {
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "CombatPanelAnimDelay", "1000", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if ((temp_int >= 0) && (temp_int <= 65535)) {
-		writeMem32EXE(0x55385+1, (uint32_t) temp_int);
-		writeMem32EXE(0x554DA+1, (uint32_t) temp_int);
+		writeMem32EXE(0x55385 + 1, (uint32_t) temp_int, true);
+		writeMem32EXE(0x554DA + 1, (uint32_t) temp_int, true);
 	}
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "DialogPanelAnimDelay", "33", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if ((temp_int >= 0) && (temp_int <= 255)) {
-		writeMem32EXE(0x400FF+1, (uint32_t) temp_int);
-		writeMem32EXE(0x401C1+1, (uint32_t) temp_int);
+		writeMem32EXE(0x400FF + 1, (uint32_t) temp_int, true);
+		writeMem32EXE(0x401C1 + 1, (uint32_t) temp_int, true);
 	}
 
 	DebugModeInit();
@@ -2262,7 +2262,7 @@ void DllMain2(void) {
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "DisablePipboyAlarm", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if (0 != temp_int) {
-		writeMem8EXE(0x88E44, 0xC3);// retn
+		writeMem8EXE(0x88E44, 0xC3, true);// retn
 	}
 
 	LoadGameHookInit();
@@ -2281,17 +2281,17 @@ void DllMain2(void) {
 	makeCallEXE(0x38B00, &Brotherhood_final, true);
 
 	// Disable the disappearance of an unused perk
-	writeMem8EXE(0x361CB, 0x80);                // add  byte ptr ds:_free_perk, 1
-	writeMem16EXE(0x36222, 0x0DFE);             // dec  byte ptr ds:_free_perk
-	writeMem8EXE(0x36228+1, 0xB1);              // jmp  0x436263
+	writeMem8EXE(0x361CB, 0x80, true);                // add  byte ptr ds:_free_perk, 1
+	writeMem16EXE(0x36222, 0x0DFE, true);             // dec  byte ptr ds:_free_perk
+	writeMem8EXE(0x36228 + 1, 0xB1, true);              // jmp  0x436263
 	hookCallEXE(0x2C64E, &editor_design_hook);
 	hookCallEXE(0x2CBE4, &editor_design_hook2);
 	hookCallEXE(0x368EC, &perks_dialog_hook);
 	makeCallEXE(0x866C2, &perk_can_add_hook, true);
 
 	// Raise the Perk Window
-	writeMem8EXE(0x3641E+1, 31);                  // 91-60=31
-	writeMem8EXE(0x369D2+2, 74);                  // 134-60=74
+	writeMem8EXE(0x3641E+1, 31, true);                  // 91-60=31
+	writeMem8EXE(0x369D2 + 2, 74, true);                  // 134-60=74
 
 	// Decrease the distance to switch to walking when clicking on an item
 	for (i = 0; i < ((int) sizeof(WalkDistance) / 4); ++i) {
@@ -2321,16 +2321,16 @@ void DllMain2(void) {
 	sscanf(prop_value, "%d", &temp_int);
 	if (0 != temp_int) {
 		// Minimum player age
-		writeMem8EXE(0x108364 + 0xC, 8);
+		writeMem8EXE(0x108364 + 0xC, 8, true);
 
 		// Maximum Player Age
-		writeMem8EXE(0x108364 + 0x10, 60);
+		writeMem8EXE(0x108364 + 0x10, 60, true);
 	}
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "EnableMusicInDialogue", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if (0 != temp_int) {
-		writeMem8EXE(0x3E45B+1, 0x00);
+		writeMem8EXE(0x3E45B + 1, 0x00, true);
 		// This below was already commented out, probably because of the above which makes the code never get to where
 		// this patch is.
 		//BlockCall(0x481A7);
@@ -2341,15 +2341,15 @@ void DllMain2(void) {
 	sscanf(prop_value, "%d", &temp_int);
 	*(uint32_t *) getRealBlockAddrData(&MaxPCLevel) = (uint32_t) temp_int;
 	if ((temp_int != 21) && (temp_int >= 1) && (temp_int <= 99)) {
-		writeMem8EXE(0x3611B+2, (uint8_t) temp_int);
-		writeMem8EXE(0x9CCBC+2, (uint8_t) temp_int);
+		writeMem8EXE(0x3611B + 2, (uint8_t) temp_int, true);
+		writeMem8EXE(0x9CCBC + 2, (uint8_t) temp_int, true);
 		makeCallEXE(0x9CB82, &stat_pc_min_exp_hook, false);
 		// Max Perks Gained
-		writeMem8EXE(0x36197+2, 33);
-		writeMem8EXE(0x361A2+2, 33);
-		writeMem8EXE(0x37D4A+2, 33);
+		writeMem8EXE(0x36197 + 2, 33, true);
+		writeMem8EXE(0x361A2 + 2, 33, true);
+		writeMem8EXE(0x37D4A + 2, 33, true);
 		// cap hitpoints at 999 when leveling up
-		writeMem32EXE(0x1080F4+0x10, 999);
+		writeMem32EXE(0x1080F4 + 0x10, 999, true);
 	}
 
 	// todo Too much work. Disabled for now.
@@ -2367,7 +2367,7 @@ void DllMain2(void) {
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "DontTurnOffSneakIfYouRun", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if (0 != temp_int) {
-		writeMem8EXE(0x17A2F, 0xEB);
+		writeMem8EXE(0x17A2F, 0xEB, true);
 	}
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "ColorLOS", "0", prop_value, &sfall1_ini_info_G);
@@ -2380,18 +2380,18 @@ void DllMain2(void) {
 	}
 
 	// You can use the newline control character (\n) in the description of objects from pro_*.msg
-	writeMem32EXE(0x62B99+6, (uint32_t) getRealBlockAddrCode(&display_print_with_linebreak));
-	writeMem32EXE(0x8A2E9+1, (uint32_t) getRealBlockAddrCode(&display_print_with_linebreak));
-	writeMem32EXE(0x66479+1, (uint32_t) getRealBlockAddrCode(&inven_display_msg_with_linebreak));
+	writeMem32EXE(0x62B99 + 6, (uint32_t) getRealBlockAddrCode(&display_print_with_linebreak), true);
+	writeMem32EXE(0x8A2E9 + 1, (uint32_t) getRealBlockAddrCode(&display_print_with_linebreak), true);
+	writeMem32EXE(0x66479 + 1, (uint32_t) getRealBlockAddrCode(&inven_display_msg_with_linebreak), true);
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "RemoveFriendlyFoe", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	*(uint32_t *) getRealBlockAddrData(&RemoveFriendlyFoe) = (uint32_t) temp_int;
 	if (0 != temp_int) {
-		writeMem32EXE(0x106D24+12, 100);
-		writeMem8EXE(0x1FFD6+1, 0x0);
-		writeMem8EXE(0x2436F+1, 0x0);
-		writeMem8EXE(0x260DD+1, 0x0);
+		writeMem32EXE(0x106D24 + 12, 100, true);
+		writeMem8EXE(0x1FFD6 + 1, 0x0, true);
+		writeMem8EXE(0x2436F + 1, 0x0, true);
+		writeMem8EXE(0x260DD + 1, 0x0, true);
 	}
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "DrugExploitFix", "0", prop_value, &sfall1_ini_info_G);
@@ -2412,8 +2412,8 @@ void DllMain2(void) {
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "CanSellUsedGeiger", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if (0 != temp_int) {
-		writeMem8EXE(0x6AC2A, 0xBA);
-		writeMem8EXE(0x6AC5C, 0xBA);
+		writeMem8EXE(0x6AC2A, 0xBA, true);
+		writeMem8EXE(0x6AC5C, 0xBA, true);
 		makeCallEXE(0x67E23, &barter_attempt_transaction_hook, false);
 		hookCallEXE(0x6BEE9, &item_m_turn_off_hook);
 	}
@@ -2460,20 +2460,20 @@ void DllMain2(void) {
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "PipboyTimeAnimDelay", "-1", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if ((temp_int >= 0) && (temp_int <= 127)) {
-		writeMem8EXE(0x894A7+2, (uint8_t) temp_int);
-		writeMem8EXE(0x896B3+2, (uint8_t) temp_int);
+		writeMem8EXE(0x894A7 + 2, (uint8_t) temp_int, true);
+		writeMem8EXE(0x896B3 + 2, (uint8_t) temp_int, true);
 	}
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "NumbersInDialogue", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if (0 != temp_int) {
-		writeMem32EXE(0xF2368+2, 0x2000202E);
-		writeMem8EXE(0x3F85B+1, (*(uint8_t *) 0x3F85B+1)+1);
-		writeMem32EXE(0xF21F8+2, 0x7325202E);
-		writeMem32EXE(0x3F825, 0x1C24548B);          // mov  edx, [esp+0x1C]
-		writeMem8EXE(0x3F825+4, 0x52);               // push edx
-		writeMem32EXE(0x3F901, 0x2024548B);          // mov  edx, [esp+0x20]
-		writeMem8EXE(0x3F901+4, 0x52);               // push edx
+		writeMem32EXE(0xF2368 + 2, 0x2000202E, true);
+		writeMem8EXE(0x3F85B + 1, (*(uint8_t *) 0x3F85B + 1) + 1, true);
+		writeMem32EXE(0xF21F8 + 2, 0x7325202E, true);
+		writeMem32EXE(0x3F825, 0x1C24548B, true);          // mov  edx, [esp+0x1C]
+		writeMem8EXE(0x3F825 + 4, 0x52, true);               // push edx
+		writeMem32EXE(0x3F901, 0x2024548B, true);          // mov  edx, [esp+0x20]
+		writeMem8EXE(0x3F901 + 4, 0x52, true);               // push edx
 		makeCallEXE(0x3E807, &gdAddOptionStr_hook, true);
 	}
 
@@ -2482,8 +2482,8 @@ void DllMain2(void) {
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Speed", "TimeScale", "1", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if ((temp_int > 1) && (temp_int <= 10)) {
-		writeMem32EXE(0x92093+1, 30000 / (uint32_t) temp_int);
-		writeMem8EXE(0x920B2+2, (uint8_t) (100 / (uint32_t) temp_int));
+		writeMem32EXE(0x92093 + 1, 30000 / (uint32_t) temp_int, true);
+		writeMem8EXE(0x920B2 + 2, (uint8_t) (100 / (uint32_t) temp_int), true);
 	}
 
 

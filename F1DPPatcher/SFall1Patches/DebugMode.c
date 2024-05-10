@@ -60,7 +60,7 @@ void DebugModeInit(void) {
 		// starts.
 		makeCallEXE(0x728A7, &debugMode, false);
 
-		writeMem8EXE(0xB308B, 0xB8);               // mov  eax, offset ???
+		writeMem8EXE(0xB308B, 0xB8, true);               // mov  eax, offset ???
 		if (1 == temp_int) {
 			str_addr = (uint32_t) getRealEXEAddr(0xFE1EC); // "gnw"
 		} else if (2 == temp_int) {
@@ -70,6 +70,6 @@ void DebugModeInit(void) {
 		} else if (4 == temp_int) {
 			str_addr = (uint32_t) getRealEXEAddr(0xFE1C8); // "mono"
 		}
-		writeMem32EXE(0xB308B+1, str_addr);
+		writeMem32EXE(0xB308B + 1, str_addr, true);
 	}
 }

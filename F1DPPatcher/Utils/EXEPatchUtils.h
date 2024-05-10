@@ -40,9 +40,14 @@
  */
 void *getRealEXEAddr(volatile uint32_t addr);
 
-void writeMem32EXE(uint32_t addr, uint32_t data);
-void writeMem16EXE(uint32_t addr, uint16_t data);
-void writeMem8EXE(uint32_t addr, uint8_t data);
+void writeMem64EXE(uint32_t addr, uint64_t data, bool corrct_addr);
+void writeMem32EXE(uint32_t addr, uint32_t data, bool corrct_addr);
+void writeMem16EXE(uint32_t addr, uint16_t data, bool corrct_addr);
+void writeMem8EXE(uint32_t addr, uint8_t data, bool corrct_addr);
+uint64_t readMem64EXE(void *addr, bool corrct_addr);
+uint32_t readMem32EXE(void *addr, bool corrct_addr);
+uint16_t readMem16EXE(void *addr, bool corrct_addr);
+uint8_t readMem8EXE(void *addr, bool corrct_addr);
 
 void hookCallEXE(uint32_t addr, const funcptr_t (func_ptr));
 

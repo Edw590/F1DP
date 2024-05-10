@@ -80,6 +80,6 @@ void OtherFixes(void) {
 
 	//Bypass hard drive space check - can cause a false error.
 	//"Not enough free hard disk space.  Fallout requires at least %.1f megabytes of free hard disk space."
-	writeMem16EXE(C_game_check_disk_space_, 0xC031);//xor eax, eax
-	writeMem8EXE(C_game_check_disk_space_ + 2, 0xC3);//return
+	writeMem16EXE(C_game_check_disk_space_, 0xC031, true);//xor eax, eax
+	writeMem8EXE(C_game_check_disk_space_ + 2, 0xC3, true);//return
 }

@@ -26,5 +26,5 @@ exit(os.system("wcl386.exe " + all_C_files_ready + " -fe=F1DPPatcher -bt=DOS -l=
 # not even that, doesn't really matter in such a small program).
 #exit(os.system("wcl386.exe " + all_C_files_ready + " -bt=DOS -l=dos4g -fpd -mf -od -wcd=119 -we -wo -wx -ze"))
 
-# Example of Warning 119: "Warning! W119: Address of static function '[something]' has been taken". The program needs the
-# functions static and it's needed to get their address for the game EXE. So ignore the warning.
+# Example of Warning 119: "Warning! W119: Address of static function '[something]' has been taken". The program needs
+# the functions static and it's needed to get their address for the game EXE. So ignore the warning.

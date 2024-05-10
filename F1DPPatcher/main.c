@@ -47,6 +47,7 @@
 #include "Utils/General.h"
 #include "Utils/GlobalEXEAddrs.h"
 #include "Utils/IniUtils.h"
+#include "CLibs/conio.h"
 
 #define SN_MAIN_FUNCTION 0x78563412 // 12 34 56 78 in little endian
 
@@ -196,7 +197,7 @@ static void patchVerStr(void) {
 	// whatever is necessary for that to happen (like the stack).
 	// Also, below I'm changing the height of the string so that it doesn't overlap with the rest of the bottom strings.
 
-	writeMem32EXE(0x73373+1, 0x1BD); // Change the string height (445)
+	writeMem32EXE(0x73373 + 1, 0x1BD, true); // Change the string height (445)
 
 	hookCallEXE(0x73358, &getverstr_hook);
 }

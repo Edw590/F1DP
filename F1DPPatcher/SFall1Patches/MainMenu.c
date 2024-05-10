@@ -129,19 +129,19 @@ void MainMenuInit(void) {
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "MainMenuCreditsOffsetX", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if (0 != temp_int) {
-		writeMem32EXE(0x73332+1, 15 + (uint32_t) temp_int);
+		writeMem32EXE(0x73332 + 1, 15 + (uint32_t) temp_int, true);
 	}
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "MainMenuCreditsOffsetY", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if (0 != temp_int) {
-		writeMem32EXE(0x7333B+1, 460 + (uint32_t) temp_int);
+		writeMem32EXE(0x7333B + 1, 460 + (uint32_t) temp_int, true);
 	}
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "MainMenuOffsetX", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if (0 != temp_int) {
-		writeMem32EXE(0x7345B+1, 425 + (uint32_t) temp_int);
+		writeMem32EXE(0x7345B + 1, 425 + (uint32_t) temp_int, true);
 		*(uint32_t *) getRealBlockAddrData(&MainMenuTextOffset) = (uint32_t) temp_int;
 	}
 
@@ -150,23 +150,23 @@ void MainMenuInit(void) {
 	if (0 != temp_int) {
 		*(uint32_t *) getRealBlockAddrData(&MainMenuYOffset) = (uint32_t) temp_int;
 		*(uint32_t *) getRealBlockAddrData(&MainMenuTextOffset) += (uint32_t) temp_int * 640;
-		writeMem8EXE(0x73424, 0x90);
+		writeMem8EXE(0x73424, 0x90, true);
 		makeCallEXE(0x73424 + 1, &MainMenuButtonYHook, false);
 	}
 
 	if (0 != *(uint32_t *) getRealBlockAddrData(&MainMenuTextOffset)) {
-		writeMem8EXE(0x73513, 0x90);
+		writeMem8EXE(0x73513, 0x90, true);
 		makeCallEXE(0x73513 + 1, &MainMenuTextYHook, false);
 	}
 
 	makeCallEXE(0x7338B, &MainMenuTextHook, true);
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "MainMenuFontColour", "0", prop_value, &sfall1_ini_info_G);
-	sscanf(prop_value, "%X", (uint32_t *) getRealBlockAddrData(&OverrideColour));
+	sscanf(prop_value, "%X", getRealBlockAddrData(&OverrideColour));
 	if (0 != *(uint32_t *) getRealBlockAddrData(&OverrideColour)) {
 		makeCallEXE(0x7332C, &FontColour, false);
 	}
 
-	//hookCallEXE(0x7338B, &func_40B582); - Disabled because there's usage of
-	// VersionString on it, and that's already taken care of by me. I'll just ignore this.
+	//hookCallEXE(0x7338B, &func_40B582); - Disabled because there's usage of VersionString on it, and that's already
+	// taken care of by me. I'll just ignore this.
 }

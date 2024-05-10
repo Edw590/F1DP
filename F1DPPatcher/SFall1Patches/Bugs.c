@@ -1171,7 +1171,7 @@ void BugsInit(void) {
 
 	// Applying sharpshooter patch.
 	hookCallEXE(0x2200D, &determine_to_hit_func_hook);
-	writeMem8EXE(0x22044, 0xEB);
+	writeMem8EXE(0x22044, 0xEB, true);
 
 	// Applying withdrawal perk description crash fix.
 	hookCallEXE(0x6C8B7, &perform_withdrawal_start_hook);
@@ -1194,7 +1194,7 @@ void BugsInit(void) {
 	hookCallEXE(0x65F0B, &invenWieldFunc_hook);
 
 	// Fixed display of negative values in the skill window ("S")
-	writeMem8EXE(0x99987, 0x7F);                // jg
+	writeMem8EXE(0x99987, 0x7F, true);                // jg
 
 	// Fixed return of equipped armor and weapons in hands
 	makeCallEXE(0x65386, &inven_right_hand_hook, true);
@@ -1205,8 +1205,8 @@ void BugsInit(void) {
 	makeCallEXE(0x66F62, &loot_container_hook, false);
 
 	// Text width 64, not 80
-	writeMem8EXE(0x6855C+1, 64);
-	writeMem8EXE(0x68704+1, 64);
+	writeMem8EXE(0x6855C + 1, 64, true);
+	writeMem8EXE(0x68704 + 1, 64, true);
 
 	// Fix bug in player inventory related to IFACE_BAR_MODE=1 from f1_res.ini
 	makeCallEXE(0x64B35, &inven_pickup_hook, true);
@@ -1247,10 +1247,10 @@ void BugsInit(void) {
 
 	// [DADi590]: This below was commented out, but on release 1.7.17 it wasn't, so here it is enabled.
 	// Applying imported procedure patch (http://teamx.ru/site_arc/smf/index.php-topic=398.0.htm)
-	writeMem32EXE(0x5F181, 0x1C24A489);         // Fixing Time Stack Issues
-	writeMem8EXE(0x61A95, 0xEB);                // Disabling warnings
-	writeMem8EXE(0x61D39, 0xEB);                // Disabling warnings
-	writeMem8EXE(0x3A21B+1, 0x00);              // prevent crash on re-export
+	writeMem32EXE(0x5F181, 0x1C24A489, true);         // Fixing Time Stack Issues
+	writeMem8EXE(0x61A95, 0xEB, true);                // Disabling warnings
+	writeMem8EXE(0x61D39, 0xEB, true);                // Disabling warnings
+	writeMem8EXE(0x3A21B + 1, 0x00, true);              // prevent crash on re-export
 
 	// Fix op_obj_can_see_obj_ and op_obj_can_hear_obj_
 	makeCallEXE(0x4DC5B, &op_obj_can_see_obj_hook, true);
@@ -1268,8 +1268,8 @@ void BugsInit(void) {
 	makeCallEXE(0x66630, &inven_action_cursor_hook, false);
 
 	// Fixed bug of dead characters freezing when using kill_critter_type
-	writeMem32EXE(0x4EB1E+1, 0x0);
-	writeMem32EXE(0x4E9CD, 0x30BE0075);
+	writeMem32EXE(0x4EB1E+1, 0x0, true);
+	writeMem32EXE(0x4E9CD, 0x30BE0075, true);
 
 	// Correction of using a fixed position to call the start script procedure in the absence of a standard handler
 	makeCallEXE(0x929FB, &exec_script_proc_hook, false);
@@ -1286,5 +1286,5 @@ void BugsInit(void) {
 	}
 
 	// Fix handling of mood parameter in start_gdialog function
-	writeMem32EXE(0x4E025, 0x75FFF883);
+	writeMem32EXE(0x4E025, 0x75FFF883, true);
 }

@@ -373,22 +373,22 @@ void MapFixes(void) {
 
 	SetMapGlobals();
 
-	//hookCallEXE(0x44B36, &h_get_objects_at_pos); todo Problems
+	//hookCallEXE(0x44B36, &h_get_objects_at_pos); fixme Problems
 
-	//makeCallEXE(0x7B300, &h_draw_objs, true); todo Problems
+	//makeCallEXE(0x7B300, &h_draw_objs, true); fixme Problems
 
-	writeMem32EXE(0x7B5CB+2, (uint32_t) getRealBlockAddrData(&pCombatOutlineList));
+	writeMem32EXE(0x7B5CB + 2, (uint32_t) getRealBlockAddrData(&pCombatOutlineList), true);
 
-	writeMem32EXE(0x7B5BB+2, (uint32_t) getRealBlockAddrData(&combatOutlineCount));
-	writeMem32EXE(0x7B5D7+2, (uint32_t) getRealBlockAddrData(&combatOutlineCount));
+	writeMem32EXE(0x7B5BB + 2, (uint32_t) getRealBlockAddrData(&combatOutlineCount), true);
+	writeMem32EXE(0x7B5D7 + 2, (uint32_t) getRealBlockAddrData(&combatOutlineCount), true);
 
 	//FIX - ORIGINALLY PLAYER POSITION SET TO SCROLL POSITION FOR JUMP TO MAP
 	//NOW PLAYER POSITION SET BEFORE SCROLL
-	writeMem32EXE(0x74C08+2, (uint32_t) getRealEXEAddr(D__map_ent_tile));
+	writeMem32EXE(0x74C08 + 2, (uint32_t) getRealEXEAddr(D__map_ent_tile), true);
 
 
 	//writeMem8EXE(0x9E590, 0x90);
-	//makeCallEXE(0x9E591, &get_next_hex_pos, true);// todo Problems
+	//makeCallEXE(0x9E591, &get_next_hex_pos, true);// fixme Problems
 
 	makeCallEXE(0x9E47C, &get_hex_dist, true);
 
@@ -398,7 +398,7 @@ void MapFixes(void) {
 	makeCallEXE(0x9F40C, &draw_floor_tiles, true);
 
 	hookCallEXE(0x9FD5F, &get_floor_tile_light);
-	writeMem16EXE(0x9FD64, 0x15EB);
+	writeMem16EXE(0x9FD64, 0x15EB, true);
 
 	hookCallEXE(0x757D4, &fog_of_war_save);
 
@@ -414,9 +414,9 @@ void MapFixes(void) {
 	//fog files move from save slot
 	hookCallEXE(0x71B9B, &fog_of_war_copy_files);
 
-	//hookCallEXE(0x74953, &fog_of_war_load); //todo Problems
+	//hookCallEXE(0x74953, &fog_of_war_load); // fixme Problems
 
 	if (0 != *(int *) getRealBlockAddrData(&FOG_OF_WAR)) {
-		writeMem8EXE(0x7DE34, 0xC3);
+		writeMem8EXE(0x7DE34, 0xC3, true);
 	}
 }

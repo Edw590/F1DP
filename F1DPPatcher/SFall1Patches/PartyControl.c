@@ -1258,7 +1258,7 @@ void PartyControlInit(void) {
 		hookCallEXE(0x62813, &handle_inventory_hook);
 		hookCallEXE(0x62A2B, &handle_inventory_hook1);
 		makeCallEXE(0x64E93, &switch_hand_hook, false);
-		writeMem32EXE(0x655DF+1, 152);               // Text width 152, not 80
+		writeMem32EXE(0x655DF + 1, 152, true);               // Text width 152, not 80
 		makeCallEXE(0x20833, &combat_input_hook, false);
 		makeCallEXE(0x1234C, &action_skill_use_hook, false);
 		hookCallEXE(0x12603, &action_use_skill_on_hook);

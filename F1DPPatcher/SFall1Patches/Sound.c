@@ -144,7 +144,7 @@ void SoundInit(void) {
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Sound", "NumSoundBuffers", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if ((temp_int > 0) && (temp_int <= 4)) {
-		writeMem8EXE(0x48CA7+2, (uint8_t) temp_int);
+		writeMem8EXE(0x48CA7 + 2, (uint8_t) temp_int, true);
 	}
 
 	// No idea what this does, but the game crashes with it enabled after firing the pistol, so I've disabled it.

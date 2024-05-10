@@ -68,6 +68,30 @@ enum SNO_consts {
 // file. That way, for sure it's not using something that needs to be replaced (which can only happen after this
 // function ends its job successfully and without external help).
 
+// Implementations taken from the EXEPatchUtils functions, following the strict aliasing rules (always using a char*).
+static __inline void writeMem32(void *addr, uint32_t data) {
+	if (0 != addr) {
+		uint8_t *addr_local = addr;
+		*(addr_local + 0) = (uint8_t) (data >> 0 * 8u);
+		*(addr_local + 1) = (uint8_t) (data >> 1 * 8u);
+		*(addr_local + 2) = (uint8_t) (data >> 2 * 8u);
+		*(addr_local + 3) = (uint8_t) (data >> 3 * 8u);
+	}
+}
+static __inline uint32_t readMem32(void *addr) {
+	uint32_t ret_var = 0;
+
+	if (0 != addr) {
+		uint8_t *addr_local = addr;
+		ret_var |= ((uint32_t) *(addr_local + 0)) << 0 * 8u;
+		ret_var |= ((uint32_t) *(addr_local + 1)) << 1 * 8u;
+		ret_var |= ((uint32_t) *(addr_local + 2)) << 2 * 8u;
+		ret_var |= ((uint32_t) *(addr_local + 3)) << 3 * 8u;
+	}
+
+	return ret_var;
+}
+
 // The sn_base parameter MUST be SN_BASE. Constant parameter ALWAYS. This is to disable sum optimizations. I need the
 // function to not have any of the SN_ constants on it, else it will replace them (not good to replace the replacer...).
 void patcherPatcher(uint32_t sn_base) {
@@ -82,9 +106,9 @@ void patcherPatcher(uint32_t sn_base) {
 	__asm {
 			mov     [block_addr], edi // Now the block address is decently stored before any code messes with EDI
 	}
-	code_sec_exe_addr = *(uint32_t *) (block_addr + CODE_SEC_EXE_ADDR_OFFSET);
-	data_sec_exe_addr = *(uint32_t *) (block_addr + DATA_SEC_EXE_ADDR_OFFSET);
-	bin_file_len = *(uint32_t *) (block_addr + BIN_FILE_LEN_OFFSET);
+	code_sec_exe_addr = readMem32((void *) (block_addr + CODE_SEC_EXE_ADDR_OFFSET));
+	data_sec_exe_addr = readMem32((void *) (block_addr + DATA_SEC_EXE_ADDR_OFFSET));
+	bin_file_len = readMem32((void *) (block_addr + BIN_FILE_LEN_OFFSET));
 	code_sec_block_addr = block_addr + CODE_SEC_BLOCK_ADDR_OFFSET;
 	data_sec_block_addr = block_addr + DATA_SEC_BLOCK_ADDR_OFFSET;
 
@@ -93,18 +117,18 @@ void patcherPatcher(uint32_t sn_base) {
 	// 2 or 1, which would cause bad things to happen (reading wrong places in memory - because we read 4 by 4).
 	while (offset <= (bin_file_len - 4)) {
 		uint32_t curr_addr = block_addr + offset;
-		uint32_t curr_value = *(uint32_t *) curr_addr;
+		uint32_t curr_value = readMem32((void *) curr_addr);
 
 		if (curr_value == (sn_base + SNO_CODE_SEC_EXE_ADDR)) {
-			*(uint32_t *) curr_addr = code_sec_exe_addr;
+			writeMem32((void *) curr_addr, code_sec_exe_addr);
 		} else if (curr_value == (sn_base + SNO_DATA_SEC_EXE_ADDR)) {
-			*(uint32_t *) curr_addr = data_sec_exe_addr;
+			writeMem32((void *) curr_addr, data_sec_exe_addr);
 		} else if (curr_value == (sn_base + SNO_CODE_SEC_BLOCK_ADDR)) {
-			*(uint32_t *) curr_addr = code_sec_block_addr;
+			writeMem32((void *) curr_addr, code_sec_block_addr);
 		} else if (curr_value == (sn_base + SNO_DATA_SEC_BLOCK_ADDR)) {
-			*(uint32_t *) curr_addr = data_sec_block_addr;
+			writeMem32((void *) curr_addr, data_sec_block_addr);
 		} else if (curr_value == (sn_base + SNO_BLOCK_ADDR)) {
-			*(uint32_t *) curr_addr = block_addr;
+			writeMem32((void *) curr_addr, block_addr);
 		} else {
 			// Do nothing if none of the special numbers are found
 		}

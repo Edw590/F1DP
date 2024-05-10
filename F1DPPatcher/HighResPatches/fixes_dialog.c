@@ -78,14 +78,14 @@ void DialogInventoryFixes(void) {
 	if (0 != temp_int) {
 		makeCallEXE(0x6A1EB, &inv_insert_item, false);
 		//0006A1F0     /EB 12         JMP SHORT 0006A204                       ; invItemList->invItem[invItemList->inv_size].obj = obj_item
-		writeMem16EXE(0x6A1F0, 0x12EB);
-		writeMem8EXE(0x6A1F0+2, 0x90);
+		writeMem16EXE(0x6A1F0, 0x12EB, true);
+		writeMem8EXE(0x6A1F0 + 2, 0x90, true);
 	}
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_HIGHRES_PATCH, "OTHER_SETTINGS", "BARTER_PC_INV_DROP_FIX", "1", prop_value, &high_res_patch_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if (0 != temp_int) {
-		writeMem32EXE(0x682CE+1, 164);
-		writeMem32EXE(0x682DA+1, 100);
+		writeMem32EXE(0x682CE+1, 164, true);
+		writeMem32EXE(0x682DA + 1, 100, true);
 	}
 }

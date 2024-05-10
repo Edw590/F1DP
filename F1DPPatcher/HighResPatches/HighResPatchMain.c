@@ -52,7 +52,7 @@ void Initialize(void) {
 	WinGeneralFixes();
 
 	//GameScrnFixes();
-	//MapFixes();
+	//MapFixes(); // todo Fog Of War
 
 	//SplashScrnFixes();
 	//CharScrnFixes();

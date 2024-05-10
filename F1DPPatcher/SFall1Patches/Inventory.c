@@ -2350,11 +2350,11 @@ void InventoryInit(void) {
 	sscanf(prop_value, "%d", &temp_int);
 	if (temp_int >= 0) {
 		// Note here: I didn't have to change anything, because the jumps are relative jumps.
-		writeMem8EXE(0x6940D, 0xB8);
-		writeMem32EXE(0x6940E, (uint32_t) temp_int);      // "mov  eax, ReloadReserve"
-		writeMem32EXE(0x69412, 0x057FC139u);              // "cmp  ecx, eax; jg   0x6941B"
-		writeMem32EXE(0x69416, 0xEB40C031u);              // "xor  eax, eax; inc  eax; jmps 0x6941E"
-		writeMem32EXE(0x6941A, 0x91C12903u);              // "sub  ecx, eax; xchg ecx, eax"
+		writeMem8EXE(0x6940D, 0xB8, true);
+		writeMem32EXE(0x6940E, (uint32_t) temp_int, true);      // "mov  eax, ReloadReserve"
+		writeMem32EXE(0x69412, 0x057FC139u, true);              // "cmp  ecx, eax; jg   0x6941B"
+		writeMem32EXE(0x69416, 0xEB40C031u, true);              // "xor  eax, eax; inc  eax; jmps 0x6941E"
+		writeMem32EXE(0x6941A, 0x91C12903u, true);              // "sub  ecx, eax; xchg ecx, eax"
 	}
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "StackEmptyWeapons", "0", prop_value, &sfall1_ini_info_G);
@@ -2371,7 +2371,7 @@ void InventoryInit(void) {
 
 		makeCallEXE(0x683E1, &display_table_inventories_hook, false);
 
-		writeMem16EXE(0x6844A, 0xD231);
+		writeMem16EXE(0x6844A, 0xD231, true);
 		makeCallEXE(0x6847F, &display_table_inventories_hook1, true);
 		hookCallEXE(0x685A2, &display_table_inventories_hook2);
 
@@ -2432,7 +2432,7 @@ void InventoryInit(void) {
 	hookCallEXE(0x64BEB, &item_add_force_call);
 
 	// P and confirm whether to use the main backpack and oka, and not the opened bag
-	writeMem32EXE(0x68BF6, (uint32_t) getRealEXEAddr(D__stack));
+	writeMem32EXE(0x68BF6, (uint32_t) getRealEXEAddr(D__stack), true);
 
 	// When dragging a smot from the window into the bag, a new free air gap is added, but also a bellow
 	hookCallEXE(0x68318, &move_table_source);
@@ -2440,7 +2440,7 @@ void InventoryInit(void) {
 
 	// Report the absence of a place in the monitor window, and in the ovl window
 	hookCallEXE(0x683B2, getRealEXEAddr(C_gdialog_display_msg_));
-	writeMem16EXE(0x68390, 0x8EEB);             // jmps 0x4684F0
+	writeMem16EXE(0x68390, 0x8EEB, true);             // jmps 0x4684F0
 
 	// You can’t take it out of the bag to your hand / if it gets into the bag last day
 	hookCallEXE(0x64F1E, &checkContainerSize);

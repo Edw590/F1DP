@@ -210,6 +210,9 @@ __declspec(naked) static void anim_set_end_hook(void) {
 	}
 }*/
 
+// todo Recheck all writes to memory here. They seem weird. A casts to pointers from a position of an array (?).
+//  After that, replace with write??MemEXE calls.
+
 void AnimationsAtOnceInit(void) {
 	int temp_int = 0;
 	char prop_value[MAX_PROP_VALUE_LEN];
@@ -273,7 +276,7 @@ void AnimationsAtOnceInit(void) {
 		*(uint8_t **) getRealBlockAddrData(&sad) = malloc(3240 * ((size_t) AnimationsLimit_local + 1));
 
 		//reserved animation limit check (old 13)
-		writeMem8EXE(0x13665 + 2, (uint8_t) AnimationsLimit_local - 8);
+		writeMem8EXE(0x13665 + 2, (uint8_t) AnimationsLimit_local - 8, true);
 
 		//movement animation limit checks (old 16)
 		temp_int = sizeof(*AnimMove_local) / 4;
@@ -298,7 +301,7 @@ void AnimationsAtOnceInit(void) {
 		//struct array 1///////////////////
 
 		//old addr 0x55FB84
-		writeMem32EXE(0x134DC + 2, (uint32_t) anim_set);
+		writeMem32EXE(0x134DC + 2, (uint32_t) anim_set, true);
 
 		//old addr 0x55FB90
 		temp_int = sizeof(*fake_anim_set_C_local) / 4;
@@ -343,7 +346,7 @@ void AnimationsAtOnceInit(void) {
 		}
 
 		//old addr 0x560338
-		writeMem32EXE(0x139B7 + 2, 1936 + 36 + (uint32_t) anim_set);
+		writeMem32EXE(0x139B7 + 2, 1936 + 36 + (uint32_t) anim_set, true);
 
 		//old addr 0x56033C
 		temp_int = sizeof(*anim_set_28_local) / 4;
@@ -352,7 +355,7 @@ void AnimationsAtOnceInit(void) {
 		}
 
 		//old addr 0x560348
-		writeMem32EXE(0x156EA + 2, 1936 + 52 + (uint32_t) anim_set);
+		writeMem32EXE(0x156EA + 2, 1936 + 52 + (uint32_t) anim_set, true);
 
 		//struct array 2///////////////////
 
@@ -417,10 +420,10 @@ void AnimationsAtOnceInit(void) {
 		}
 
 		//old addr 0x54003A
-		writeMem32EXE(0x16309 + 3, 38 + (uint32_t) sad);
+		writeMem32EXE(0x16309 + 3, 38 + (uint32_t) sad, true);
 
 		//old addr 0x54003B
-		writeMem32EXE(0x162CF + 2, 39 + (uint32_t) sad);
+		writeMem32EXE(0x162CF + 2, 39 + (uint32_t) sad, true);
 
 		//old addr 0x54003C
 		temp_int = sizeof(*sad_28_local) / 4;

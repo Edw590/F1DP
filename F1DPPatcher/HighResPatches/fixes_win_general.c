@@ -30,13 +30,19 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "HighResPatches.h"
 #include "fixes_win_general.h"
 
+union bytes8 {
+	double d;
+	uint64_t i;
+};
+
 //____________________
 void WinGeneralFixes(void) {
-	double temp_double = 0;
+	union bytes8 temp_double;
 	char prop_value[MAX_PROP_VALUE_LEN];
 	memset(prop_value, 0, MAX_PROP_VALUE_LEN);
+	memset(&temp_double, 0, 8);
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_HIGHRES_PATCH, "OTHER_SETTINGS", "FADE_TIME_MODIFIER", "60", prop_value, &high_res_patch_ini_info_G);
 	sscanf(prop_value, "%lf", &temp_double);
-	*(double *) getRealEXEAddr(0xFB3DC) = temp_double;
+	writeMem64EXE((uint32_t) getRealEXEAddr(0xFB3DC), temp_double.i, false);
 }
