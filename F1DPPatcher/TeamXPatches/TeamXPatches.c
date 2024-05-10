@@ -1,4 +1,4 @@
-// Copyright 2022 DADi590
+// Copyright 2022 Edw590
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -43,7 +43,7 @@ __declspec(naked) static void patch1(void) {
 			test    eax, eax
 			jz      otherJump
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+0x38B18]
@@ -52,7 +52,7 @@ __declspec(naked) static void patch1(void) {
 			retn
 
 		otherJump:
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+0x38B34]
@@ -61,13 +61,13 @@ __declspec(naked) static void patch1(void) {
 			retn
 
 		something:
-			lea     esp, [esp-4] // [DADi590: reserve space to "PUSH EDI"]
+			lea     esp, [esp-4] // [Edw590: reserve space to "PUSH EDI"]
 			push    0
 			mov     edx, 0x150
 			mov     eax, 6
 			xor     ecx, ecx
 			xor     ebx, ebx
-			mov     [esp+1*4], edi // [DADi590: "PUSH EDI"]
+			mov     [esp+1*4], edi // [Edw590: "PUSH EDI"]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_art_id_]
 			call    edi
@@ -77,7 +77,7 @@ __declspec(naked) static void patch1(void) {
 			lea     edx, [edi+0xF131C]
 			pop     edi
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+0x38B5F]

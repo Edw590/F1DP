@@ -1,4 +1,4 @@
-// Copyright (C) 2022 DADi590
+// Copyright (C) 2022 Edw590
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 // This had no copyright notice on it. I'm keeping the same license as in the other files of the project on it though
 // (I'm just licensing it only to myself because I can't put the original authors - no notice).
 //
-// Original code modified by me, DADi590, to adapt it to this project, starting on 2022-03-02.
+// Original code modified by me, Edw590, to adapt it to this project, starting on 2022-03-02.
 // NOTE: I don't see mention to Crafty in the copyright notices, but I'll just say here that this code was taken from
 // his modification of the original sFall1.
 
@@ -108,9 +108,9 @@ __declspec(naked) static void is_within_perception_hook(void) {
 			mov     edx, esp
 			push    ecx
 			push    ebx
-			lea     esp, [esp-4] // [DADi590: reserve space to "PUSH EDI"]
+			lea     esp, [esp-4] // [Edw590: reserve space to "PUSH EDI"]
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the push
+			lea     esp, [esp-4] // [Edw590] Reserve space for the push
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_obj_blocking_at_]
@@ -148,9 +148,9 @@ __declspec(naked) static void is_within_perception_hook(void) {
 			mov     edx, esp
 			push    ecx
 			push    ebx
-			lea     esp, [esp-4] // [DADi590: reserve space to "PUSH EDI"]
+			lea     esp, [esp-4] // [Edw590: reserve space to "PUSH EDI"]
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the push
+			lea     esp, [esp-4] // [Edw590] Reserve space for the push
 			push    edi
 			mov     edi, SN_CODE_SEC_BLOCK_ADDR
 			lea     edi, [edi+func_4012C7]

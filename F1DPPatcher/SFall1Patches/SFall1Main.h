@@ -1,4 +1,4 @@
-// Copyright 2022 DADi590
+// Copyright 2022 Edw590
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -20,7 +20,7 @@
 // This had no copyright notice on it. I'm keeping the same license as in the other files of the project on it though
 // (I'm just licensing it only to myself because I can't put the original authors - no notice).
 //
-// Original code modified by me, DADi590, to adapt it to this project, starting on 2022-03-02.
+// Original code modified by me, Edw590, to adapt it to this project, starting on 2022-03-02.
 // NOTE: I don't see mention to Crafty in the copyright notices, but I'll just say here that this code was taken from
 // his modification of the original sFall1.
 

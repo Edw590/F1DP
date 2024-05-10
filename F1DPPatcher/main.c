@@ -1,4 +1,4 @@
-// Copyright 2022 DADi590
+// Copyright 2022 Edw590
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -53,7 +53,7 @@
 
 struct FileInfo f1dpatch_ini_info_G = {0};
 
-static char version_str[] = "F1DP v"F1DP_VER_STR" by DADi590";
+static char version_str[] = "F1DP v"F1DP_VER_STR" by Edw590";
 
 bool realMain(void);
 static void patchVerStr(void);
@@ -170,11 +170,11 @@ __declspec(naked) static void getverstr_hook(void) {
 			lea     edx, [edi+version_str]
 			pop     edi
 
-			lea     esp, [esp-4] // [DADi590: reserve space to "PUSH EDI"]
+			lea     esp, [esp-4] // [Edw590: reserve space to "PUSH EDI"]
 			push    edx
 			mov     edx, eax
 			push    eax
-			mov     [esp+2*4], edi // [DADi590: "PUSH EDI"]
+			mov     [esp+2*4], edi // [Edw590: "PUSH EDI"]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+F_sprintf_]
 			call    edi
@@ -341,13 +341,13 @@ void printNumOpenFiles(bool inc) {
 		fmt_str = getRealBlockAddrData(&fmt_str_inc);
 
 		__asm {
-				lea     esp, [esp-4] // [DADi590: reserve space to "PUSH EDI"]
+				lea     esp, [esp-4] // [Edw590: reserve space to "PUSH EDI"]
 
 				push    [prev_errno]
 				push    [curr_opened_files_local]
 				push    [fmt_str]
 
-				mov     [esp+5*4], edi // [DADi590: "PUSH EDI"]
+				mov     [esp+5*4], edi // [Edw590: "PUSH EDI"]
 				mov     edi, SN_CODE_SEC_EXE_ADDR
 				lea     edi, [edi+C_debug_printf_]
 				call    edi
@@ -360,13 +360,13 @@ void printNumOpenFiles(bool inc) {
 		fmt_str = getRealBlockAddrData(&fmt_str_dec);
 
 		__asm {
-				lea     esp, [esp-4] // [DADi590: reserve space to "PUSH EDI"]
+				lea     esp, [esp-4] // [Edw590: reserve space to "PUSH EDI"]
 
 				push    [prev_errno]
 				push    [curr_opened_files_local]
 				push    [fmt_str]
 
-				mov     [esp+4*4], edi // [DADi590: "PUSH EDI"]
+				mov     [esp+4*4], edi // [Edw590: "PUSH EDI"]
 				mov     edi, SN_CODE_SEC_EXE_ADDR
 				lea     edi, [edi+C_debug_printf_]
 				call    edi
@@ -391,7 +391,7 @@ __declspec(naked) static void sopen_hook(void) {
 			push    esi
 			push    edi
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+0xD5583]
@@ -415,7 +415,7 @@ __declspec(naked) static void __close_hook(void) {
 			push    edx
 			mov     ecx, eax
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+0xDF494]
@@ -449,7 +449,7 @@ static int db_fopen_map_save_hook(char *filename, char *mode) {
 	__asm {
 			pusha
 
-			lea     esp, [esp-4] // [DADi590: reserve space to "PUSH EDI"]
+			lea     esp, [esp-4] // [Edw590: reserve space to "PUSH EDI"]
 
 			push    [errno]
 			push    [ret_var]
@@ -457,7 +457,7 @@ static int db_fopen_map_save_hook(char *filename, char *mode) {
 			push    [filename]
 			push    [fmt_str]
 
-			mov     [esp+5*4], edi // [DADi590: "PUSH EDI"]
+			mov     [esp+5*4], edi // [Edw590: "PUSH EDI"]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_debug_printf_]
 			call    edi

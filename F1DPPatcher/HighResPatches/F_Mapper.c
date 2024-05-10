@@ -1,7 +1,7 @@
 /*
 The MIT License (MIT)
 Copyright © 2022 Matt Wells
-Copyright © 2022 DADi590
+Copyright © 2022 Edw590
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this
 software and associated documentation files (the “Software”), to deal in the
@@ -21,7 +21,7 @@ CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFT
 OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 //
-// Original code modified by me, DADi590, to adapt it to this project, starting on 2022-08-28.
+// Original code modified by me, Edw590, to adapt it to this project, starting on 2022-08-28.
 
 #include "../CLibs/stdio.h"
 #include "../CLibs/stdlib.h"
@@ -1542,7 +1542,7 @@ uint32_t CheckAngledTileEdge(int x, int y, uint32_t tileLstNum) {
 	(void *) x;
 	(void *) y;
 
-	/* DADi590: commented this because it's not important to FOW
+	/* Edw590: commented this because it's not important to FOW
 	if (isAngledEdges) {
 		struct MAPedge* currentEdges = M_CURRENT_MAP.currentEDGES;
 		if (x > currentEdges->angleEdge.left || x < currentEdges->angleEdge.right || y > currentEdges->angleEdge.bottom || y < currentEdges->angleEdge.top)

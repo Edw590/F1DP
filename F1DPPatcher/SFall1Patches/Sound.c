@@ -1,4 +1,4 @@
-// Copyright (C) 2022 DADi590
+// Copyright (C) 2022 Edw590
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 // This had no copyright notice on it. I'm keeping the same license as in the other files of the project on it though
 // (I'm just licensing it only to myself because I can't put the original authors - no notice).
 //
-// Original code modified by me, DADi590, to adapt it to this project, starting on 2022-03-02.
+// Original code modified by me, Edw590, to adapt it to this project, starting on 2022-03-02.
 // NOTE: I don't see mention to Crafty in the copyright notices, but I'll just say here that this code was taken from
 // his modification of the original sFall1.
 
@@ -41,7 +41,7 @@
 			pop     edi
 			pop     edx
 			mov     esi, eax
-			lea     esp, [esp-4] // [DADi590: reserve space to "PUSH EDI"]
+			lea     esp, [esp-4] // [Edw590: reserve space to "PUSH EDI"]
 			push    eax
 			mov     al, dl
 			push    eax
@@ -51,11 +51,11 @@
 			mov     al, cl
 			push    eax
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the "PUSH"
+			lea     esp, [esp-4] // [Edw590] Reserve space for the "PUSH"
 			push    edi
 			mov     edi, SN_DATA_SEC_EXE_ADDR
 			lea     edi, [edi+0xF347C]                   // 'W%c%c%1d%cXX%1d'
-			mov     [esp+4], edi // [DADi590: "PUSH"]
+			mov     [esp+4], edi // [Edw590: "PUSH"]
 			pop     edi
 
 			push    esi
@@ -63,7 +63,7 @@
 			lea     edi, [esi+D__sfx_file_name]
 			pop     esi
 			push    edi
-			mov     [esp+7*4], edi // [DADi590: "PUSH EDI"]
+			mov     [esp+7*4], edi // [Edw590: "PUSH EDI"]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+F_sprintf_]
 			call    edi
@@ -76,29 +76,29 @@
 			call    edi
 			pop     edi
 			push    edx
-			lea     esp, [esp-4] // [DADi590: reserve space to "PUSH EDI"]
+			lea     esp, [esp-4] // [Edw590: reserve space to "PUSH EDI"]
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the "PUSH"
+			lea     esp, [esp-4] // [Edw590] Reserve space for the "PUSH"
 			push    edi
 			mov     edi, SN_DATA_SEC_EXE_ADDR
 			lea     edi, [edi+0xF2FA4]                   // '.ACM'
-			mov     [esp+4], edi // [DADi590: "PUSH"]
+			mov     [esp+4], edi // [Edw590: "PUSH"]
 			pop     edi
 
 			push    eax                                  // _sfx_file_name
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the "PUSH"
+			lea     esp, [esp-4] // [Edw590] Reserve space for the "PUSH"
 			push    edi
 			mov     edi, SN_DATA_SEC_EXE_ADDR
 			lea     edi, [edi+0xF2C50]                   // 'sound\sfx\'
-			mov     [esp+4], edi // [DADi590: "PUSH"]
+			mov     [esp+4], edi // [Edw590: "PUSH"]
 			pop     edi
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the "PUSH"
+			lea     esp, [esp-4] // [Edw590] Reserve space for the "PUSH"
 			push    edi
 			mov     edi, SN_DATA_SEC_EXE_ADDR
 			lea     edi, [edi+0xF3334]                   // '%s%s%s'
-			mov     [esp+4], edi // [DADi590: "PUSH"]
+			mov     [esp+4], edi // [Edw590: "PUSH"]
 			pop     edi
 
 			push    edi
@@ -106,7 +106,7 @@
 			lea     edx, [edi+D__str]
 			pop     edi
 			push    edx
-			mov     [esp+5*4], edi // [DADi590: "PUSH EDI"]
+			mov     [esp+5*4], edi // [Edw590: "PUSH EDI"]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+F_sprintf_]
 			call    edi

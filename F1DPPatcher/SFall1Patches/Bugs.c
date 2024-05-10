@@ -1,4 +1,4 @@
-// Copyright (C) 2022 DADi590
+// Copyright (C) 2022 Edw590
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 // This had no copyright notice on it. I'm keeping the same license as in the other files of the project on it though
 // (I'm just licensing it only to myself because I can't put the original authors - no notice).
 //
-// Original code modified by me, DADi590, to adapt it to this project, starting on 2022-03-02.
+// Original code modified by me, Edw590, to adapt it to this project, starting on 2022-03-02.
 // NOTE: I don't see mention to Crafty in the copyright notices, but I'll just say here that this code was taken from
 // his modification of the original sFall1.
 
@@ -70,7 +70,7 @@ __declspec(naked) static void perform_withdrawal_start_hook(void) {
 			retn
 
 		end:
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_display_print_]
@@ -171,7 +171,7 @@ __declspec(naked) static void item_d_check_addict_hook(void) {
 			xchg    ecx, eax                             // eax = _obj_dude
 			call    queue_find_first_
 		end:
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+0x6CA8D]
@@ -185,7 +185,7 @@ __declspec(naked) static void queue_clear_type_hook(void) {
 	__asm {
 			mov     ebx, [esi]
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_mem_free_]
@@ -246,7 +246,7 @@ __declspec(naked) static void invenWieldFunc_hook(void) {
 		skip:
 			popad
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_item_get_type_]
@@ -445,7 +445,7 @@ __declspec(naked) static void inven_pickup_hook(void) {
 			cmp     edx, 6
 			jb      next
 		end:
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+0x64C46]
@@ -627,9 +627,9 @@ __declspec(naked) static void loot_container_hook1(void) {
 			pop     edi
 			cmp     edi, 1
 			jne     skip
-			lea     esp, [esp-4] // [DADi590: reserve space to "PUSH EDI"]
+			lea     esp, [esp-4] // [Edw590: reserve space to "PUSH EDI"]
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the push
+			lea     esp, [esp-4] // [Edw590] Reserve space for the push
 			push    edi
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
 			mov     edi, [edi+XPWithSwiftLearner]
@@ -640,7 +640,7 @@ __declspec(naked) static void loot_container_hook1(void) {
 			push    ebx
 			lea     eax, [esp+0x8]
 			push    eax
-			mov     [esp+5*4], edi // [DADi590: "PUSH EDI"]
+			mov     [esp+5*4], edi // [Edw590: "PUSH EDI"]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+F_sprintf_]
 			call    edi
@@ -653,7 +653,7 @@ __declspec(naked) static void loot_container_hook1(void) {
 			call    edi
 			pop     edi
 		skip:
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+0x6782A]
@@ -680,7 +680,7 @@ __declspec(naked) static void set_new_results_hook(void) {
 		end:
 			pop     eax                                  // Destroying the return address
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+0x22821]
@@ -769,7 +769,7 @@ __declspec(naked) static void combat_ctd_init_hook(void) {
 			jnz     end
 			mov     [ebx+0x54], eax                      // pobj.who_hit_me
 		end:
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+0x20E01]
@@ -799,7 +799,7 @@ __declspec(naked) static void obj_save_hook(void) {
 		skip:
 			mov     [edx+0x18], eax                      // combat_data.who_hit_me
 		end:
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+0x7B1D2]
@@ -858,7 +858,7 @@ __declspec(naked) static void explode_critter_kill(void) {
 			pop      ecx
 			pop      edx
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_critter_kill_]
@@ -1115,7 +1115,7 @@ __declspec(naked) static void gdActivateBarter_hook(void) {
 			push    ebp
 			sub     esp, 0x14
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the push
+			lea     esp, [esp-4] // [Edw590] Reserve space for the push
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+0x410C3]
@@ -1152,7 +1152,7 @@ __declspec(naked) static void op_negate_hook(void) {
 			mov     ebx, VAR_TYPE_FLOAT
 			pop     eax                                  // Destroying the return address
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the push
+			lea     esp, [esp-4] // [Edw590] Reserve space for the push
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+0x5EA70]
@@ -1245,7 +1245,7 @@ void BugsInit(void) {
 	// Fixed display of received damage on instant death
 	makeCallEXE(0x22471, &compute_damage_hook, true);
 
-	// [DADi590]: This below was commented out, but on release 1.7.17 it wasn't, so here it is enabled.
+	// [Edw590]: This below was commented out, but on release 1.7.17 it wasn't, so here it is enabled.
 	// Applying imported procedure patch (http://teamx.ru/site_arc/smf/index.php-topic=398.0.htm)
 	writeMem32EXE(0x5F181, 0x1C24A489, true);         // Fixing Time Stack Issues
 	writeMem8EXE(0x61A95, 0xEB, true);                // Disabling warnings

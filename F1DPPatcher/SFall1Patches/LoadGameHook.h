@@ -1,4 +1,4 @@
-// Copyright (C) 2022 DADi590
+// Copyright (C) 2022 Edw590
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 // This had no copyright notice on it. I'm keeping the same license as in the other files of the project on it though
 // (I'm just licensing it only to myself because I can't put the original authors - no notice).
 //
-// Original code modified by me, DADi590, to adapt it to this project, starting on 2022-03-02.
+// Original code modified by me, Edw590, to adapt it to this project, starting on 2022-03-02.
 // NOTE: I don't see mention to Crafty in the copyright notices, but I'll just say here that this code was taken from
 // his modification of the original sFall1.
 
@@ -31,7 +31,7 @@ extern uint32_t InLoop;
 
 void LoadGameHookInit(void);
 
-// [DADi590:] I had to swap the bitwise operations with the actual values because Watcom won't get their value before
+// [Edw590:] I had to swap the bitwise operations with the actual values because Watcom won't get their value before
 // feeding them into the assembler for some reason, and then it's an error because the assembler doesn't know what 1<<31
 // is...
 

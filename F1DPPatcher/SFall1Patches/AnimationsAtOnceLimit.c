@@ -1,6 +1,6 @@
 /*
  *    sfall
- *    Copyright (C) 2009, 2010  Mash (Matt Wells, mashw at bigpond dot net dot au), 2022 DADi590
+ *    Copyright (C) 2009, 2010  Mash (Matt Wells, mashw at bigpond dot net dot au), 2022 Edw590
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Original code modified by me, DADi590, to adapt it to this project, starting on 2022-03-02.
+// Original code modified by me, Edw590, to adapt it to this project, starting on 2022-03-02.
 // NOTE: I don't see mention to Crafty in the copyright notices, but I'll just say here that this code was taken from
 // his modification of the original sFall1.
 
@@ -181,7 +181,7 @@ __declspec(naked) static void anim_set_end_hook(void) {
 		end:
 			mov     dword ptr [edi][esi], -1000          // curr_anim
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+0x158B2]
@@ -200,7 +200,7 @@ __declspec(naked) static void anim_set_end_hook(void) {
 			jz      skip                                 // No
 			inc     eax                                  // RB_RESERVED
 		skip:
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_register_begin_]
@@ -433,7 +433,7 @@ void AnimationsAtOnceInit(void) {
 	}
 
 	makeCallEXE(0x1588D, &anim_set_end_hook, true);
-	//hookCallEXE(0x4FE65, &op_anim_hook); - [DADi590] Already commented out
+	//hookCallEXE(0x4FE65, &op_anim_hook); - [Edw590] Already commented out
 }
 
 void AnimationsAtOnceExit(void) {

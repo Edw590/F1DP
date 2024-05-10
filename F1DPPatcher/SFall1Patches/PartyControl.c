@@ -1,6 +1,6 @@
 /*
  *    sfall
- *    Copyright (C) 2013  The sfall team, 2022 DADi590
+ *    Copyright (C) 2013  The sfall team, 2022 Edw590
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Original code modified by me, DADi590, to adapt it to this project, starting on 2022-03-02.
+// Original code modified by me, Edw590, to adapt it to this project, starting on 2022-03-02.
 // NOTE: I don't see mention to Crafty in the copyright notices, but I'll just say here that this code was taken from
 // his modification of the original sFall1.
 
@@ -60,7 +60,7 @@ static uint32_t real_trait2 = 0;
 static uint32_t real_itemButtonItems[6 * 2] = {0};
 static uint32_t real_drug_gvar[6] = {0};
 static uint32_t real_bbox_sneak = 0;
-//static uint32_t party_PERK_bonus_awareness = 0; - [DADi590: not used, so commented out]
+//static uint32_t party_PERK_bonus_awareness = 0; - [Edw590: not used, so commented out]
 
 static uint8_t *NameBox = NULL;
 
@@ -111,10 +111,10 @@ __declspec(naked) static void PartyControl_CanUseWeapon(void) {
 			and     edx, 0xFFF                           // edx=Index
 			mov     eax, [esi+0x1C]                       // cur_rot
 			inc     eax
-			lea     esp, [esp-4] // [DADi590: reserve space to "PUSH EDI"]
+			lea     esp, [esp-4] // [Edw590: reserve space to "PUSH EDI"]
 			push    eax                                  // ID3=Direction code
 			mov     eax, ObjType_Critter
-			mov     [esp+1*4], edi // [DADi590: "PUSH EDI"]
+			mov     [esp+1*4], edi // [Edw590: "PUSH EDI"]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_art_id_]
 			call    edi
@@ -214,7 +214,7 @@ __declspec(naked) void SaveDudeState(void) {
 			xchg    edi, eax                             // edi = Buffer
 			pop     edx                                  // edx = DisplayText
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the push
+			lea     esp, [esp-4] // [Edw590] Reserve space for the push
 			push    edi
 			mov     edi, SN_DATA_SEC_EXE_ADDR
 			lea     edi, [edi+D__curr_font_num]
@@ -271,7 +271,7 @@ __declspec(naked) void SaveDudeState(void) {
 			mov     edi, SN_DATA_SEC_EXE_ADDR
 			movzx   eax, byte ptr ds:[edi+D__GreenColor]
 			pop     edi
-			lea     esp, [esp-4] // [DADi590: reserve space to "PUSH EDI"]
+			lea     esp, [esp-4] // [Edw590: reserve space to "PUSH EDI"]
 			push    eax                                  // Color
 			push    19
 			mov     edx, 129
@@ -280,7 +280,7 @@ __declspec(naked) void SaveDudeState(void) {
 			xor     ecx, ecx
 			mov     ebx, 3
 			xchg    edi, eax                             // toSurface
-			mov     [esp+3*4], edi // [DADi590: "PUSH EDI"]
+			mov     [esp+3*4], edi // [Edw590: "PUSH EDI"]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_draw_box_]
 			call    edi
@@ -770,7 +770,7 @@ __declspec(naked) static void CombatWrapper_v2(void) {
 		skipControl:
 			popad
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_combat_turn_]
@@ -865,7 +865,7 @@ __declspec(naked) static void stat_pc_min_exp_hook(void) {
 			retn
 
 		end:
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_stat_pc_min_exp_]
@@ -978,7 +978,7 @@ __declspec(naked) static void handle_inventory_hook1(void) {
 			pop     edi
 			pop     eax
 		end:
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_inven_worn_]
@@ -1114,7 +1114,7 @@ __declspec(naked) static void damage_object_hook(void) {
 			pop     ecx
 			pop     ebx                                  // Destroying the return address
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+0x228F6]
@@ -1141,7 +1141,7 @@ __declspec(naked) static void op_give_exp_points_hook(void) {
 		skip:
 			xchg    ecx, eax
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_stat_pc_add_experience_]
@@ -1171,7 +1171,7 @@ __declspec(naked) static void adjust_fid_hook(void) {
 			jz      skip
 			xchg    edx, eax
 		skip:
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+0x650E5]
@@ -1189,7 +1189,7 @@ __declspec(naked) static void refresh_box_bar_win_hook(void) {
 			pop     edi
 			jne     end
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_is_pc_flag_]

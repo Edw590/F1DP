@@ -1,4 +1,4 @@
-// Copyright (C) 2022 DADi590
+// Copyright (C) 2022 Edw590
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 // This had no copyright notice on it. I'm keeping the same license as in the other files of the project on it though
 // (I'm just licensing it only to myself because I can't put the original authors - no notice).
 //
-// Original code modified by me, DADi590, to adapt it to this project, starting on 2022-03-02.
+// Original code modified by me, Edw590, to adapt it to this project, starting on 2022-03-02.
 // NOTE: I don't see mention to Crafty in the copyright notices, but I'll just say here that this code was taken from
 // his modification of the original sFall1.
 
@@ -255,7 +255,7 @@ __declspec(naked) static void op_set_global_var_hook(void) {
 		skip:
 			popad
 		end:
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_game_set_global_var_]
@@ -301,7 +301,7 @@ __declspec(naked) static void intface_item_reload_hook(void) {
 			pop     edi
 			popad
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_gsound_play_sfx_file_]
@@ -371,7 +371,7 @@ __declspec(naked) static void intface_rotate_numbers_hook(void) {
 		negative:
 			xor     ebx, ebx
 		end:
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+0x563F6]
@@ -453,7 +453,7 @@ __declspec(naked) static void obj_outline_all_items_on(void) {
 			pop     edi
 			jmp     loopObject
 		end:
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_tile_refresh_display_]
@@ -504,7 +504,7 @@ __declspec(naked) static void obj_outline_all_items_off(void) {
 			pop     edi
 			jmp     loopObject
 		end:
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_tile_refresh_display_]
@@ -524,7 +524,7 @@ __declspec(naked) static void gmouse_bk_process_hook(void) {
 		end:
 			mov     edx, 0x40
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_obj_outline_object_]
@@ -682,13 +682,13 @@ __declspec(naked) static void Brotherhood_final(void) {
 		RhombusDead:
 			jmp     edx
 		nar_31:
-			lea     esp, [esp-4] // [DADi590: reserve space to "PUSH EDI"]
+			lea     esp, [esp-4] // [Edw590: reserve space to "PUSH EDI"]
 			push    0
 			mov     edx, 317                             // SEQ5D.FRM
 			mov     eax, ObjType_Intrface
 			xor     ecx, ecx
 			xor     ebx, ebx
-			mov     [esp+1*4], edi // [DADi590: "PUSH EDI"]
+			mov     [esp+1*4], edi // [Edw590: "PUSH EDI"]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_art_id_]
 			call    edi
@@ -698,7 +698,7 @@ __declspec(naked) static void Brotherhood_final(void) {
 			lea     edx, [edi+_nar_31]
 			pop     edi
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+0x38B5F]
@@ -754,7 +754,7 @@ __declspec(naked) static void editor_design_hook2(void) {
 			pop     edi
 			pop     esi
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_RestorePlayer_]
@@ -828,7 +828,7 @@ __declspec(naked) static void perk_can_add_hook(void) {
 			cmp     eax, edx
 			jge     end
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+0x866D1]
@@ -837,7 +837,7 @@ __declspec(naked) static void perk_can_add_hook(void) {
 			retn
 
 		end:
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+0x866D8]
@@ -958,7 +958,7 @@ __declspec(naked) static void check_move_hook(void) {
 		end:
 			pop     eax                                  // Destroying the return address
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+0x179BF]
@@ -982,7 +982,7 @@ __declspec(naked) static void gmouse_bk_process_hook1(void) {
 		end:
 			pop     eax                                  // Destroying the return address
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+0x43625]
@@ -1001,7 +1001,7 @@ __declspec(naked) static void FakeCombatFix1(void) {
 			jz      end                                  // No
 			call    FirstTurnCheckDist
 		end:
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_action_get_an_object_]
@@ -1020,7 +1020,7 @@ __declspec(naked) static void FakeCombatFix2(void) {
 			jz      end                                  // No
 			call    FirstTurnCheckDist
 		end:
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_action_loot_container_]
@@ -1049,7 +1049,7 @@ __declspec(naked) void FakeCombatFix3(void) {
 			jz      end                                  // No
 			call    FirstTurnCheckDist
 		end:
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_action_use_an_item_on_object_]
@@ -1089,7 +1089,7 @@ __declspec(naked) static void combat_hook(void) {
 			inc     dword ptr [edi+_combatNumTurns]
 			pop     edi
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_combat_should_end_]
@@ -1166,13 +1166,13 @@ __declspec(naked) static void combat_update_critter_outline_for_los(void) {
 			mov     edi, ds:[esi+D__combat_highlight]
 			pop     esi
 			push    ecx
-			lea     esp, [esp-4] // [DADi590: reserve space to "PUSH EDI"]
+			lea     esp, [esp-4] // [Edw590: reserve space to "PUSH EDI"]
 			push    eax
 			mov     eax, esi
 			xchg    ecx, eax                             // ecx = target, eax=source (_obj_dude)
 			mov     ebx, [ecx+0x4]                       // target_tile
 			mov     edx, [eax+0x4]                       // source_tile
-			mov     [esp+1*4], edi // [DADi590: "PUSH EDI"]
+			mov     [esp+1*4], edi // [Edw590: "PUSH EDI"]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_combat_is_shot_blocked_]
 			call    edi
@@ -1321,7 +1321,7 @@ __declspec(naked) static void obj_move_to_tile_hook(void) {
 			mov     ebx, [esp+0x4C]
 			test    ebx, ebx
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+0x7C2D0]
@@ -1731,7 +1731,7 @@ __declspec(naked) static void barter_attempt_transaction_hook(void) {
 			pop     edi
 			pop     eax                                  // Destroying the return address
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+0x67E18]
@@ -1745,7 +1745,7 @@ __declspec(naked) static void item_m_turn_off_hook(void) {
 	__asm {
 			and     byte ptr [eax+0x25], 0xDF            // Reset the used item flag
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_queue_remove_this_]
@@ -1762,14 +1762,14 @@ __declspec(naked) static void register_object_take_out_hook(void) {
 			mov     ecx, edx                             // ID1
 			mov     edx, [eax+0x1C]                      // cur_rot
 			inc     edx
-			lea     esp, [esp-4] // [DADi590: reserve space to "PUSH EDI"]
+			lea     esp, [esp-4] // [Edw590: reserve space to "PUSH EDI"]
 			push    edx                                  // ID3
 			xor     ebx, ebx                             // ID2
 			mov     edx, [eax+0x20]                      // fid
 			and     edx, 0xFFF                           // Index
 			xor     eax, eax
 			inc     eax                                  // ObjType
-			mov     [esp+1*4], edi // [DADi590: "PUSH EDI"]
+			mov     [esp+1*4], edi // [Edw590: "PUSH EDI"]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_art_id_]
 			call    edi
@@ -1802,7 +1802,7 @@ __declspec(naked) static void game_time_date_hook(void) {
 			pop     edi
 			mov     [edi], esi
 		end:
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+0x917AE]
@@ -1825,7 +1825,7 @@ __declspec(naked) static void stat_level_hook1(void) {
 			jle     end
 			xchg    esi, eax
 		end:
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+0x9C5CC]
@@ -1908,7 +1908,7 @@ __declspec(naked) static void script_chk_timed_events_hook(void) {
 			inc     eax
 			call    inc_game_time_hook
 		end:
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+0x920D7]
@@ -1975,7 +1975,7 @@ __declspec(naked) static void gdAddOptionStr_hook(void) {
 			add     ecx, '1'
 			push    ecx
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+0x3E807]
@@ -1996,7 +1996,7 @@ __declspec(naked) static void _WinMain_hook(void) {
 			call    OnExit
 			popad
 
-			// [DADi590: no need to call exit() here. That's done in the Loader code already.]
+			// [Edw590: no need to call exit() here. That's done in the Loader code already.]
 			retn
 	}
 }

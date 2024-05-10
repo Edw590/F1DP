@@ -1,6 +1,6 @@
 /*
  *    sfall
- *    Copyright (C) 2008, 2009, 2010, 2013, 2014  The sfall team, 2022 DADi590
+ *    Copyright (C) 2008, 2009, 2010, 2013, 2014  The sfall team, 2022 Edw590
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Original code modified by me, DADi590, to adapt it to this project, starting on 2022-03-02.
+// Original code modified by me, Edw590, to adapt it to this project, starting on 2022-03-02.
 // NOTE: I don't see mention to Crafty in the copyright notices, but I'll just say here that this code was taken from
 // his modification of the original sFall1.
 
@@ -91,7 +91,7 @@ __declspec(naked) static void display_stats_hook(void) {
 			shl     eax, 1
 			add     [esp+4*4], eax                       // min_dmg
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+F_sprintf_]
@@ -109,7 +109,7 @@ __declspec(naked) static void display_stats_hook1(void) {
 			call    edi
 			pop     edi
 			add     eax, 2
-			lea     esp, [esp-4] // [DADi590: reserve space to "PUSH EDI"]
+			lea     esp, [esp-4] // [Edw590: reserve space to "PUSH EDI"]
 			push    eax
 			mov     eax, PERK_bonus_hth_damage
 			push    edi
@@ -123,7 +123,7 @@ __declspec(naked) static void display_stats_hook1(void) {
 			mov     eax, [esp+0x94+0x4 + 4]
 			push    eax
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the "PUSH"
+			lea     esp, [esp-4] // [Edw590] Reserve space for the "PUSH"
 			push    edi
 			mov     edi, SN_DATA_SEC_EXE_ADDR
 			lea     edi, [edi+0xF91F8]                         // '%s %d-%d'
@@ -132,14 +132,14 @@ __declspec(naked) static void display_stats_hook1(void) {
 
 			lea     eax, [esp+0xC+0x4 + 4]
 			push    eax
-			mov     [esp+5*4], edi // [DADi590: "PUSH EDI"]
+			mov     [esp+5*4], edi // [Edw590: "PUSH EDI"]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+F_sprintf_]
 			call    edi
 			add     esp, 5*4
 			pop     edi
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+0x65CC4]
@@ -161,7 +161,7 @@ __declspec(naked) static void display_stats_hook2(void) {
 			add     [esp+4*4], eax                       // min_dmg
 			add     [esp+4*5], eax                       // max_dmg
 
-			lea     esp, [esp-4] // [DADi590] Reserve space for the jump address
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+F_sprintf_]
