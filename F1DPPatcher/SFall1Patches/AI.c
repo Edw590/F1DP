@@ -123,6 +123,7 @@ __declspec(naked) static void is_within_perception_hook(void) {
 			xchg    eax, ecx
 			mov     ebx, [ebx+4]
 			mov     edx, [eax+4]
+			mov     [esp+3*4], edi // [Edw590: "PUSH EDI"]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_make_straight_path_func_]
 			call    edi
@@ -163,6 +164,7 @@ __declspec(naked) static void is_within_perception_hook(void) {
 			xchg    eax, ecx
 			mov     ebx, [ebx+4]
 			mov     edx, [eax+4]
+			mov     [esp+3*4], edi // [Edw590: "PUSH EDI"]
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_make_straight_path_func_]
 			call    edi
