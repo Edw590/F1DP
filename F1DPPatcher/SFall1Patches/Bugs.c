@@ -1041,14 +1041,14 @@ __declspec(naked) static void combat_display_hook(void) {
 	__asm {
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			lea     esi, [edi+0x22B51]
+			lea     ebx, [edi+0x22B51]
 			pop     edi
 			je      end                                  // Is it ObjType_Critter
 			cmp     dword ptr [ecx+0x78], -1             // Does the target have a script?
 			jne     end                                  // Yes
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
-			lea     esi, [edi+0x22C01]
+			lea     ebx, [edi+0x22C01]
 			pop     edi
 		end:
 			jmp     ebx
