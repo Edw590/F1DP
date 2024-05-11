@@ -53,7 +53,8 @@
 
 struct FileInfo f1dpatch_ini_info_G = {0};
 
-static char version_str[] = "F1DP v"F1DP_VER_STR" by Edw590";
+// The spaces in the end are to pad the string so that it doesn't overlap with the bit of white background
+static char version_str[] = "F1DP v"F1DP_VER_STR" by Edw590      ";
 
 bool realMain(void);
 static void patchVerStr(void);
@@ -111,7 +112,7 @@ bool realMain(void) {
 
 	((struct FileInfo *) getRealBlockAddrData(&f1dpatch_ini_info_G))->is_main_ini = true;
 
-	printlnStr("  /---- F1DP v"F1DP_VER_STR" Patcher ----\\");
+	printlnStr("  /--- F1DP v"F1DP_VER_STR" Patcher ---\\");
 
 	// Open the main INI file
 	if (!readFile(F1DP_MAIN_INI, &f1dpatch_ini_info_G)) {
@@ -157,7 +158,7 @@ bool realMain(void) {
 
 	free(((struct FileInfo *) getRealBlockAddrData(&f1dpatch_ini_info_G))->contents);
 
-	printlnStr("  \\---- F1DP v"F1DP_VER_STR" Patcher ----/");
+	printlnStr("  \\--- F1DP v"F1DP_VER_STR" Patcher ---/");
 
 	return ret_var;
 }
