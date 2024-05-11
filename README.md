@@ -79,6 +79,7 @@ So plan B. I'm assuming the game is running at the address DOS/32A puts it runni
 </details>
 
 ## For developers
+Use **only** [Open Watcom version 2022-02-02 Build](https://github.com/open-watcom/open-watcom-v2/releases/tag/2022-02-02-Build). I tried another version (older 2021 version) by chance and the Patcher stopped working. No idea why, so in case the newest Watcom doesn't work, just use this version which works just fine.
 ### - Compiling the Installer
 The Installer is compiled with Open Watcom, using the command in `F1DPInstaller/generated_binaries/compile.py` (or a similar one in case I change its name).
 
