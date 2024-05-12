@@ -79,9 +79,9 @@ struct WinStruct {
 	void (*pBlit)(uint8_t *fBuff, int32_t subWidth, int32_t subHeight, int32_t fWidth, uint8_t *int32_t, uint32_t tWidth);//0x40//drawing func address
 };
 
-uint8_t* FReallocateMemory(uint8_t * mem, uint32_t sizeuint8_ts);
+uint8_t* __cdecl FReallocateMemory(uint8_t * mem, uint32_t sizeuint8_ts);
 
-struct WinStruct* GetWinStruct(int32_t WinRef);
+struct WinStruct* __cdecl GetWinStruct(int32_t WinRef);
 
 
 

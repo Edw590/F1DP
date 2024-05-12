@@ -28,7 +28,7 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 
-void DialogInventoryFixes(void);
+void __cdecl DialogInventoryFixes(void);
 
 
 

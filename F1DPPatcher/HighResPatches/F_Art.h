@@ -40,7 +40,7 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define ART_BACKGRND 9
 #define ART_SKILLDEX 10
 
-uint32_t F_GetFrmID(uint32_t objType, uint32_t lstNum, uint32_t id2, uint32_t id1, uint32_t id3);
+uint32_t __cdecl F_GetFrmID(uint32_t objType, uint32_t lstNum, uint32_t id2, uint32_t id1, uint32_t id3);
 
 
 

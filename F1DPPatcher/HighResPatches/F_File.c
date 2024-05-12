@@ -29,7 +29,7 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "F_File.h"
 
 //_____________________________
-int32_t F_fclose(void *FileStream) {
+int32_t __cdecl F_fclose(void *FileStream) {
 	int32_t retVal = 0;
 	__asm {
 			mov     eax, FileStream
@@ -45,7 +45,7 @@ int32_t F_fclose(void *FileStream) {
 
 
 //____________________________________________________
-void* F_fopen(const char *FileName, const char *flags) {
+void* __cdecl F_fopen(const char *FileName, const char *flags) {
 	void* retVal = NULL;
 	__asm {
 			mov     edx, flags
@@ -62,7 +62,7 @@ void* F_fopen(const char *FileName, const char *flags) {
 
 
 //_________________________________________________________
-int32_t FDeleteTmpSaveFiles(const char *path, const char *ext) {
+int32_t __cdecl FDeleteTmpSaveFiles(const char *path, const char *ext) {
 	int retVal = 0;
 	__asm {
 			mov     edx, ext
@@ -79,7 +79,7 @@ int32_t FDeleteTmpSaveFiles(const char *path, const char *ext) {
 
 
 //____________________________________________
-int32_t F_fwrite32(void* FileStream, uint32_t val32) {
+int32_t __cdecl F_fwrite32(void* FileStream, uint32_t val32) {
 	int retVal = 0;
 	__asm {
 			mov     edx, val32
@@ -96,7 +96,7 @@ int32_t F_fwrite32(void* FileStream, uint32_t val32) {
 
 
 //____________________________________________
-int32_t F_fread32(void *FileStream, uint32_t *toMem) {
+int32_t __cdecl F_fread32(void *FileStream, uint32_t *toMem) {
 	int32_t retVal = 0;
 	__asm {
 			mov     edx, toMem

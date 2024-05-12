@@ -28,7 +28,7 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 
-void WinGeneralFixes(void);
+void __cdecl WinGeneralFixes(void);
 
 
 

@@ -34,7 +34,7 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stddef.h>
 
 //__________________________________________________________________
-void InvInsertItem(struct OBJStruct* item, int32_t numItems, struct PUD_GENERAL* inv) {
+void __cdecl InvInsertItem(struct OBJStruct* item, int32_t numItems, struct PUD_GENERAL* inv) {
 	int i = 0;
 	int32_t numNodes = inv->inv_max;
 	struct ITEMnode* itemNode = inv->item;
@@ -68,7 +68,7 @@ __declspec(naked) void inv_insert_item(void) {
 }
 
 
-void DialogInventoryFixes(void) {
+void __cdecl DialogInventoryFixes(void) {
 	int temp_int = 0;
 	char prop_value[MAX_PROP_VALUE_LEN];
 	memset(prop_value, 0, MAX_PROP_VALUE_LEN);

@@ -45,36 +45,36 @@ struct bitset {
 	uint32_t numDwods;
 };
 
-void bitset(struct bitset *bit_set, uint32_t nBits) {
+void __cdecl bitset(struct bitset *bit_set, uint32_t nBits) {
 	bit_set->numBits=nBits;
 	bit_set->numDwods = ((bit_set->numBits >> 5) + 1);
 	bit_set->dwords = (uint32_t*)malloc(sizeof(uint32_t) * bit_set->numDwods);
 	memset(bit_set->dwords, 0x0, sizeof(uint32_t) * bit_set->numDwods);
 }
-void unbitset(struct bitset *bit_set) {
+void __cdecl unbitset(struct bitset *bit_set) {
 	free(bit_set->dwords);
 	bit_set->dwords = NULL;
 }
 
-void set1(struct bitset *bit_set, uint32_t bit) {
+void __cdecl set1(struct bitset *bit_set, uint32_t bit) {
 	uint32_t bindex = bit >> 5;
 	uint32_t boffset= bit&0x1F;
 	if(bindex < bit_set->numDwods)
 		bit_set->dwords[bindex] |= (1 << boffset);
 }
-void set(struct bitset *bit_set) {
+void __cdecl set(struct bitset *bit_set) {
 	memset(bit_set->dwords, 0xFF, sizeof(uint32_t) * bit_set->numDwods);
 }
-void clear1(struct bitset *bit_set, uint32_t bit) {
+void __cdecl clear1(struct bitset *bit_set, uint32_t bit) {
 	uint32_t bindex = bit >> 5;
 	uint32_t boffset= bit&0x1F;
 	if(bindex < bit_set->numDwods)
 		bit_set->dwords[bindex] &= ~(1 << boffset);
 }
-void clear(struct bitset *bit_set) {
+void __cdecl clear(struct bitset *bit_set) {
 	memset(bit_set->dwords, 0x00, sizeof(uint32_t) * bit_set->numDwods);
 }
-uint32_t get(struct bitset *bit_set, uint32_t bit) {
+uint32_t __cdecl get(struct bitset *bit_set, uint32_t bit) {
 	uint32_t bindex = bit >> 5;
 	uint32_t boffset= bit&0x1F;
 	if(bindex < bit_set->numDwods)
@@ -119,7 +119,7 @@ struct MAPdata M_CURRENT_MAP = {0};
 
 //mark and display other wall objects that are 1 hex away from current wall object - to reduce blockiness
 //_____________________________________________________________
-void MarkVisibleWalls(struct OBJStruct* objViewer, struct OBJStruct* objWall) {
+void __cdecl MarkVisibleWalls(struct OBJStruct* objViewer, struct OBJStruct* objWall) {
 	int32_t hexPos = objWall->hexNum;
 	struct OBJNode* objNode = NULL;
 	struct OBJStruct* obj2 = NULL;
@@ -158,7 +158,7 @@ void MarkVisibleWalls(struct OBJStruct* objViewer, struct OBJStruct* objWall) {
 
 
 //________________________________________________
-int32_t GetHexDistance(int32_t hexStart, int32_t hexEnd) {
+int32_t __cdecl GetHexDistance(int32_t hexStart, int32_t hexEnd) {
 
 	int32_t xSquStart = 0, ySquStart = 0;
 	int32_t xSquEnd = 0, ySquEnd = 0;
@@ -185,7 +185,7 @@ int32_t GetHexDistance(int32_t hexStart, int32_t hexEnd) {
 
 //Check is object is visible to PC. returns 1=display normaly, 0=display but darken, -1=dont display.
 //_______________________________
-int IsVisibleByPC(struct OBJStruct* obj) {
+int __cdecl IsVisibleByPC(struct OBJStruct* obj) {
 	struct OBJStruct* pObj_PC = *(*(struct OBJStruct** *) getRealBlockAddrData(&lpObj_PC));
 	int32_t type = (obj->frmID & 0x0F000000) >> 24;
 
@@ -246,7 +246,7 @@ int IsVisibleByPC(struct OBJStruct* obj) {
 
 
 //__________________________________________________
-int32_t F_GetHexLightIntensity(int32_t level, int32_t hexPos) {
+int32_t __cdecl F_GetHexLightIntensity(int32_t level, int32_t hexPos) {
 	int32_t retVal = 0;
 	__asm {
 			mov     edx, hexPos
@@ -263,7 +263,7 @@ int32_t F_GetHexLightIntensity(int32_t level, int32_t hexPos) {
 
 
 //______________________________________________________________
-void F_DrawObj(struct OBJStruct* obj, RECT* rect, uint32_t lightIntensity) {
+void __cdecl F_DrawObj(struct OBJStruct* obj, RECT* rect, uint32_t lightIntensity) {
 	__asm {
 			mov     ebx, lightIntensity
 			mov     edx, rect
@@ -279,7 +279,7 @@ void F_DrawObj(struct OBJStruct* obj, RECT* rect, uint32_t lightIntensity) {
 
 
 //_______________________________________________________________
-uint32_t F_CheckObjectFrmAtPos(struct OBJStruct* obj, int32_t xPos, int32_t yPos) {
+uint32_t __cdecl F_CheckObjectFrmAtPos(struct OBJStruct* obj, int32_t xPos, int32_t yPos) {
 	uint32_t flags = 0;
 	__asm {
 			mov     ebx, yPos
@@ -297,7 +297,7 @@ uint32_t F_CheckObjectFrmAtPos(struct OBJStruct* obj, int32_t xPos, int32_t yPos
 
 
 //__________________________________________________________________________
-void GetTileXY(int32_t scrnX, int32_t scrnY, int32_t level, int32_t* tileX, int32_t* tileY) {
+void __cdecl GetTileXY(int32_t scrnX, int32_t scrnY, int32_t level, int32_t* tileX, int32_t* tileY) {
 	(void *) level;
 	__asm {
 			PUSH    ESI                                //GET_TILE_COOR(EAX scrnX, EDX scrnY, EBX level, ECX *tileX, Arg1 *tileY)
@@ -397,7 +397,7 @@ void GetTileXY(int32_t scrnX, int32_t scrnY, int32_t level, int32_t* tileX, int3
 
 
 //_________________________________________________________________________
-int32_t GetScrnXYTile(int32_t tileNum, int32_t* scrnX, int32_t* scrnY, int32_t level) {
+int32_t __cdecl GetScrnXYTile(int32_t tileNum, int32_t* scrnX, int32_t* scrnY, int32_t level) {
 	int32_t retVal = 0;
 
 	(void *) level;
@@ -511,7 +511,7 @@ int32_t GetScrnXYTile(int32_t tileNum, int32_t* scrnX, int32_t* scrnY, int32_t l
 
 
 //________________________________________________
-void CheckAngledObjEdge(RECT* rect, uint32_t isUpper) {
+void __cdecl CheckAngledObjEdge(RECT* rect, uint32_t isUpper) {
 
 	int32_t xMax;
 	int32_t yMax;
@@ -579,7 +579,7 @@ void CheckAngledObjEdge(RECT* rect, uint32_t isUpper) {
 
 
 //______________________________________
-void DrawObjects(RECT* rect, int32_t level) {
+void __cdecl DrawObjects(RECT* rect, int32_t level) {
 	struct OBJNode* mapObj = NULL;
 	int32_t hexLight = 0;
 	int upperObjCount = 0;
@@ -682,7 +682,7 @@ void DrawObjects(RECT* rect, int32_t level) {
 
 //Check if object is visible -for mouse selection.
 //______________________________
-bool IsNotFogged(struct OBJStruct* obj) {
+bool __cdecl IsNotFogged(struct OBJStruct* obj) {
 	struct OBJStruct* pObj_PC = *(*(struct OBJStruct** *) getRealBlockAddrData(&lpObj_PC));
 	int32_t objType = (obj->frmID & 0x0F000000) >> 0x18;
 
@@ -711,7 +711,7 @@ bool IsNotFogged(struct OBJStruct* obj) {
 
 //find the object who's frm lies under mouse cursor.
 //_________________________________________________________________________________________
-int32_t GetObjectsAtPos(int32_t xPos, int32_t yPos, int32_t level, int32_t type, struct OBJInfo** lpObjInfoArray) {
+int32_t __cdecl GetObjectsAtPos(int32_t xPos, int32_t yPos, int32_t level, int32_t type, struct OBJInfo** lpObjInfoArray) {
 
 	struct OBJNode* mapObj = NULL;
 	struct OBJInfo* pObjInfoArray = NULL;
@@ -768,7 +768,7 @@ int32_t GetObjectsAtPos(int32_t xPos, int32_t yPos, int32_t level, int32_t type,
 
 //copy a file to or from save game slot  -returns 0 pass, -1 fail.
 //_______________________________________________
-int32_t F_CopySaveFile(char *toPath, char *fromPath) {
+int32_t __cdecl F_CopySaveFile(char *toPath, char *fromPath) {
 	int32_t retVal = 0;
 	__asm {
 			mov     edx, fromPath
@@ -792,7 +792,7 @@ int32_t hexStep2[6][3] = {
 };
 
 //____________________________________________________________
-int32_t GetNextHexPos(int32_t hexPos, uint32_t direction, int32_t distance) {
+int32_t __cdecl GetNextHexPos(int32_t hexPos, uint32_t direction, int32_t distance) {
 	int32_t xMax = 0;
 	int32_t yMax = 0;
 	int32_t y = 0;
@@ -826,7 +826,7 @@ int32_t GetNextHexPos(int32_t hexPos, uint32_t direction, int32_t distance) {
 }
 
 //__________________________________________________
-void GetHexSqrXY(int32_t hexPos, int32_t* px, int32_t* py) {
+void __cdecl GetHexSqrXY(int32_t hexPos, int32_t* px, int32_t* py) {
 	//grid 1x =16pixels, 1y =12pixels
 	//x must be divided by 2 to get hex width of 32pixels
 	int32_t xMax = *(*(int32_t * *) getRealBlockAddrData(&pNUM_HEX_X));
@@ -840,7 +840,7 @@ void GetHexSqrXY(int32_t hexPos, int32_t* px, int32_t* py) {
 
 
 //____________________________________
-bool CheckHexTransparency(int32_t hexNum) {
+bool __cdecl CheckHexTransparency(int32_t hexNum) {
 	uint32_t flags = FLG_LightThru | FLG_ShootThru | FLG_TransNone;//|FLG_Flat;
 
 	struct OBJNode* objNode = 0;
@@ -874,7 +874,7 @@ bool CheckHexTransparency(int32_t hexNum) {
 }
 
 //__________________________________________
-bool GetHexXY(int32_t hexPos, int32_t* x, int32_t* y) {
+bool __cdecl GetHexXY(int32_t hexPos, int32_t* x, int32_t* y) {
 	if (hexPos < 0 || hexPos >= *(*(int32_t * *) getRealBlockAddrData(&pNUM_HEXES)))
 		return false;
 
@@ -886,7 +886,7 @@ bool GetHexXY(int32_t hexPos, int32_t* x, int32_t* y) {
 
 
 //_______________________________________
-void F_DrawMapArea(RECT* rect, int level) {
+void __cdecl F_DrawMapArea(RECT* rect, int level) {
 
 	__asm {
 			push    ebx
@@ -903,7 +903,7 @@ void F_DrawMapArea(RECT* rect, int level) {
 
 
 //__________________
-void ReDrawViewWin() {
+void __cdecl ReDrawViewWin() {
 	struct WinStruct* win;
 	if (*(uint32_t *) getRealEXEAddr(D__display_win) == -1)
 		return;
@@ -914,7 +914,7 @@ void ReDrawViewWin() {
 
 
 //________________________________________________________
-bool FogOfWarMap_CopyFiles(char* pToPath, char* pFromPath) {
+bool __cdecl FogOfWarMap_CopyFiles(char* pToPath, char* pFromPath) {
 	char* fromPath = NULL;
 	char* toPath = NULL;
 	void* FileStream_From = NULL;
@@ -982,7 +982,7 @@ bool FogOfWarMap_CopyFiles(char* pToPath, char* pFromPath) {
 
 
 //______________________________________
-int32_t FogOfWarMap_DeleteTmps(char* path) {
+int32_t __cdecl FogOfWarMap_DeleteTmps(char* path) {
 	if (!(*(int *) getRealBlockAddrData(&FOG_OF_WAR)))
 		return false;
 	//return numFiles
@@ -991,7 +991,7 @@ int32_t FogOfWarMap_DeleteTmps(char* path) {
 
 
 //__________________________________
-bool FogOfWarMap_Save(char* MapName) {
+bool __cdecl FogOfWarMap_Save(char* MapName) {
 	char mapPath[256];
 	uint32_t i;
 	void* FileStream;
@@ -1023,7 +1023,7 @@ bool FogOfWarMap_Save(char* MapName) {
 
 
 //__________________________________
-bool FogOfWarMap_Load(char* MapName) {
+bool __cdecl FogOfWarMap_Load(char* MapName) {
 	char mapPath[256];
 	void* FileStream;
 	uint32_t dVal = 0;
@@ -1084,7 +1084,7 @@ bool FogOfWarMap_Load(char* MapName) {
 }
 
 //_____________________________________________________
-bool IsInLineOfSightBlocked(int32_t hexStart, int32_t hexEnd) {
+bool __cdecl IsInLineOfSightBlocked(int32_t hexStart, int32_t hexEnd) {
 
 	int32_t hexCurrent = hexStart;
 	//int32_t ori = 0;
@@ -1508,7 +1508,7 @@ bool IsInLineOfSightBlocked(int32_t hexStart, int32_t hexEnd) {
 }
 
 //_____________________________________________________________
-int32_t GetFloorHexLight(int32_t elev, int32_t hexNum, int32_t globalLight) {
+int32_t __cdecl GetFloorHexLight(int32_t elev, int32_t hexNum, int32_t globalLight) {
 	int32_t elevOffset = elev * *(*(int32_t * *) getRealBlockAddrData(&pNUM_HEXES));
 	int32_t light = (*(int32_t * *) getRealBlockAddrData(&pLightHexArray))[elevOffset + hexNum];
 
@@ -1538,7 +1538,7 @@ int32_t GetFloorHexLight(int32_t elev, int32_t hexNum, int32_t globalLight) {
 
 
 //_______________________________________________________
-uint32_t CheckAngledTileEdge(int x, int y, uint32_t tileLstNum) {
+uint32_t __cdecl CheckAngledTileEdge(int x, int y, uint32_t tileLstNum) {
 	(void *) x;
 	(void *) y;
 
@@ -1554,7 +1554,7 @@ uint32_t CheckAngledTileEdge(int x, int y, uint32_t tileLstNum) {
 
 
 //_________________________________________
-void DrawFloorTiles(RECT* rect, int32_t level) {
+void __cdecl DrawFloorTiles(RECT* rect, int32_t level) {
 
 	RECT rcTileGrid = { 0,0,0,0 };
 	int32_t tempVal = 0;
@@ -1619,7 +1619,7 @@ void DrawFloorTiles(RECT* rect, int32_t level) {
 
 
 //_________________________________________________________
-void F_DrawFloorTile(uint32_t fid, int32_t x, int32_t y, RECT* rect) {
+void __cdecl F_DrawFloorTile(uint32_t fid, int32_t x, int32_t y, RECT* rect) {
 
 	__asm {
 			mov     ecx, rect
@@ -1636,7 +1636,7 @@ void F_DrawFloorTile(uint32_t fid, int32_t x, int32_t y, RECT* rect) {
 
 
 //__________________
-void SetMapGlobals(void) {
+void __cdecl SetMapGlobals(void) {
 	int temp_int = 0;
 	char prop_value[MAX_PROP_VALUE_LEN];
 	memset(prop_value, 0, MAX_PROP_VALUE_LEN);
@@ -1654,7 +1654,7 @@ void SetMapGlobals(void) {
 	}
 }
 
-void FMapperSetup(void) {
+void __cdecl FMapperSetup(void) {
 	(*(uint32_t*** *) getRealBlockAddrData(&pMapTileLevelOffset)) = getRealEXEAddr(D__squares);
 
 	(*(struct OBJStruct** *) getRealBlockAddrData(&lpObjSpecial)) = getRealEXEAddr(D__obj_egg);

@@ -28,7 +28,7 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdint.h>
 
 //____________________________________________________________________________
-uint32_t F_GetFrmID(uint32_t objType, uint32_t lstNum, uint32_t id2, uint32_t id1, uint32_t id3) {
+uint32_t __cdecl F_GetFrmID(uint32_t objType, uint32_t lstNum, uint32_t id2, uint32_t id1, uint32_t id3) {
 	uint32_t FID = 0;
 	uint32_t F_LOAD_FRM = (uint32_t) getRealEXEAddr(C_art_id_);
 	__asm {

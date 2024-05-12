@@ -29,7 +29,7 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "F_Windows.h"
 
 //__________________________________________________
-uint8_t* FReallocateMemory(uint8_t * mem, uint32_t sizeBytes) {
+uint8_t* __cdecl FReallocateMemory(uint8_t * mem, uint32_t sizeBytes) {
 	__asm {
 			mov     edx, sizeBytes
 			mov     eax, mem
@@ -45,7 +45,7 @@ uint8_t* FReallocateMemory(uint8_t * mem, uint32_t sizeBytes) {
 
 
 //__________________________________
-struct WinStruct* GetWinStruct(int32_t WinRef) {
+struct WinStruct* __cdecl GetWinStruct(int32_t WinRef) {
 
 	struct WinStruct* winStruct = NULL;
 	__asm {

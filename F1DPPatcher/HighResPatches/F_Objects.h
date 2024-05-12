@@ -450,22 +450,22 @@ extern struct OBJStruct **lpObj_ActiveCritter;
 extern struct OBJStruct **lpObj_Mouse2;
 extern struct OBJStruct **lpObj_Mouse;
 
-int32_t GetProListSize(int32_t proType);
+int32_t __cdecl GetProListSize(int32_t proType);
 
-uint32_t GetProID(int32_t proType, int32_t listNum);
-int32_t F_GetPro(uint32_t proID, struct PROTOall **proto);
+uint32_t __cdecl GetProID(int32_t proType, int32_t listNum);
+int32_t __cdecl F_GetPro(uint32_t proID, struct PROTOall **proto);
 
 struct OBJStruct* FGetMapObjUnderMouse(int type, uint32_t flag, int level);
 
-int32_t F_MapObj_Create(struct OBJStruct **lpObj, uint32_t frmID, uint32_t proID);
-int32_t F_MapObj_Move(struct OBJStruct *obj, uint32_t hexPos, int32_t level, RECT *pRect);
-int32_t F_MapObj_Destroy(struct OBJStruct *obj, RECT *pRect);
+int32_t __cdecl F_MapObj_Create(struct OBJStruct **lpObj, uint32_t frmID, uint32_t proID);
+int32_t __cdecl F_MapObj_Move(struct OBJStruct *obj, uint32_t hexPos, int32_t level, RECT *pRect);
+int32_t __cdecl F_MapObj_Destroy(struct OBJStruct *obj, RECT *pRect);
 
-int F_Obj_ClearAnimation(struct OBJStruct *obj);
+int __cdecl F_Obj_ClearAnimation(struct OBJStruct *obj);
 
-int32_t F_Obj_SetFrmId(struct OBJStruct *obj, uint32_t frmID, RECT *rcOut);
+int32_t __cdecl F_Obj_SetFrmId(struct OBJStruct *obj, uint32_t frmID, RECT *rcOut);
 
-void F_ObjectsSetup();
+void __cdecl F_ObjectsSetup();
 
 
 

@@ -279,7 +279,7 @@ void __declspec(naked) draw_floor_tiles(void) {
 
 
 //____________________
-void CheckPcMovement() {
+void __cdecl CheckPcMovement() {
 	static int32_t pcHexNum = 0;
 	//RECT rcObj;
 	struct OBJStruct* pcObj = *(*(struct OBJStruct ** *) getRealBlockAddrData(&lpObj_PC));
@@ -369,13 +369,13 @@ void __declspec(naked) h_get_objects_at_pos() {
 //  If I didn't, no idea what I did wrong. Maybe more functions are missing? I only copied those who seemed to be
 //  related to FOW, either by their name, or by their usage of variables with "fog" in their name.
 
-void MapFixes(void) {
+void __cdecl MapFixes(void) {
 
 	SetMapGlobals();
 
-	//hookCallEXE(0x44B36, &h_get_objects_at_pos); fixme Problems
+	//hookCallEXE(0x44B36, &h_get_objects_at_pos); // fixme Problems
 
-	//makeCallEXE(0x7B300, &h_draw_objs, true); fixme Problems
+	//makeCallEXE(0x7B300, &h_draw_objs, true); // fixme Problems
 
 	writeMem32EXE(0x7B5CB + 2, (uint32_t) getRealBlockAddrData(&pCombatOutlineList), true);
 
@@ -387,7 +387,7 @@ void MapFixes(void) {
 	writeMem32EXE(0x74C08 + 2, (uint32_t) getRealEXEAddr(D__map_ent_tile), true);
 
 
-	//writeMem8EXE(0x9E590, 0x90);
+	//writeMem8EXE(0x9E590, 0x90, true);
 	//makeCallEXE(0x9E591, &get_next_hex_pos, true);// fixme Problems
 
 	makeCallEXE(0x9E47C, &get_hex_dist, true);

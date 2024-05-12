@@ -36,7 +36,7 @@ union bytes8 {
 };
 
 //____________________
-void WinGeneralFixes(void) {
+void __cdecl WinGeneralFixes(void) {
 	union bytes8 temp_double;
 	char prop_value[MAX_PROP_VALUE_LEN];
 	memset(prop_value, 0, MAX_PROP_VALUE_LEN);

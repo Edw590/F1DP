@@ -30,11 +30,11 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <stdint.h>
 
-int32_t F_fclose(void *FileStream);
-void* F_fopen(const char *FileName, const char *flags);
-int32_t FDeleteTmpSaveFiles(const char *path, const char *ext);
-int32_t F_fwrite32(void* FileStream, uint32_t val32);
-int32_t F_fread32(void *FileStream, uint32_t *toMem);
+int32_t __cdecl F_fclose(void *FileStream);
+void* __cdecl F_fopen(const char *FileName, const char *flags);
+int32_t __cdecl FDeleteTmpSaveFiles(const char *path, const char *ext);
+int32_t __cdecl F_fwrite32(void* FileStream, uint32_t val32);
+int32_t __cdecl F_fread32(void *FileStream, uint32_t *toMem);
 
 
 

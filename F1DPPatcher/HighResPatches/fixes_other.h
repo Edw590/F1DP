@@ -28,7 +28,7 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 
-void OtherFixes(void);
+void __cdecl OtherFixes(void);
 
 
 

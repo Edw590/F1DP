@@ -55,11 +55,11 @@ struct OBJInfo {
 };
 
 
-int32_t ScrnSqr2HexPosMove(int32_t x, int32_t y, bool axis);
-void ScrnHexPos2Sqr(int32_t hexPos, int32_t* px, int32_t* py);
-void GetHexSqrXY(int32_t hexPos, int32_t *px, int32_t *py);
+int32_t __cdecl ScrnSqr2HexPosMove(int32_t x, int32_t y, bool axis);
+void __cdecl ScrnHexPos2Sqr(int32_t hexPos, int32_t* px, int32_t* py);
+void __cdecl GetHexSqrXY(int32_t hexPos, int32_t *px, int32_t *py);
 
-int32_t SetViewPos(int32_t hexPos, uint32_t flags);
+int32_t __cdecl SetViewPos(int32_t hexPos, uint32_t flags);
 extern struct MAPdata M_CURRENT_MAP;
 
 extern int32_t *pVIEW_HEXPOS;
@@ -83,86 +83,86 @@ extern int FOG_OF_WAR;
 
 extern uint32_t* pDRAW_VIEW_FLAG;
 
-void SetMapGlobals();
-void SetMapperScrollInfo();
-void ReDrawViewWin();
-int32_t SetMapLevel(int32_t level);
-void F_DrawFloorTile(uint32_t fid, int32_t x, int32_t y, RECT *rect);
-void GetObjectRect(struct OBJStruct *obj, RECT *rcObj);
-void F_DrawMapArea(RECT *rect, int level);
+void __cdecl SetMapGlobals();
+void __cdecl SetMapperScrollInfo();
+void __cdecl ReDrawViewWin();
+int32_t __cdecl SetMapLevel(int32_t level);
+void __cdecl F_DrawFloorTile(uint32_t fid, int32_t x, int32_t y, RECT *rect);
+void __cdecl GetObjectRect(struct OBJStruct *obj, RECT *rcObj);
+void __cdecl F_DrawMapArea(RECT *rect, int level);
 
 
-int32_t ToggleMapRooves();
-void ShowMapRooves();
-void HideMapRooves();
-int32_t AreMapRoovesVisible();
+int32_t __cdecl ToggleMapRooves();
+void __cdecl ShowMapRooves();
+void __cdecl HideMapRooves();
+int32_t __cdecl AreMapRoovesVisible();
 
 
-int32_t ToggleMapHexes();
-void ShowMapHexes();
-void HideMapHexes();
-int32_t AreMapHexesVisible();
+int32_t __cdecl ToggleMapHexes();
+void __cdecl ShowMapHexes();
+void __cdecl HideMapHexes();
+int32_t __cdecl AreMapHexesVisible();
 
-void F_IntFace_Init();
-void F_IntFace_Destroy();
-void F_SetMouseModeFlag(uint32_t flag);
-void F_ResetIfaceBar();
-void F_LoadMap( char *mapName);
-void F_SaveMap( char *mapName);
+void __cdecl F_IntFace_Init();
+void __cdecl F_IntFace_Destroy();
+void __cdecl F_SetMouseModeFlag(uint32_t flag);
+void __cdecl F_ResetIfaceBar();
+void __cdecl F_LoadMap( char *mapName);
+void __cdecl F_SaveMap( char *mapName);
 
-void SaveMap(char *mapName);
+void __cdecl SaveMap(char *mapName);
 
-void F_ResetNewMap();
-void F_CheckGameInput(int keyCode, uint32_t flags);
-void F_InitMapArea();
-int F_FalloutSetup(int pathLength, char *path);
+void __cdecl F_ResetNewMap();
+void __cdecl F_CheckGameInput(int keyCode, uint32_t flags);
+void __cdecl F_InitMapArea();
+int __cdecl F_FalloutSetup(int pathLength, char *path);
 
-int32_t F_SelectHexpos();
-void DeleteMapObjs(struct OBJStruct **lpObj1, struct OBJStruct **lpObj2);
-int32_t Get_GRID001_ListNum();
+int32_t __cdecl F_SelectHexpos();
+void __cdecl DeleteMapObjs(struct OBJStruct **lpObj1, struct OBJStruct **lpObj2);
+int32_t __cdecl Get_GRID001_ListNum();
 
-int32_t GetNextHexPos(int32_t hexPos, uint32_t direction, int32_t distance);
-int32_t GetHexDistance(int32_t hexStart, int32_t hexEnd);
+int32_t __cdecl GetNextHexPos(int32_t hexPos, uint32_t direction, int32_t distance);
+int32_t __cdecl GetHexDistance(int32_t hexStart, int32_t hexEnd);
 
-bool FogOfWarMap_CopyFiles(char *pToPath, char *pFromPath);
-int32_t FogOfWarMap_DeleteTmps(char *path);
-bool FogOfWarMap_Save(char *MapName);
-bool FogOfWarMap_Load(char *MapName);
+bool __cdecl FogOfWarMap_CopyFiles(char *pToPath, char *pFromPath);
+int32_t __cdecl FogOfWarMap_DeleteTmps(char *path);
+bool __cdecl FogOfWarMap_Save(char *MapName);
+bool __cdecl FogOfWarMap_Load(char *MapName);
 
-void SetMapBorders(char *MapName);
-int32_t ClipEdgeRect(RECT *rect1, RECT *rect2, RECT *rect3);
+void __cdecl SetMapBorders(char *MapName);
+int32_t __cdecl ClipEdgeRect(RECT *rect1, RECT *rect2, RECT *rect3);
 
-bool isHexWithinMapEdges(int32_t hexPos);
-int32_t SetViewPos(int32_t hexPos, uint32_t flags);
+bool __cdecl isHexWithinMapEdges(int32_t hexPos);
+int32_t __cdecl SetViewPos(int32_t hexPos, uint32_t flags);
 
-void GetTileXY(int32_t scrnX, int32_t scrnY, int32_t level, int32_t *tileX, int32_t *tileY);
-int32_t GetScrnXYTile(int32_t tileNum, int32_t *scrnX, int32_t *scrnY, int32_t level);
-int32_t GetFloorHexLight(int32_t elev, int32_t hexNum, int32_t globalLight);
+void __cdecl GetTileXY(int32_t scrnX, int32_t scrnY, int32_t level, int32_t *tileX, int32_t *tileY);
+int32_t __cdecl GetScrnXYTile(int32_t tileNum, int32_t *scrnX, int32_t *scrnY, int32_t level);
+int32_t __cdecl GetFloorHexLight(int32_t elev, int32_t hexNum, int32_t globalLight);
 
-void DrawFloorTiles(RECT *rect, int32_t level);
-uint32_t CheckAngledTileEdge(int x, int y, uint32_t tileLstNum);
+void __cdecl DrawFloorTiles(RECT *rect, int32_t level);
+uint32_t __cdecl CheckAngledTileEdge(int x, int y, uint32_t tileLstNum);
 
-void CheckAngledObjEdge(RECT *rect, uint32_t isUpper);
-uint32_t CheckAngledRoofTileEdge(int32_t xPos, int32_t yPos, uint32_t tileLstNum);
+void __cdecl CheckAngledObjEdge(RECT *rect, uint32_t isUpper);
+uint32_t __cdecl CheckAngledRoofTileEdge(int32_t xPos, int32_t yPos, uint32_t tileLstNum);
 
-void DrawObjects(RECT *rect, int32_t level);
-void DrawDialogView(uint8_t *frmBuff, int32_t subWidth, int32_t subHeight, int32_t frmWidth, uint8_t *toBuff, int32_t toWidth);
+void __cdecl DrawObjects(RECT *rect, int32_t level);
+void __cdecl DrawDialogView(uint8_t *frmBuff, int32_t subWidth, int32_t subHeight, int32_t frmWidth, uint8_t *toBuff, int32_t toWidth);
 
-int32_t GetObjectsAtPos(int32_t xPos, int32_t yPos, int32_t level, int32_t type, struct OBJInfo **lpObjInfoArray);
+int32_t __cdecl GetObjectsAtPos(int32_t xPos, int32_t yPos, int32_t level, int32_t type, struct OBJInfo **lpObjInfoArray);
 
-int32_t MergeRects(RECT *rect1, RECT *rect2, RECT *newRect);
+int32_t __cdecl MergeRects(RECT *rect1, RECT *rect2, RECT *newRect);
 
-void SetMapTile(uint32_t frmID, uint32_t proID);
-void SetMapObject(uint32_t frmID, uint32_t proID);
+void __cdecl SetMapTile(uint32_t frmID, uint32_t proID);
+void __cdecl SetMapObject(uint32_t frmID, uint32_t proID);
 
-int32_t F_CopySaveFile(char* toPath, char *fromPath);
+int32_t __cdecl F_CopySaveFile(char* toPath, char *fromPath);
 
-bool ReSizeMaps();
-void FMapperSetup();
+bool __cdecl ReSizeMaps();
+void __cdecl FMapperSetup();
 
-int32_t F_GetScrnHexPos(int32_t scrnX, int32_t scrnY, int32_t level);
+int32_t __cdecl F_GetScrnHexPos(int32_t scrnX, int32_t scrnY, int32_t level);
 
-bool IsInLineOfSightBlocked(int32_t hexStart, int32_t hexEnd);
+bool __cdecl IsInLineOfSightBlocked(int32_t hexStart, int32_t hexEnd);
 
 
 

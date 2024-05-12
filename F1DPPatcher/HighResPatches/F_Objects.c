@@ -28,7 +28,7 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "F_Objects.h"
 
 //__________________________________________
-int32_t F_GetPro(uint32_t proID, struct PROTOall** proto) {
+int32_t __cdecl F_GetPro(uint32_t proID, struct PROTOall** proto) {
 	int32_t retVal = 0;
 	__asm {
 			mov     edx, proto

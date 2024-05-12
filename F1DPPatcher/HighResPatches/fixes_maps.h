@@ -28,7 +28,7 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 
-void MapFixes(void);
+void __cdecl MapFixes(void);
 
 
 
