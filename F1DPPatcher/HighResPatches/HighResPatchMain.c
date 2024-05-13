@@ -24,9 +24,7 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // Original code modified by me, Edw590, to adapt it to this project, starting on 2022-08-28.
 
 #include "HighResPatchMain.h"
-#include "F_Mapper.h"
 #include "fixes_dialog.h"
-#include "fixes_maps.h"
 #include "fixes_other.h"
 #include "fixes_win_general.h"
 
