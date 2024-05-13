@@ -37,7 +37,7 @@ bool initSFall1Patches(void) {
 		if (0 != strcmp(prop_value, F1DP_MAIN_INI)) { // Don't reopen the main INI file, use the one already open.
 			if (readFile(prop_value, &sfall1_ini_info_G)) {
 				printf(LOGGER_STR "> File \"%s\" opened for sFall1 settings."NL, prop_value);
-				((struct FileInfo *) getRealBlockAddrData(&sfall1_ini_info_G))->is_main_ini = false;
+				GET_BD_SYM(struct FileInfo, sfall1_ini_info_G).is_main_ini = false;
 			} else {
 				printf(LOGGER_STR "> File \"%s\" not found for sFall1 settings. Aborting sFall1 patches."NL, prop_value);
 				memset(&sfall1_ini_info_G, 0, sizeof(sfall1_ini_info_G));
@@ -47,8 +47,7 @@ bool initSFall1Patches(void) {
 			}
 		} else {
 			printf(LOGGER_STR "> File "F1DP_MAIN_INI" used for sFall1 settings."NL);
-			*(struct FileInfo *) getRealBlockAddrData(&sfall1_ini_info_G) =
-					*(struct FileInfo *) getRealBlockAddrData(&f1dpatch_ini_info_G);
+			GET_BD_SYM(struct FileInfo, sfall1_ini_info_G) = GET_BD_SYM(struct FileInfo, f1dpatch_ini_info_G);
 		}
 	} else {
 		printlnStr(LOGGER_ERR_STR "> No file specified for sFall1 settings. Aborting sFall1 patches.");
@@ -64,8 +63,8 @@ bool initSFall1Patches(void) {
 
 	// If the file was opened here, release its contents before leaving the function (unless it's the main one, which is
 	// taken care of by realMain()).
-	if (!((struct FileInfo *) getRealBlockAddrData(&sfall1_ini_info_G))->is_main_ini) {
-		free(((struct FileInfo *) getRealBlockAddrData(&sfall1_ini_info_G))->contents);
+	if (!GET_BD_SYM(struct FileInfo, sfall1_ini_info_G).is_main_ini) {
+		free(GET_BD_SYM(struct FileInfo, sfall1_ini_info_G).contents);
 	}
 
 	return ret_var;

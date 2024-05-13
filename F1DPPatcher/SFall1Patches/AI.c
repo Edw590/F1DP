@@ -292,7 +292,7 @@ void AIInit(void) {
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "AI_Called_Freq_Div", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
-	*(uint32_t *) getRealBlockAddrData(&AI_Called_Freq_Div) = (uint32_t) temp_int;
+	GET_BD_SYM(uint32_t, AI_Called_Freq_Div) = (uint32_t) temp_int;
 	if (temp_int > 1) {
 		makeCallEXE(0x258BE, &ai_called_shot_hook, true);
 	}

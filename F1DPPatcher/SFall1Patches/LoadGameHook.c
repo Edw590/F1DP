@@ -232,7 +232,7 @@ void LoadGameHookInit(void) {
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "SaveInCombatFix", "1", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
-	*(uint32_t *) getRealBlockAddrData(&SaveInCombatFix) = (uint32_t) (temp_int <= 2 ? temp_int : 0);
+	GET_BD_SYM(uint32_t, SaveInCombatFix) = (uint32_t) (temp_int <= 2 ? temp_int : 0);
 
 	makeCallEXE(0x62AB5, &setup_inventory_hook, false);// INVENTORY + INTFACEUSE + INTFACELOOT + BARTER
 }

@@ -114,11 +114,11 @@ uint32_t __stdcall FakeGetTickCount(void) {
 
 		if (*ToggleKey_local && KeyDown(*ToggleKey_local)) {
 			if (!Toggled) {
-				*(bool *) getRealBlockAddrData(&Toggled) = true;
-				*(bool *) getRealBlockAddrData(&Enabled) = !(*(bool *) getRealBlockAddrData(&Enabled));
+				GET_BD_SYM(bool, Toggled) = true;
+				GET_BD_SYM(bool, Enabled) = !GET_BD_SYM(bool, Enabled);
 			}
 		} else {
-			*(bool *) getRealBlockAddrData(&Toggled) = false;
+			GET_BD_SYM(bool, Toggled) = false;
 		}
 	}
 
@@ -143,7 +143,7 @@ uint32_t __stdcall FakeGetTickCount(void) {
 }
 
 void __stdcall FakeGetLocalTime(LPSYSTEMTIME time) {
-	int32_t CurrentTime = *(uint32_t *) getRealBlockAddrData(&StartTime) + *(uint32_t *) getRealBlockAddrData(&StoredTickCount) * (uint32_t) 10000;
+	int32_t CurrentTime = GET_BD_SYM(uint32_t, StartTime) + GET_BD_SYM(uint32_t, StoredTickCount) * (uint32_t) 10000;
 
 	FileTimeToSystemTime((FILETIME*) & CurrentTime, time);
 }

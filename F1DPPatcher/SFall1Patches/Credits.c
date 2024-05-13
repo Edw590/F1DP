@@ -120,12 +120,12 @@ static uint32_t __stdcall CreditsNextLine(char *buf, uint32_t *font, uint32_t *c
 
 	// There was a != on the line just below, which would make the credits not appear in the Credits screen (???). So
 	// I've corrected(?) it to ==. Now they appear normally.
-	if ((0 == *(uint32_t *) getRealBlockAddrData(&InCredits)) ||
-			(*(uint32_t *) getRealBlockAddrData(&CreditsLine) >= *(uint32_t *) getRealBlockAddrData(&ExtraLineCount))) {
+	if ((0 == GET_BD_SYM(uint32_t, InCredits) ||
+			GET_BD_SYM(uint32_t, CreditsLine) >= GET_BD_SYM(uint32_t, ExtraLineCount))) {
 		return 0;
 	}
 
-	line = ((char **) getRealBlockAddrData(&ExtraLines))[(*(uint32_t *) getRealBlockAddrData(&CreditsLine))++];
+	line = GET_BD_ARR(char **, ExtraLines)[GET_BD_SYM(uint32_t, CreditsLine)++];
 
 	if (0 != strlen(line)) {
 		if ('#' == line[0]) {

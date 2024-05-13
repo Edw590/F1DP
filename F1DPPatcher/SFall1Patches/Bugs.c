@@ -1282,7 +1282,7 @@ void BugsInit(void) {
 
 	// Fix incorrect int-to-float conversion, replace "fild qword ptr [esp]" to "fild dword ptr [esp]"
 	for (i = 0; i < ((int) sizeof(QWordToDWord) / 4); ++i) {
-		*(uint16_t *) (((uint32_t *) getRealBlockAddrData(QWordToDWord))[i]) = 0x04DB;
+		*(uint16_t *) GET_BD_ARR(uint32_t *, QWordToDWord)[i] = 0x04DB;
 	}
 
 	// Fix handling of mood parameter in start_gdialog function

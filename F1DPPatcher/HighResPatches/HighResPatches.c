@@ -37,7 +37,7 @@ bool initHighResPatches(void) {
 		if (0 != strcmp(prop_value, F1DP_MAIN_INI)) { // Don't reopen the main INI file, use the one already open.
 			if (readFile(prop_value, &high_res_patch_ini_info_G)) {
 				printf(LOGGER_STR "> File \"%s\" opened for High-Res patch settings."NL, prop_value);
-				((struct FileInfo *) getRealBlockAddrData(&high_res_patch_ini_info_G))->is_main_ini = false;
+				GET_BD_SYM(struct FileInfo, high_res_patch_ini_info_G).is_main_ini = false;
 			} else {
 				printf(LOGGER_STR "> File \"%s\" not found for High-Res patch settings. Aborting High-Res patches."NL,
 					   prop_value);
@@ -48,8 +48,7 @@ bool initHighResPatches(void) {
 			}
 		} else {
 			printf(LOGGER_STR "> File "F1DP_MAIN_INI" used for High-Res patch settings."NL);
-			*(struct FileInfo *) getRealBlockAddrData(&high_res_patch_ini_info_G) =
-					*(struct FileInfo *) getRealBlockAddrData(&f1dpatch_ini_info_G);
+			GET_BD_SYM(struct FileInfo, high_res_patch_ini_info_G) = GET_BD_SYM(struct FileInfo, f1dpatch_ini_info_G);
 		}
 	} else {
 		printlnStr(LOGGER_ERR_STR "> No file specified for High-Res patch settings. Aborting High-res patches.");
@@ -65,8 +64,8 @@ bool initHighResPatches(void) {
 
 	// If the file was opened here, release its contents before leaving the function (unless it's the main one, which is
 	// taken care of by realMain()).
-	if (!((struct FileInfo *) getRealBlockAddrData(&high_res_patch_ini_info_G))->is_main_ini) {
-		free(((struct FileInfo *) getRealBlockAddrData(&high_res_patch_ini_info_G))->contents);
+	if (!GET_BD_SYM(struct FileInfo, high_res_patch_ini_info_G).is_main_ini) {
+		free(GET_BD_SYM(struct FileInfo, high_res_patch_ini_info_G).contents);
 	}
 
 	return ret_var;

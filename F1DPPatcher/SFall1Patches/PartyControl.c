@@ -146,7 +146,7 @@ static bool __stdcall IsInPidList(uint32_t const *npc) {
 	// Here, suppose the usage of the array is measured until the first 0 word is found on it.
 
 	for (i = 0; i < ((int) sizeof(Chars) / 2); ++i) {
-		if (0 == ((uint16_t *) getRealBlockAddrData(Chars))[i]) {
+		if (0 == GET_BD_ARR(uint16_t *, Chars)[i]) {
 			break;
 		}
 	}
@@ -156,7 +156,7 @@ static bool __stdcall IsInPidList(uint32_t const *npc) {
 
 
 	for (i = 0; i < ((int) sizeof(Chars) / 2); ++i) {
-		if (pid == ((uint16_t *) getRealBlockAddrData(Chars))[i]) {
+		if (pid == GET_BD_ARR(uint16_t *, Chars)[i]) {
 			return true;
 		}
 	}
@@ -1210,7 +1210,7 @@ void PartyControlInit(void) {
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "ControlCombat", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
-	*(uint32_t *) getRealBlockAddrData(&Mode) = (uint32_t) temp_int;
+	GET_BD_SYM(uint32_t, Mode) = (uint32_t) temp_int;
 	if ((1 == temp_int) || (2 == temp_int)) {
 		char pidbuf[512];
 		pidbuf[511] = 0;
@@ -1231,9 +1231,9 @@ void PartyControlInit(void) {
 					size_t i = 0;
 					uint16_t temp_uint16 = '\0';
 					for (i = 0; i < (sizeof(Chars) / 2); ++i) {
-						if (0 == ((uint16_t *) getRealBlockAddrData(Chars))[i]) {
+						if (0 == GET_BD_ARR(uint16_t *, Chars)[i]) {
 							sscanf(prop_value, "%hu", &temp_uint16);
-							((uint16_t *) getRealBlockAddrData(Chars))[i] = temp_uint16;
+							GET_BD_ARR(uint16_t *, Chars)[i] = temp_uint16;
 						}
 					}
 				}
@@ -1243,9 +1243,9 @@ void PartyControlInit(void) {
 				size_t i = 0;
 				uint16_t temp_uint16 = '\0';
 				for (i = 0; i < (sizeof(Chars) / 2); ++i) {
-					if (0 == ((uint16_t *) getRealBlockAddrData(Chars))[i]) {
+					if (0 == GET_BD_ARR(uint16_t *, Chars)[i]) {
 						sscanf(prop_value, "%hu", &temp_uint16);
-						((uint16_t *) getRealBlockAddrData(Chars))[i] = temp_uint16;
+						GET_BD_ARR(uint16_t *, Chars)[i] = temp_uint16;
 					}
 				}
 			}
@@ -1271,5 +1271,5 @@ void PartyControlInit(void) {
 
 void PartyControlExit(void) {
 	free(NameBox);
-	*(uint8_t **) getRealBlockAddrData(&NameBox) = NULL;
+	GET_BD_SYM(uint8_t *, NameBox) = NULL;
 }

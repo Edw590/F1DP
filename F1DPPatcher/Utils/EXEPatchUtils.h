@@ -24,6 +24,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include "General.h"
 
 /**
  * @brief Calculates the real address of a game address got from IDA.
@@ -51,7 +52,7 @@ uint8_t readMem8EXE(void *addr, bool corrct_addr);
 
 void hookCallEXE(uint32_t addr, funcptr_t (func_ptr));
 
-void makeCallEXE(uint32_t addr, funcptr_t (), bool jump);
+void makeCallEXE(uint32_t addr, funcptr_t (func_ptr), bool jump);
 //void makeCallEXE(uint32_t addr, const funcptr_t (func_ptr), bool jump); - throws an error, no idea why
 
 void blockCallEXE(uint32_t addr);

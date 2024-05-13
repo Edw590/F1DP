@@ -30,10 +30,10 @@
 funcptr_t (getRealBlockAddrCode(volatile const funcptr_t(func_ptr)));
 void *getRealBlockAddrData(volatile void const *data_ptr);
 
-// Short for GET_REAL_BLOCK_ADDR_DATA
 #define GET_BD_SYM(type, symbol) (*(type *) getRealBlockAddrData(&symbol))
-// Short for GET_REAL_BLOCK_ADDR_CODE
-#define GET_BC_SYM(type, symbol) (*(type *) getRealBlockAddrCode(&symbol))
+// For when the symbol is an array THAT IS DEREFERENCED. Example: GET_BD_ARR(uint32_t, array)[index]
+#define GET_BD_ARR(type, array) ((type) getRealBlockAddrData(&array))
+#define GET_BC_SYM(symbol) ((uint32_t) getRealBlockAddrCode(&symbol))
 
 
 

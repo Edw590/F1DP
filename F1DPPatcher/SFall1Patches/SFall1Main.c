@@ -569,7 +569,7 @@ static bool wasToggleHighlightsKeyPressed(char c) {
 	// character. So a character must now be checked and not a key code - less options, but it's the easiest without
 	// having to go to some place where the key is still in the buffer, check that and put in a global variable.
 
-	return (toupper(c) == toupper(*(char *) getRealBlockAddrData(&toggleHighlightsKey)));
+	return (toupper(c) == toupper(GET_BD_SYM(char, toggleHighlightsKey)));
 }
 
 __declspec(naked) static void get_input_hook(void) {
@@ -2073,14 +2073,14 @@ void DllMain2(void) {
 	for (i = 0; i < 14; ++i) {
 		char ininame[8];
 		memset(ininame, 0, 8);
-		((char *) getRealBlockAddrData(&MovieNames))[(i * 65) + 64] = 0;
+		GET_BD_ARR(char *, MovieNames)[(i * 65) + 64] = 0;
 		strcpy(ininame, "Movie");
 		itoa(i + 1, &ininame[5], 10);
 		ininame[7] = '\0'; // Be sure the string is still NULL-terminated.
-		getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", ininame, ((char **) getRealBlockAddrData(&origMovieNames))[i],
-						&((char *) getRealBlockAddrData(&MovieNames))[i * 65], &sfall1_ini_info_G);
+		getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", ininame, GET_BD_ARR(char **, origMovieNames)[i],
+						&GET_BD_ARR(char *, MovieNames)[i * 65], &sfall1_ini_info_G);
 		writeMem32EXE(0x1055F0 + ((uint32_t) i * 4),
-					  (uint32_t) getRealBlockAddrData(&((char *) getRealBlockAddrData(&MovieNames))[i * 65]), true);
+					  (uint32_t) getRealBlockAddrData(&GET_BD_ARR(char *, MovieNames)[i * 65]), true);
 	}
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "StartYear", "-1", prop_value, &sfall1_ini_info_G);
@@ -2146,7 +2146,7 @@ void DllMain2(void) {
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "NPCsTryToSpendExtraAP", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
-	*(uint32_t *) getRealBlockAddrData(&RetryCombatMinAP) = (uint32_t) temp_int;
+	GET_BD_SYM(uint32_t, RetryCombatMinAP) = (uint32_t) temp_int;
 	if (temp_int > 0) {
 		// Apply retry combat patch
 		hookCallEXE(0x20ABA, &combat_turn_hook);
@@ -2243,13 +2243,13 @@ void DllMain2(void) {
 	*((uint32_t *) getRealEXEAddr(0xFEEA4)) = (uint32_t) temp_int;
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Input", "ToggleItemHighlightsKey", "NONE", prop_value, &sfall1_ini_info_G);
-	*(char *) getRealBlockAddrData(&toggleHighlightsKey) = (char) (0 == strcmp(prop_value, "NONE") ? '\0' : prop_value[0]);
-	if ('\0' != *(char *) getRealBlockAddrData(&toggleHighlightsKey)) {
+	GET_BD_SYM(char, toggleHighlightsKey) = (char) (0 == strcmp(prop_value, "NONE") ? '\0' : prop_value[0]);
+	if ('\0' != GET_BD_SYM(char, toggleHighlightsKey)) {
 		hookCallEXE(0x43715, &gmouse_bk_process_hook);
 		hookCallEXE(0x4398A, &obj_remove_outline_hook);
 		hookCallEXE(0x46155, &obj_remove_outline_hook);
 		getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Input", "TurnHighlightContainers", "0", prop_value, &sfall1_ini_info_G);
-		sscanf(prop_value, "%ud", (uint32_t *) getRealBlockAddrData(&TurnHighlightContainers));
+		sscanf(prop_value, "%ud", &GET_BD_SYM(uint32_t, TurnHighlightContainers));
 	}
 
 	hookCallEXE(0x72D37, &get_input_hook);       //hook the main game loop
@@ -2295,13 +2295,13 @@ void DllMain2(void) {
 
 	// Decrease the distance to switch to walking when clicking on an item
 	for (i = 0; i < ((int) sizeof(WalkDistance) / 4); ++i) {
-		*(uint8_t *) (((uint32_t *) getRealBlockAddrData(&WalkDistance))[i]) = 1;
+		*(uint8_t *) GET_BD_ARR(uint32_t *, WalkDistance)[i] = 1;
 	}
 
 	// Fix "Pressing A to enter combat before anything else happens, thus getting infinite free running"
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "FakeCombatFix", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
-	*(uint32_t *) getRealBlockAddrData(&FakeCombatFix) = (uint32_t) temp_int;
+	GET_BD_SYM(uint32_t, FakeCombatFix) = (uint32_t) temp_int;
 	if (0 != temp_int) {
 		makeCallEXE(0x17952, &check_move_hook, false);
 		makeCallEXE(0x43609, &gmouse_bk_process_hook1, false);
@@ -2339,7 +2339,7 @@ void DllMain2(void) {
 	// Max player level
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "MaxPCLevel", "21", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
-	*(uint32_t *) getRealBlockAddrData(&MaxPCLevel) = (uint32_t) temp_int;
+	GET_BD_SYM(uint32_t, MaxPCLevel) = (uint32_t) temp_int;
 	if ((temp_int != 21) && (temp_int >= 1) && (temp_int <= 99)) {
 		writeMem8EXE(0x3611B + 2, (uint8_t) temp_int, true);
 		writeMem8EXE(0x9CCBC + 2, (uint8_t) temp_int, true);
@@ -2355,9 +2355,9 @@ void DllMain2(void) {
 	// todo Too much work. Disabled for now.
 	/*getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "AutoQuickSave", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
-	*(uint32_t *) getRealBlockAddrData(&AutoQuickSave) = (uint32_t) temp_int;
+	GET_BD_SYM(uint32_t, AutoQuickSave) = (uint32_t) temp_int;
 	if ((temp_int >= 1) && (temp_int <= 10)) {
-		--*(uint32_t *) getRealBlockAddrData(&AutoQuickSave);
+		--GET_BD_SYM(uint32_t, AutoQuickSave);
 		SafeWrite16(0x46DEAB, 0xC031);            // xor  eax, eax
 		SafeWrite32(0x46DEAD, 0x505A50A3);        // mov  ds:_slot_cursor, eax
 		SafeWrite16(0x46DEB2, 0x04EB);            // jmp  0x46DEB8
@@ -2372,7 +2372,7 @@ void DllMain2(void) {
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "ColorLOS", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
-	*(uint32_t *) getRealBlockAddrData(&ColorLOS) = (uint32_t) temp_int;
+	GET_BD_SYM(uint32_t, ColorLOS) = (uint32_t) temp_int;
 	if ((2 == temp_int) || (4 == temp_int) || (16 == temp_int) || (32 == temp_int)) {
 		hookCallEXE(0x242FF, &combat_update_critter_outline_for_los);
 		hookCallEXE(0x24399, &combat_update_critter_outline_for_los);
@@ -2380,13 +2380,13 @@ void DllMain2(void) {
 	}
 
 	// You can use the newline control character (\n) in the description of objects from pro_*.msg
-	writeMem32EXE(0x62B99 + 6, (uint32_t) getRealBlockAddrCode(&display_print_with_linebreak), true);
-	writeMem32EXE(0x8A2E9 + 1, (uint32_t) getRealBlockAddrCode(&display_print_with_linebreak), true);
-	writeMem32EXE(0x66479 + 1, (uint32_t) getRealBlockAddrCode(&inven_display_msg_with_linebreak), true);
+	writeMem32EXE(0x62B99 + 6, GET_BC_SYM(display_print_with_linebreak), true);
+	writeMem32EXE(0x8A2E9 + 1, GET_BC_SYM(display_print_with_linebreak), true);
+	writeMem32EXE(0x66479 + 1, GET_BC_SYM(inven_display_msg_with_linebreak), true);
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "RemoveFriendlyFoe", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
-	*(uint32_t *) getRealBlockAddrData(&RemoveFriendlyFoe) = (uint32_t) temp_int;
+	GET_BD_SYM(uint32_t, RemoveFriendlyFoe) = (uint32_t) temp_int;
 	if (0 != temp_int) {
 		writeMem32EXE(0x106D24 + 12, 100, true);
 		writeMem8EXE(0x1FFD6 + 1, 0x0, true);
@@ -2423,7 +2423,7 @@ void DllMain2(void) {
 	if (0 != temp_int) {
 		// Skip weapon stow animation
 		for (i = 0; i < ((int) sizeof(PutAwayWeapon) / 4); ++i) {
-			*(uint8_t *) (((uint32_t *) getRealBlockAddrData(&PutAwayWeapon))[i]) = 0xEB; // jmps
+			*(uint8_t *) GET_BD_ARR(uint32_t *, PutAwayWeapon)[i] = 0xEB; // jmps
 		}
 		blockCallEXE(0x65FFD);                      //
 		blockCallEXE(0x66008);                      // inven_unwield_
@@ -2437,7 +2437,7 @@ void DllMain2(void) {
 	// Btw, the bug is also in version 1.7.20, so just go on 1.8 get it.
 	/*getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "TimeLimit", "13", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
-	*(uint32_t *) getRealBlockAddrData(&TimeLimit) = (uint32_t) temp_int;
+	GET_BD_SYM(uint32_t, TimeLimit) = (uint32_t) temp_int;
 	if ((temp_int < 14) && (temp_int > -4)) {
 		int j = 0;
 		if (temp_int < -1) {
@@ -2448,12 +2448,12 @@ void DllMain2(void) {
 		makeCallEXE(0x918D4, &inc_game_time_in_seconds_hook, true);
 		makeCallEXE(0x920C3, &script_chk_timed_events_hook, true);
 		for (j = 0; j < ((int) sizeof(TimedRest) / 4); ++j) {
-			*(uint32_t *) (((uint32_t *) getRealBlockAddrData(&TimedRest))[j] + 1) =
-					(uint32_t) getRealBlockAddrCode(&TimedRest_hook);
+			*(uint32_t *) GET_BD_SYM(uint32_t, TimedRest[j] + 1) =
+					&GET_BD_SYM(uint32_t, TimedRest_hook);
 		}
 		for (j = 0; j < ((int) sizeof(world_map) / 4); ++j) {
-			*(uint32_t *) (((uint32_t *) getRealBlockAddrData(&world_map))[j] + 1) =
-					(uint32_t) getRealBlockAddrCode(&world_map_hook);
+			*(uint32_t *) GET_BD_SYM(uint32_t, world_map[j] + 1) =
+					&GET_BD_SYM(uint32_t, world_map_hook);
 		}
 	}*/
 
@@ -2487,5 +2487,5 @@ void DllMain2(void) {
 	}
 
 
-	free(((struct FileInfo *) getRealBlockAddrData(&translation_ini_info_G))->contents);
+	free(GET_BD_SYM(struct FileInfo, translation_ini_info_G).contents);
 }

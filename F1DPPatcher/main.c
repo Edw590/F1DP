@@ -110,7 +110,7 @@ bool realMain(void) {
 
 	memset(&f1dpatch_ini_info_G, 0, sizeof(f1dpatch_ini_info_G));
 
-	((struct FileInfo *) getRealBlockAddrData(&f1dpatch_ini_info_G))->is_main_ini = true;
+	GET_BD_SYM(struct FileInfo, f1dpatch_ini_info_G).is_main_ini = true;
 
 	printlnStr("  /--- F1DP v"F1DP_VER_STR" Patcher ---\\");
 
@@ -156,7 +156,7 @@ bool realMain(void) {
 
 	funcEnd:
 
-	free(((struct FileInfo *) getRealBlockAddrData(&f1dpatch_ini_info_G))->contents);
+	free(GET_BD_SYM(struct FileInfo, f1dpatch_ini_info_G).contents);
 
 	printlnStr("  \\--- F1DP v"F1DP_VER_STR" Patcher ---/");
 
@@ -309,177 +309,3 @@ bool applyPatches(void) {
 
 	return ret_var;
 }
-
-// This below was used to try to see why the PSP wouldn't save the game in the conditions I say in
-// https://www.reddit.com/r/PSP/comments/crfeuf/running_fallout_1_on_the_psp_with_dosbox_fast/.
-// Though, while on this, I found another build of DOSBox for PSP, which finally fixed the problem, and I stopped
-// with this - and I left the code here in case it's ever useful again.
-
-// It counts the number of opened files and the error flag in case it was not possible to open or close some file, and
-// also prints a usage of db_fopen_().
-
-/*uint32_t curr_opened_files = 0;
-int prev_was_inc = 0;
-char const fmt_str_inc[] = "\n+F:%d; sopen_; previous errno=%d\n";
-char const fmt_str_dec[] = "\n-F:%d; __close_; previous errno=%d\n";
-void printNumOpenFiles(bool inc) {
-	char *fmt_str = NULL;
-	int curr_opened_files_local = 0;
-	int prev_errno = *(int *) getRealEXEAddr(0x2AE668);
-
-	*(uint32_t *) getRealEXEAddr(0x2AE668) = 0;
-
-	if (0 == prev_errno) {
-		if (1 == *(int *) getRealBlockAddrData(&prev_was_inc)) {
-			++(*(uint32_t *) getRealBlockAddrData(&curr_opened_files));
-		} else if (2 == *(int *) getRealBlockAddrData(&prev_was_inc)) {
-			--(*(uint32_t *) getRealBlockAddrData(&curr_opened_files));
-		}
-	}
-	if (inc) {
-		*(int *) getRealBlockAddrData(&prev_was_inc) = 1;
-		curr_opened_files_local = *(uint32_t *) getRealBlockAddrData(&curr_opened_files);
-		fmt_str = getRealBlockAddrData(&fmt_str_inc);
-
-		__asm {
-				lea     esp, [esp-4] // [Edw590: reserve space to "PUSH EDI"]
-
-				push    [prev_errno]
-				push    [curr_opened_files_local]
-				push    [fmt_str]
-
-				mov     [esp+5*4], edi // [Edw590: "PUSH EDI"]
-				mov     edi, SN_CODE_SEC_EXE_ADDR
-				lea     edi, [edi+C_debug_printf_]
-				call    edi
-				pop     edi
-				add     esp, 5*4
-		}
-	} else {
-		*(int *) getRealBlockAddrData(&prev_was_inc) = 2;
-		curr_opened_files_local = *(uint32_t *) getRealBlockAddrData(&curr_opened_files);
-		fmt_str = getRealBlockAddrData(&fmt_str_dec);
-
-		__asm {
-				lea     esp, [esp-4] // [Edw590: reserve space to "PUSH EDI"]
-
-				push    [prev_errno]
-				push    [curr_opened_files_local]
-				push    [fmt_str]
-
-				mov     [esp+4*4], edi // [Edw590: "PUSH EDI"]
-				mov     edi, SN_CODE_SEC_EXE_ADDR
-				lea     edi, [edi+C_debug_printf_]
-				call    edi
-				pop     edi
-				add     esp, 4*4
-		}
-	}
-}
-__declspec(naked) static void sopen_hook(void) {
-	__asm {
-			pusha
-
-			mov     al, 1
-			call    printNumOpenFiles
-
-			popa
-
-			// Function stuff
-			push    ebx
-			push    ecx
-			push    edx
-			push    esi
-			push    edi
-
-			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
-			push    edi
-			mov     edi, SN_CODE_SEC_EXE_ADDR
-			lea     edi, [edi+0xD5583]
-			mov     [esp+4], edi
-			pop     edi
-			ret
-	}
-}
-__declspec(naked) static void __close_hook(void) {
-	__asm {
-			pusha
-
-			mov     al, 0
-			call    printNumOpenFiles
-
-			popa
-
-			// Function stuff
-			push    ebx
-			push    ecx
-			push    edx
-			mov     ecx, eax
-
-			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
-			push    edi
-			mov     edi, SN_CODE_SEC_EXE_ADDR
-			lea     edi, [edi+0xDF494]
-			mov     [esp+4], edi
-			pop     edi
-			ret
-	}
-}
-
-char const fmt_str_db_fopen[] = "\ndb_fopen_(%s, %s) %d; errno=%d\n";
-static int db_fopen_map_save_hook(char *filename, char *mode) {
-	int ret_var = 0;
-	int errno = 0;
-	char *fmt_str = getRealBlockAddrData(&fmt_str_db_fopen);
-
-	*(uint32_t *) getRealEXEAddr(0x2AE668) = 0;
-
-	__asm {
-			mov     eax, [filename]
-			mov     edx, [mode]
-
-			push    edi
-			mov     edi, SN_CODE_SEC_EXE_ADDR
-			lea     edi, [edi+C_db_fopen_]
-			call    edi
-			pop     edi
-
-			mov     [ret_var], eax
-	}
-	errno = *(uint32_t *) getRealEXEAddr(0x2AE668);
-	__asm {
-			pusha
-
-			lea     esp, [esp-4] // [Edw590: reserve space to "PUSH EDI"]
-
-			push    [errno]
-			push    [ret_var]
-			push    [mode]
-			push    [filename]
-			push    [fmt_str]
-
-			mov     [esp+5*4], edi // [Edw590: "PUSH EDI"]
-			mov     edi, SN_CODE_SEC_EXE_ADDR
-			lea     edi, [edi+C_debug_printf_]
-			call    edi
-			pop     edi
-			add     esp, 5*4
-
-			popa
-	}
-
-	return ret_var;
-}
-
-void fixPSPNotSaving(void) {
-	(void *) __close_hook;
-	(void *) sopen_hook;
-	(void *) db_fopen_map_save_hook;
-
-	writeMem8EXE(C_gmovie_play_, 0xC3);
-
-	makeCallEXE(0xDF48F, &__close_hook, true);
-	makeCallEXE(0xD557E, &sopen_hook, true);
-
-	hookCallEXE(0x757D4, &db_fopen_map_save_hook);
-}*/

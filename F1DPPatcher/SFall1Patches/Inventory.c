@@ -137,7 +137,7 @@ static bool wasReloadWeaponKeyPressed(char c) {
 	// character. So a character must now be checked and not a key code - less options, but it's the easiest way without
 	// having to go to some place where the key is still in the buffer, check that and put in a global variable.
 
-	return (toupper(c) == toupper(*(char *) getRealBlockAddrData(&ReloadWeaponKey)));
+	return (toupper(c) == toupper(GET_BD_SYM(char, ReloadWeaponKey)));
 }
 
 __declspec(naked) static void ReloadWeaponHotKey(void) {
@@ -2339,8 +2339,8 @@ void InventoryInit(void) {
 	memset(prop_value, 0, MAX_PROP_VALUE_LEN);
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Input", "ReloadWeaponKey", "NONE", prop_value, &sfall1_ini_info_G);
-	*(char *) getRealBlockAddrData(&ReloadWeaponKey) = (char) (0 == strcmp(prop_value, "NONE") ? '\0' : prop_value[0]);
-	if ('\0' != *(char *) getRealBlockAddrData(&ReloadWeaponKey)) {
+	GET_BD_SYM(char, ReloadWeaponKey) = (char) (0 == strcmp(prop_value, "NONE") ? '\0' : prop_value[0]);
+	if ('\0' != GET_BD_SYM(char, ReloadWeaponKey)) {
 		hookCallEXE(0x3B975, &ReloadWeaponHotKey);
 	}
 
@@ -2363,8 +2363,8 @@ void InventoryInit(void) {
 	}
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "StackEmptyWeapons", "0", prop_value, &sfall1_ini_info_G);
-	sscanf(prop_value, "%d", (int *) getRealBlockAddrData(&StackEmptyWeapons));
-	if (0 != *(uint32_t *) getRealBlockAddrData(&StackEmptyWeapons)) {
+	sscanf(prop_value, "%d", &GET_BD_SYM(int, StackEmptyWeapons));
+	if (0 != GET_BD_SYM(uint32_t, StackEmptyWeapons)) {
 		makeCallEXE(0x66B6E, &inven_action_cursor_hook, true);
 	}
 
@@ -2415,8 +2415,8 @@ void InventoryInit(void) {
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Input", "UseScrollWheel", "1", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
-	*(bool *) getRealBlockAddrData(&UseScrollWheel) = (1 == temp_int);
-	if (*(bool *) getRealBlockAddrData(&UseScrollWheel)) {
+	GET_BD_SYM(bool, UseScrollWheel) = (1 == temp_int);
+	if (GET_BD_SYM(bool, UseScrollWheel)) {
 		makeCallEXE(0x67251, &loot_container_hook, false);
 		makeCallEXE(0x6896B, &barter_inventory_hook2, false);
 		// No idea what this below is for (I wish documentation existed on sFall1 source... ;_;), but if I enable it,

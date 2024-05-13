@@ -142,19 +142,19 @@ void MainMenuInit(void) {
 	sscanf(prop_value, "%d", &temp_int);
 	if (0 != temp_int) {
 		writeMem32EXE(0x7345B + 1, 425 + (uint32_t) temp_int, true);
-		*(uint32_t *) getRealBlockAddrData(&MainMenuTextOffset) = (uint32_t) temp_int;
+		GET_BD_SYM(uint32_t, MainMenuTextOffset) = (uint32_t) temp_int;
 	}
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "MainMenuOffsetY", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if (0 != temp_int) {
-		*(uint32_t *) getRealBlockAddrData(&MainMenuYOffset) = (uint32_t) temp_int;
-		*(uint32_t *) getRealBlockAddrData(&MainMenuTextOffset) += (uint32_t) temp_int * 640;
+		GET_BD_SYM(uint32_t, MainMenuYOffset) = (uint32_t) temp_int;
+		GET_BD_SYM(uint32_t, MainMenuTextOffset) += (uint32_t) temp_int * 640;
 		writeMem8EXE(0x73424, 0x90, true);
 		makeCallEXE(0x73424 + 1, &MainMenuButtonYHook, false);
 	}
 
-	if (0 != *(uint32_t *) getRealBlockAddrData(&MainMenuTextOffset)) {
+	if (0 != GET_BD_SYM(uint32_t, MainMenuTextOffset)) {
 		writeMem8EXE(0x73513, 0x90, true);
 		makeCallEXE(0x73513 + 1, &MainMenuTextYHook, false);
 	}
@@ -162,8 +162,8 @@ void MainMenuInit(void) {
 	makeCallEXE(0x7338B, &MainMenuTextHook, true);
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "MainMenuFontColour", "0", prop_value, &sfall1_ini_info_G);
-	sscanf(prop_value, "%X", getRealBlockAddrData(&OverrideColour));
-	if (0 != *(uint32_t *) getRealBlockAddrData(&OverrideColour)) {
+	sscanf(prop_value, "%X", &GET_BD_SYM(uint32_t, OverrideColour));
+	if (0 != GET_BD_SYM(uint32_t, OverrideColour)) {
 		makeCallEXE(0x7332C, &FontColour, false);
 	}
 

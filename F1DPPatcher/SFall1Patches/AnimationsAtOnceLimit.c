@@ -220,7 +220,7 @@ void AnimationsAtOnceInit(void) {
 
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "AnimationsAtOnceLimit", "21", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
-	*(uint32_t *) getRealBlockAddrData(&AnimationsLimit) = (uint32_t) temp_int > 127 ? 127 : (uint32_t) temp_int;
+	GET_BD_SYM(uint32_t, AnimationsLimit) = (uint32_t) temp_int > 127 ? 127 : (uint32_t) temp_int;
 	if (temp_int > 21) {
 		int i = 0;
 		int AnimationsLimit_local = 0;
@@ -247,7 +247,7 @@ void AnimationsAtOnceInit(void) {
 		uint32_t (*sad_24_local)[5] = NULL;
 		uint32_t (*sad_28_local)[4] = NULL;
 
-		AnimationsLimit_local = *(int *) getRealBlockAddrData(&AnimationsLimit);
+		AnimationsLimit_local = GET_BD_SYM(int, AnimationsLimit);
 		AnimMove_local = getRealBlockAddrData(&AnimMove);
 		AnimMaxCheck_local = getRealBlockAddrData(&AnimMaxCheck);
 		AnimMaxSizeCheck_local = getRealBlockAddrData(&AnimMaxSizeCheck);
@@ -272,8 +272,8 @@ void AnimationsAtOnceInit(void) {
 		sad_28_local = getRealBlockAddrData(&sad_28);
 
 		//allocate memory to store larger animation struct arrays + pacifier
-		*(uint8_t **) getRealBlockAddrData(&anim_set) = malloc(1936 * ((size_t) AnimationsLimit_local + 1)); // + pacifier
-		*(uint8_t **) getRealBlockAddrData(&sad) = malloc(3240 * ((size_t) AnimationsLimit_local + 1));
+		GET_BD_SYM(uint8_t *, anim_set) = malloc(1936 * ((size_t) AnimationsLimit_local + 1)); // + pacifier
+		GET_BD_SYM(uint8_t *, sad) = malloc(3240 * ((size_t) AnimationsLimit_local + 1));
 
 		//reserved animation limit check (old 13)
 		writeMem8EXE(0x13665 + 2, (uint8_t) AnimationsLimit_local - 8, true);
@@ -438,8 +438,8 @@ void AnimationsAtOnceInit(void) {
 
 void AnimationsAtOnceExit(void) {
 	free(anim_set);
-	*(uint8_t **) getRealBlockAddrData(&anim_set) = NULL;
+	GET_BD_SYM(uint8_t *, anim_set) = NULL;
 
 	free(sad);
-	*(uint8_t **) getRealBlockAddrData(&sad) = NULL;
+	GET_BD_SYM(uint8_t *, sad) = NULL;
 }
