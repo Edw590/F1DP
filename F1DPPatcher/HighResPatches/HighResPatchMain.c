@@ -43,7 +43,7 @@ void Initialize(void) {
 	//FWindowsSetup();
 	//F_ObjectsSetup();
 	//FScriptsSetup();
-	FMapperSetup();
+	//FMapperSetup();
 
 	//WinFallFixes();
 	//DirectDraw7_Fixes();

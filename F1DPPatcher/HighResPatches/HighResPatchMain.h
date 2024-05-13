@@ -28,7 +28,7 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 
-void Initialize(void);
+void __cdecl Initialize(void);
 
 
 
