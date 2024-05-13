@@ -932,12 +932,14 @@ __declspec(naked) static void barter_inventory_hook(void) {
 			mov     ebx, ds:[edi+D__btable]
 			mov     edx, ds:[edi+D__ptable]
 			mov     eax, ds:[edi+D__barter_back_win]
-			pop     edi
+
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_display_table_inventories_]
-			call    edi
+			mov     [esp+4], edi
 			pop     edi
+			retn
 	}
 }
 
@@ -953,11 +955,14 @@ __declspec(naked) static void barter_inventory_hook1(void) {
 			mov     ebx, ebp                             // target
 			mov     eax, edi                             // owner
 			mov     edx, [esp+0x2C+0x4]                  // source
+
+			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
 			mov     edi, SN_CODE_SEC_EXE_ADDR
 			lea     edi, [edi+C_display_table_inventories_]
-			call    edi
+			mov     [esp+4], edi
 			pop     edi
+			retn
 	}
 }
 
