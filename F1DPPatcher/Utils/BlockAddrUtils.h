@@ -30,6 +30,11 @@
 funcptr_t (getRealBlockAddrCode(volatile const funcptr_t(func_ptr)));
 void *getRealBlockAddrData(volatile void const *data_ptr);
 
+// Short for GET_REAL_BLOCK_ADDR_DATA
+#define GET_BD_SYM(type, symbol) (*(type *) getRealBlockAddrData(&symbol))
+// Short for GET_REAL_BLOCK_ADDR_CODE
+#define GET_BC_SYM(type, symbol) (*(type *) getRealBlockAddrCode(&symbol))
+
 
 
 #endif //F1DPPATCHER_BLOCKADDRUTILS_H
