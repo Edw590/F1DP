@@ -35,11 +35,10 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 //__________________________________________________________________
 void __cdecl InvInsertItem(struct OBJStruct* item, int32_t numItems, struct PUD_GENERAL* inv) {
-	int i = 0;
 	int32_t numNodes = inv->inv_max;
 	struct ITEMnode* itemNode = inv->item;
 	if (NULL != itemNode && numNodes > 1) {
-		for (i = (numNodes - 1); i > 0; --i) {
+		for (int i = (numNodes - 1); i > 0; --i) {
 			itemNode[i].obj = itemNode[i-1].obj;
 			itemNode[i].num = itemNode[i-1].num;
 		}
@@ -58,8 +57,6 @@ __declspec(naked) void inv_insert_item(void) {
 			push    ecx//pObjPud_To
 			push    edx
 			push    edi//*pObjItem
-			mov     eax, edi
-			mov     ebx, ecx
 			call    InvInsertItem
 			add     esp, 0xC
 			popad
