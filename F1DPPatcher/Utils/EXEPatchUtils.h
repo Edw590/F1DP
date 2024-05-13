@@ -49,9 +49,9 @@ uint32_t readMem32EXE(void *addr, bool corrct_addr);
 uint16_t readMem16EXE(void *addr, bool corrct_addr);
 uint8_t readMem8EXE(void *addr, bool corrct_addr);
 
-void hookCallEXE(uint32_t addr, const funcptr_t (func_ptr));
+void hookCallEXE(uint32_t addr, funcptr_t (func_ptr));
 
-void makeCallEXE(uint32_t addr, const funcptr_t (), bool jump);
+void makeCallEXE(uint32_t addr, funcptr_t (), bool jump);
 //void makeCallEXE(uint32_t addr, const funcptr_t (func_ptr), bool jump); - throws an error, no idea why
 
 void blockCallEXE(uint32_t addr);

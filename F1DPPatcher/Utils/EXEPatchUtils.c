@@ -92,12 +92,12 @@ uint8_t readMem8EXE(void *addr, bool corrct_addr) {
 }
 
 
-void hookCallEXE(uint32_t addr, const funcptr_t (func_ptr)) {
+void hookCallEXE(uint32_t addr, funcptr_t (func_ptr)) {
 	// Pointer correction below on `func`.
 	writeMem32EXE(addr + 1, (uint32_t) getRealBlockAddrCode(func_ptr) - ((uint32_t) getRealEXEAddr(addr) + 5), true);
 }
 
-void makeCallEXE(uint32_t addr, const funcptr_t (func_ptr), bool jump) {
+void makeCallEXE(uint32_t addr, funcptr_t (func_ptr), bool jump) {
 	writeMem8EXE(addr, jump ? 0xE9 : 0xE8, true);
 	hookCallEXE(addr, func_ptr);
 }
