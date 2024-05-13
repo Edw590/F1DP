@@ -187,7 +187,7 @@ __declspec(naked) static void anim_set_end_hook(void) {
 			lea     edi, [edi+0x158B2]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -206,7 +206,7 @@ __declspec(naked) static void anim_set_end_hook(void) {
 			lea     edi, [edi+C_register_begin_]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }*/
 

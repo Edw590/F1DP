@@ -47,7 +47,7 @@ __declspec(naked) static void ai_called_shot_hook(void) {
 			jbe     end
 			mov     edx, eax
 		end:
-			retn
+			ret
 	}
 }
 
@@ -86,7 +86,7 @@ __declspec(naked) static void func_4012C7(void) {
 		loc_401308:
 			xchg    eax, edx
 			pop     ecx
-			retn
+			ret
 	}
 }
 
@@ -202,7 +202,7 @@ __declspec(naked) static void is_within_perception_hook(void) {
 			pop     esi
 			pop     ecx
 			pop     ebx
-			retn
+			ret
 	}
 }
 
@@ -217,7 +217,7 @@ __declspec(naked) static void op_obj_can_hear_obj_hook(void) {
 			call    edi
 			pop     edi
 			mov     [esi+0x44], ecx
-			retn
+			ret
 	}
 }
 
@@ -233,7 +233,7 @@ __declspec(naked) static void func_4013BD(void) {
 			inc     edi
 			xor     eax, eax
 		locret_4013CB:
-			retn
+			ret
 	}
 }
 
@@ -279,7 +279,7 @@ __declspec(naked) static void func_4013CC(void) {
 		loc_40140A:
 			pop     ecx
 			pop     edi
-			retn
+			ret
 	}
 }
 

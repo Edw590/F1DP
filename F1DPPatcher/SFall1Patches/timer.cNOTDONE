@@ -61,7 +61,7 @@ static void __declspec(naked) scripts_check_state_hook(void) {
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
 			dec     [edi+Slideshow]
 			pop     edi
-			retn
+			ret
 	}
 }
 

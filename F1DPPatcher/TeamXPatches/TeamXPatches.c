@@ -49,7 +49,7 @@ __declspec(naked) static void patch1(void) {
 			lea     edi, [edi+0x38B18]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 
 		otherJump:
 			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
@@ -58,7 +58,7 @@ __declspec(naked) static void patch1(void) {
 			lea     edi, [edi+0x38B34]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 
 		something:
 			lea     esp, [esp-4] // [Edw590: reserve space to "PUSH EDI"]
@@ -83,7 +83,7 @@ __declspec(naked) static void patch1(void) {
 			lea     edi, [edi+0x38B5F]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 

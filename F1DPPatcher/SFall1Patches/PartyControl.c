@@ -135,7 +135,7 @@ __declspec(naked) static void PartyControl_CanUseWeapon(void) {
 			pop     edx
 			pop     esi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -559,7 +559,7 @@ __declspec(naked) void SaveDudeState(void) {
 			and     byte ptr [eax+0x27], 0xFE            // Reset the item flag in the left hand
 		noLeftHand:
 			popad
-			retn
+			ret
 	}
 }
 
@@ -721,7 +721,7 @@ __declspec(naked) void RestoreDudeState(void) {
 			pop     edi
 		end:
 			popad
-			retn
+			ret
 	}
 }
 
@@ -776,7 +776,7 @@ __declspec(naked) static void CombatWrapper_v2(void) {
 			lea     edi, [edi+C_combat_turn_]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 
 		npcControl:
 			push    edi
@@ -829,11 +829,11 @@ __declspec(naked) static void CombatWrapper_v2(void) {
 			jnz     end
 			xor     eax, eax
 			dec     eax
-			retn
+			ret
 
 		end:
 			xor     eax, eax
-			retn
+			ret
 	}
 }
 
@@ -849,7 +849,7 @@ __declspec(naked) static void combat_add_noncoms_hook(void) {
 			pop     edi
 			mov     ecx, ebp
 		end:
-			retn
+			ret
 	}
 }
 
@@ -862,7 +862,7 @@ __declspec(naked) static void stat_pc_min_exp_hook(void) {
 			pop     edi
 			je      end
 			dec     eax
-			retn
+			ret
 
 		end:
 			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
@@ -871,7 +871,7 @@ __declspec(naked) static void stat_pc_min_exp_hook(void) {
 			lea     edi, [edi+C_stat_pc_min_exp_]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -891,7 +891,7 @@ __declspec(naked) static void inven_pickup_hook(void) {
 			je      end
 			dec     eax
 		end:
-			retn
+			ret
 	}
 }
 
@@ -943,7 +943,7 @@ __declspec(naked) static void handle_inventory_hook(void) {
 			mov     [edi+HiddenArmor], eax
 			pop     edi
 		end:
-			retn
+			ret
 	}
 }
 
@@ -984,7 +984,7 @@ __declspec(naked) static void handle_inventory_hook1(void) {
 			lea     edi, [edi+C_inven_worn_]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -997,12 +997,12 @@ __declspec(naked) static void switch_hand_hook(void) {
 			pop     ebp
 			pop     edi
 			pop     esi
-			retn
+			ret
 
 		end:
 			mov     esi, ebx
 			cmp     [edx], eax
-			retn
+			ret
 	}
 }
 
@@ -1020,7 +1020,7 @@ __declspec(naked) static void combat_input_hook(void) {
 		end:
 			mov     ebx, eax
 			cmp     eax, 0x20                            // Space (end of turn)?
-			retn
+			ret
 	}
 }
 
@@ -1039,7 +1039,7 @@ __declspec(naked) static void action_skill_use_hook(void) {
 			xor     eax, eax
 			dec     eax
 		end:
-			retn
+			ret
 	}
 }
 
@@ -1056,7 +1056,7 @@ __declspec(naked) static void action_use_skill_on_hook(void) {
 			call    edi
 			pop     edi
 		end:
-			retn
+			ret
 	}
 }
 
@@ -1120,7 +1120,7 @@ __declspec(naked) static void damage_object_hook(void) {
 			lea     edi, [edi+0x228F6]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -1136,7 +1136,7 @@ __declspec(naked) static void op_give_exp_points_hook(void) {
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
 			add     [edi+DelayedExperience], ecx
 			pop     edi
-			retn
+			ret
 
 		skip:
 			xchg    ecx, eax
@@ -1147,7 +1147,7 @@ __declspec(naked) static void op_give_exp_points_hook(void) {
 			lea     edi, [edi+C_stat_pc_add_experience_]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -1177,7 +1177,7 @@ __declspec(naked) static void adjust_fid_hook(void) {
 			lea     edi, [edi+0x650E5]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -1195,11 +1195,11 @@ __declspec(naked) static void refresh_box_bar_win_hook(void) {
 			lea     edi, [edi+C_is_pc_flag_]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 
 		end:
 			inc     eax
-			retn
+			ret
 	}
 }
 

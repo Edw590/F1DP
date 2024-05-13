@@ -49,7 +49,7 @@ __declspec(naked) static void item_w_damage_hook(void) {
 		skip:
 			add     eax, 1
 			xchg    ebp, eax
-			retn
+			ret
 	}
 }
 
@@ -76,7 +76,7 @@ __declspec(naked) static void item_w_damage_hook1(void) {
 			add     [esp+0x4+0x8], eax                   // min_dmg
 			pop     eax
 		skip:
-			retn
+			ret
 	}
 }
 
@@ -97,7 +97,7 @@ __declspec(naked) static void display_stats_hook(void) {
 			lea     edi, [edi+F_sprintf_]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -145,7 +145,7 @@ __declspec(naked) static void display_stats_hook1(void) {
 			lea     edi, [edi+0x65CC4]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -167,7 +167,7 @@ __declspec(naked) static void display_stats_hook2(void) {
 			lea     edi, [edi+F_sprintf_]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 

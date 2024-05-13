@@ -44,7 +44,7 @@ __declspec(naked) static void MainMenuButtonYHook(void) {
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
 			mov     ebp, [edi+MainMenuYOffset]
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -61,7 +61,7 @@ __declspec(naked) static void MainMenuTextYHook(void) {
 			mov     edi, ds:[edi+D__text_to_buf]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -76,7 +76,7 @@ __declspec(naked) static void FontColour(void) {
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
 			mov     eax, [edi+OverrideColour]
 			pop     edi
-			retn
+			ret
 
 		skip:
 			push    edi
@@ -84,7 +84,7 @@ __declspec(naked) static void FontColour(void) {
 			movzx   eax, byte ptr ds:[edi+0x2A6CE4]
 			pop     edi
 			or      eax, 0x6000000
-			retn
+			ret
 	}
 }
 
@@ -117,7 +117,7 @@ __declspec(naked) static void MainMenuTextHook(void) {
 			lea     edi, ds:[edi+0x73390]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 

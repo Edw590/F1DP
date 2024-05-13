@@ -59,7 +59,7 @@ __declspec(naked) static void determine_to_hit_func_hook(void) {
 			shl     eax, 1
 			add     eax, ecx
 		end:
-			retn
+			ret
 	}
 }
 
@@ -67,7 +67,7 @@ __declspec(naked) static void perform_withdrawal_start_hook(void) {
 	__asm {
 			test    eax, eax
 			jnz     end
-			retn
+			ret
 
 		end:
 			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
@@ -76,7 +76,7 @@ __declspec(naked) static void perform_withdrawal_start_hook(void) {
 			lea     edi, [edi+C_display_print_]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -95,7 +95,7 @@ __declspec(naked) static void pipboy_hook(void) {
 			mov     edi, SN_DATA_SEC_EXE_ADDR
 			mov     eax, ds:[edi+D__crnt_func]
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -115,7 +115,7 @@ __declspec(naked) static void PipAlarm_hook(void) {
 			mov     edi, SN_DATA_SEC_EXE_ADDR
 			lea     eax, [edi+0xFB910]                  // 'iisxxxx1'
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -128,7 +128,7 @@ __declspec(naked) static void scr_save_hook(void) {
 			cmp     ecx, 0
 			jg      skip
 			xor     eax, eax
-			retn
+			ret
 
 		skip:
 			sub     [esp+0xDC+4], ecx                    // number_of_scripts
@@ -143,7 +143,7 @@ __declspec(naked) static void scr_save_hook(void) {
 			pop     edi
 			xchg    [ebp+0xD04], ecx                     // NextBlock
 			pop     dword ptr [ebp+0xD00]                // num
-			retn
+			ret
 	}
 }
 
@@ -177,7 +177,7 @@ __declspec(naked) static void item_d_check_addict_hook(void) {
 			lea     edi, [edi+0x6CA8D]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -191,7 +191,7 @@ __declspec(naked) static void queue_clear_type_hook(void) {
 			lea     edi, [edi+C_mem_free_]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -295,7 +295,7 @@ __declspec(naked) static void inven_item_wearing(void) {
 			xchg    ebx, eax
 			cmp     eax, esi
 		end:
-			retn
+			ret
 	}
 }
 
@@ -397,7 +397,7 @@ __declspec(naked) static void loot_container_hook(void) {
 			xor     eax, eax
 			inc     eax
 			inc     eax
-			retn
+			ret
 	}
 }
 
@@ -451,7 +451,7 @@ __declspec(naked) static void inven_pickup_hook(void) {
 			lea     edi, [edi+0x64C46]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 
 		found:
 			push    edi
@@ -521,7 +521,7 @@ __declspec(naked) static void drop_ammo_into_weapon_hook(void) {
 			jnz     end                                  // No
 			sub     [esp+0x24+4], esi                    // Yes, we correct from_slot
 		end:
-			retn
+			ret
 	}
 }
 
@@ -537,7 +537,7 @@ __declspec(naked) static void PipStatus_hook(void) {
 			mov     edi, SN_DATA_SEC_EXE_ADDR
 			mov     ds:[edi+D__hot_line_count], eax
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -598,7 +598,7 @@ __declspec(naked) static void stat_pc_add_experience_hook(void) {
 			mov     edi, SN_DATA_SEC_EXE_ADDR
 			mov     eax, ds:[edi+D__Experience_]
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -613,7 +613,7 @@ __declspec(naked) static void combat_give_exps_hook(void) {
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
 			mov     ebx, [edi+XPWithSwiftLearner]
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -659,7 +659,7 @@ __declspec(naked) static void loot_container_hook1(void) {
 			lea     edi, [edi+0x6782A]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -686,7 +686,7 @@ __declspec(naked) static void set_new_results_hook(void) {
 			lea     edi, [edi+0x22821]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -703,7 +703,7 @@ __declspec(naked) static void critter_wake_clear_hook(void) {
 			pop     esi
 			pop     ecx
 			pop     ebx
-			retn
+			ret
 	}
 }
 
@@ -757,7 +757,7 @@ __declspec(naked) static void partyMemberPrepLoad_hook(void) {
 			and     word ptr [ecx+0x44], 0x7FFD          // not (DAM_LOSE_TURN or DAM_KNOCKED_DOWN)
 			xor     edx, edx
 			mov     ebx, [ecx+0x2C]
-			retn
+			ret
 	}
 }
 
@@ -775,7 +775,7 @@ __declspec(naked) static void combat_ctd_init_hook(void) {
 			lea     edi, [edi+0x20E01]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -805,7 +805,7 @@ __declspec(naked) static void obj_save_hook(void) {
 			lea     edi, [edi+0x7B1D2]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -864,7 +864,7 @@ __declspec(naked) static void explode_critter_kill(void) {
 			lea     edi, [edi+C_critter_kill_]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -879,7 +879,7 @@ __declspec(naked) static void action_use_an_item_on_object_hook(void) {
 			pop     edi
 			push    eax
 		end:
-			retn
+			ret
 	}
 }
 
@@ -916,7 +916,7 @@ __declspec(naked) static void use_inventory_on_hook(void) {
 		use:
 			call    FakeCombatFix3                       // analogue of calling action_use_an_item_on_object_
 		end:
-			retn
+			ret
 	}
 }
 
@@ -944,7 +944,7 @@ __declspec(naked) static void compute_damage_hook(void) {
 			pop     edi
 			pop     esi
 			pop     ecx
-			retn
+			ret
 	}
 }
 
@@ -1033,7 +1033,7 @@ __declspec(naked) static void switch_hand_hook(void) {
 			pop     ebp
 			pop     edi
 			pop     esi
-			retn
+			ret
 	}
 }
 
@@ -1075,7 +1075,7 @@ __declspec(naked) static void inven_action_cursor_hook(void) {
 			cmp     eax, ds:[edi+D__target_stack]
 			pop     edi
 		end:
-			retn
+			ret
 	}
 }
 
@@ -1087,7 +1087,7 @@ __declspec(naked) static void exec_script_proc_hook(void) {
 			ja      end
 			inc     eax
 		end:
-			retn
+			ret
 	}
 }
 
@@ -1121,7 +1121,7 @@ __declspec(naked) static void gdActivateBarter_hook(void) {
 			lea     edi, [edi+0x410C3]
 			pop     edi
 		end:
-			retn
+			ret
 	}
 }
 
@@ -1158,7 +1158,7 @@ __declspec(naked) static void op_negate_hook(void) {
 			lea     edi, [edi+0x5EA70]
 			pop     edi
 		end:
-			retn
+			ret
 	}
 }
 

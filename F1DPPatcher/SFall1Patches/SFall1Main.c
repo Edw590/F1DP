@@ -261,7 +261,7 @@ __declspec(naked) static void op_set_global_var_hook(void) {
 			lea     edi, [edi+C_game_set_global_var_]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -307,7 +307,7 @@ __declspec(naked) static void intface_item_reload_hook(void) {
 			lea     edi, [edi+C_gsound_play_sfx_file_]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -347,7 +347,7 @@ __declspec(naked) static void combat_turn_hook(void) {
 			cmp     eax, ebx
 			jne     retry
 		end:
-			retn
+			ret
 	}
 }
 
@@ -377,7 +377,7 @@ __declspec(naked) static void intface_rotate_numbers_hook(void) {
 			lea     edi, [edi+0x563F6]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -459,7 +459,7 @@ __declspec(naked) static void obj_outline_all_items_on(void) {
 			lea     edi, [edi+C_tile_refresh_display_]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -510,7 +510,7 @@ __declspec(naked) static void obj_outline_all_items_off(void) {
 			lea     edi, [edi+C_tile_refresh_display_]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -530,7 +530,7 @@ __declspec(naked) static void gmouse_bk_process_hook(void) {
 			lea     edi, [edi+C_obj_outline_object_]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -556,7 +556,7 @@ __declspec(naked) static void obj_remove_outline_hook(void) {
 			call    obj_outline_all_items_on
 			popad
 		end:
-			retn
+			ret
 	}
 }
 
@@ -610,7 +610,7 @@ __declspec(naked) static void get_input_hook(void) {
 			pop     edi
 		end:
 			popad
-			retn
+			ret
 	}
 }
 
@@ -648,7 +648,7 @@ __declspec(naked) static void pipboy_hook(void) {
 			pop     edi
 			pop     eax
 		notFour:
-			retn
+			ret
 	}
 }
 
@@ -704,7 +704,7 @@ __declspec(naked) static void Brotherhood_final(void) {
 			lea     edi, [edi+0x38B5F]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -733,7 +733,7 @@ __declspec(naked) static void editor_design_hook(void) {
 			mov     [esi+Mutate_], eax
 			pop     edi
 			pop     esi
-			retn
+			ret
 	}
 }
 
@@ -760,7 +760,7 @@ __declspec(naked) static void editor_design_hook2(void) {
 			lea     edi, [edi+C_RestorePlayer_]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -811,7 +811,7 @@ __declspec(naked) static void perks_dialog_hook(void) {
 			mov     edi, SN_DATA_SEC_EXE_ADDR
 			mov     ds:[edi+D__Mutate_], eax
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -834,7 +834,7 @@ __declspec(naked) static void perk_can_add_hook(void) {
 			lea     edi, [edi+0x866D1]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 
 		end:
 			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
@@ -843,7 +843,7 @@ __declspec(naked) static void perk_can_add_hook(void) {
 			lea     edi, [edi+0x866D8]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -890,13 +890,13 @@ __declspec(naked) static void FirstTurnAndNoEnemy(void) {
 			jne     nextCritter                          // No
 			popad
 			dec     eax                                  // Showdown!!!
-			retn
+			ret
 		nextCritter:
 			add     edi, 4                               // To the next character on the list
 			loop    loopCritter                          // Looping through the entire list
 			popad
 		end:
-			retn
+			ret
 	}
 }
 
@@ -939,7 +939,7 @@ __declspec(naked) static void FirstTurnCheckDist(void) {
 			xor     eax, eax
 			dec     eax
 		end:
-			retn
+			ret
 	}
 }
 
@@ -950,7 +950,7 @@ __declspec(naked) static void check_move_hook(void) {
 			jnz     skip                                 // Yes
 			cmp     dword ptr [ecx], -1
 			je      end
-			retn
+			ret
 
 		skip:
 			xor     esi, esi
@@ -964,7 +964,7 @@ __declspec(naked) static void check_move_hook(void) {
 			lea     edi, [edi+0x179BF]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -977,7 +977,7 @@ __declspec(naked) static void gmouse_bk_process_hook1(void) {
 			xchg    ebp, eax
 			cmp     eax, [edx+0x40]
 			jg      end
-			retn
+			ret
 
 		end:
 			pop     eax                                  // Destroying the return address
@@ -988,7 +988,7 @@ __declspec(naked) static void gmouse_bk_process_hook1(void) {
 			lea     edi, [edi+0x43625]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -1007,7 +1007,7 @@ __declspec(naked) static void FakeCombatFix1(void) {
 			lea     edi, [edi+C_action_get_an_object_]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -1026,7 +1026,7 @@ __declspec(naked) static void FakeCombatFix2(void) {
 			lea     edi, [edi+C_action_loot_container_]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -1055,7 +1055,7 @@ __declspec(naked) void FakeCombatFix3(void) {
 			lea     edi, [edi+C_action_use_an_item_on_object_]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -1067,7 +1067,7 @@ __declspec(naked) static void combat_begin_hook(void) {
 			mov     [edi+_combatNumTurns], eax
 			pop     edi
 			dec     eax
-			retn
+			ret
 	}
 }
 
@@ -1078,7 +1078,7 @@ __declspec(naked) static void combat_reset_hook(void) {
 			mov     [edi+_combatNumTurns], edx
 			pop     edi
 			mov     edx, STAT_max_move_points
-			retn
+			ret
 	}
 }
 
@@ -1095,7 +1095,7 @@ __declspec(naked) static void combat_hook(void) {
 			lea     edi, [edi+C_combat_should_end_]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -1133,7 +1133,7 @@ __declspec(naked) static void stat_pc_min_exp_hook(void) {
 		end:
 			pop     edx                                  // Destroying the return address
 			pop     edx
-			retn
+			ret
 	}
 }
 
@@ -1304,7 +1304,7 @@ __declspec(naked) static void combat_update_critter_outline_for_los(void) {
 			pop     edi
 		end:
 			popad
-			retn
+			ret
 	}
 }
 
@@ -1327,7 +1327,7 @@ __declspec(naked) static void obj_move_to_tile_hook(void) {
 			lea     edi, [edi+0x7C2D0]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -1358,7 +1358,7 @@ __declspec(naked) void queue_find_first_(void) {
 			mov     [edi+_tmpQNode], ecx
 			pop     edi
 			pop     ecx
-			retn
+			ret
 	}
 }
 
@@ -1388,7 +1388,7 @@ __declspec(naked) void queue_find_next_(void) {
 			mov     [edi+_tmpQNode], ecx
 			pop     edi
 			pop     ecx
-			retn
+			ret
 	}
 }
 
@@ -1423,7 +1423,7 @@ __declspec(naked) static void print_with_linebreak(void) {
 		end:
 			pop  ecx
 			pop  esi
-			retn
+			ret
 	}
 }
 
@@ -1436,7 +1436,7 @@ __declspec(naked) static void display_print_with_linebreak(void) {
 			pop     esi
 			call    print_with_linebreak
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -1449,7 +1449,7 @@ __declspec(naked) static void inven_display_msg_with_linebreak(void) {
 			pop     esi
 			call    print_with_linebreak
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -1469,7 +1469,7 @@ __declspec(naked) static void protinst_use_item_hook(void) {
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
 			dec     dword ptr [edi+drugExploit]
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -1488,7 +1488,7 @@ __declspec(naked) static void UpdateLevel_hook(void) {
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
 			dec     dword ptr [edi+drugExploit]
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -1507,7 +1507,7 @@ __declspec(naked) static void skill_level_hook(void) {
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
 			dec     dword ptr [edi+drugExploit]
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -1526,7 +1526,7 @@ __declspec(naked) static void SliderBtn_hook(void) {
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
 			dec     dword ptr [edi+drugExploit]
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -1545,7 +1545,7 @@ __declspec(naked) static void SliderBtn_hook1(void) {
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
 			dec     dword ptr [edi+drugExploit]
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -1568,7 +1568,7 @@ __declspec(naked) static void checkPerk(void) {
 			jne     end
 			sub     ebp, [eax+ebx*4+0x20]                // Perk.Str
 		end:
-			retn
+			ret
 	}
 }
 
@@ -1692,7 +1692,7 @@ __declspec(naked) static void stat_get_real_bonus(void) {
 		end:
 			xchg    ebp, eax
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -1709,7 +1709,7 @@ __declspec(naked) static void stat_level_hook(void) {
 			je   end                                     // No
 			call stat_get_real_bonus                     // We do not take into account temporary effects
 		end:
-			retn
+			ret
 	}
 }
 
@@ -1721,7 +1721,7 @@ __declspec(naked) static void barter_attempt_transaction_hook(void) {
 			je      found
 			xor     eax, eax
 			dec     eax
-			retn
+			ret
 
 		found:
 			push    edi
@@ -1737,7 +1737,7 @@ __declspec(naked) static void barter_attempt_transaction_hook(void) {
 			lea     edi, [edi+0x67E18]
 			mov     [esp+4], edi
 			pop     edi
-			retn                                         // Are there any other included items for sale?
+			ret                                         // Are there any other included items for sale?
 	}
 }
 
@@ -1785,7 +1785,7 @@ __declspec(naked) static void register_object_take_out_hook(void) {
 			pop     edi
 			pop     ecx
 			xor     eax, eax
-			retn
+			ret
 	}
 }
 
@@ -1808,7 +1808,7 @@ __declspec(naked) static void game_time_date_hook(void) {
 			lea     edi, [edi+0x917AE]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -1831,7 +1831,7 @@ __declspec(naked) static void stat_level_hook1(void) {
 			lea     edi, [edi+0x9C5CC]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -1888,7 +1888,7 @@ __declspec(naked) static void inc_game_time_hook(void) {
 			mov     edi, SN_DATA_SEC_EXE_ADDR
 			mov     eax, ds:[edi+D__fallout_game_time]
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -1896,7 +1896,7 @@ __declspec(naked) static void inc_game_time_in_seconds_hook(void) {
 	__asm {
 			call    inc_game_time_hook
 			pop     edx
-			retn
+			ret
 	}
 }
 
@@ -1914,7 +1914,7 @@ __declspec(naked) static void script_chk_timed_events_hook(void) {
 			lea     edi, [edi+0x920D7]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -1937,11 +1937,11 @@ __declspec(naked) static void TimedRest_hook(void) {
 			mov     ebp, eax
 			pop     edx
 			sub     edx, 315360000 * 13
-			retn
+			ret
 
 		end:
 			pop     edx
-			retn
+			ret
 	}
 }
 
@@ -1962,7 +1962,7 @@ __declspec(naked) static void world_map_hook(void) {
 			je      end
 			sub     esi, 315360000 * 13
 		end:
-			retn
+			ret
 	}
 }*/
 
@@ -1981,7 +1981,7 @@ __declspec(naked) static void gdAddOptionStr_hook(void) {
 			lea     edi, [edi+0x3E807]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -1997,7 +1997,7 @@ __declspec(naked) static void _WinMain_hook(void) {
 			popad
 
 			// [Edw590: no need to call exit() here. That's done in the Loader code already.]
-			retn
+			ret
 	}
 }
 
@@ -2262,7 +2262,7 @@ void DllMain2(void) {
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "DisablePipboyAlarm", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if (0 != temp_int) {
-		writeMem8EXE(0x88E44, 0xC3, true);// retn
+		writeMem8EXE(0x88E44, 0xC3, true);// ret
 	}
 
 	LoadGameHookInit();

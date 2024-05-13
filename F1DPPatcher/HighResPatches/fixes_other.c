@@ -53,7 +53,7 @@ void __declspec(naked) double_click_running(void) {
 			lea     edi, [edi+C_dude_run_]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 
 			exitFunc:
 			push    edi

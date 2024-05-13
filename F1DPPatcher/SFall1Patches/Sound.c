@@ -130,7 +130,7 @@
 			mov     al, dl
 			push    eax
 			push    edi
-			retn
+			ret
 	}
 }*/
 

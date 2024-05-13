@@ -111,7 +111,7 @@ __declspec(naked) static void credits_hook(void) {
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
 			dec     [edi+InCredits]
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -159,7 +159,7 @@ __declspec(naked) static void credits_get_next_line_hook(void) {
 			jz      fail
 			xor     eax, eax
 			inc     eax
-			retn
+			ret
 
 		fail:
 			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
@@ -168,7 +168,7 @@ __declspec(naked) static void credits_get_next_line_hook(void) {
 			lea     edi, [edi+C_credits_get_next_line_]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 

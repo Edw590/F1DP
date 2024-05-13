@@ -423,7 +423,7 @@ int32_t __cdecl GetScrnXYTile(int32_t tileNum, int32_t* scrnX, int32_t* scrnY, i
 			//POP     EBP
 			//POP     EDI
 			//POP     ESI
-			//RETN
+			//ret
 
 		J0x4B1DDC:
 			MOV     EDX, EAX

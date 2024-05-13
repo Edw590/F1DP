@@ -118,13 +118,13 @@ __declspec(naked) static void ReloadActiveHand(void) {
 			lea     edi, [edi+0x563D2]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 
 		end:
 			pop     edx
 			pop     ecx
 			pop     ebx
-			retn
+			ret
 	}
 }
 
@@ -156,7 +156,7 @@ __declspec(naked) static void ReloadWeaponHotKey(void) {
 			test    al, al
 			jnz     ourKey
 			popad
-			retn
+			ret
 
 		ourKey:
 			push    edi
@@ -230,7 +230,7 @@ __declspec(naked) static void ReloadWeaponHotKey(void) {
 			popad
 			inc     eax
 		end:
-			retn
+			ret
 	}
 }
 
@@ -328,7 +328,7 @@ __declspec(naked) static void AutoReloadWeapon(void) {
 			call    ReloadActiveHand
 		end:
 			popad
-			retn
+			ret
 	}
 }
 
@@ -364,7 +364,7 @@ __declspec(naked) static void SetDefaultAmmo(void) {
 			pop     edx
 			pop     ebx
 			pop     eax
-			retn
+			ret
 	}
 }
 
@@ -380,7 +380,7 @@ __declspec(naked) static void inven_action_cursor_hook(void) {
 			lea     edi, [edi+0x66B73]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -409,7 +409,7 @@ __declspec(naked) static void fontHeight(void) {
 			pop     edi
 			xchg    ebx, eax
 			pop     ebx
-			retn
+			ret
 	}
 }
 
@@ -654,7 +654,7 @@ __declspec(naked) static void printFreeMaxWeight(void) {
 			lea     edi, [edi+C_text_font_]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 			// This is a jump! I just realized that it is after being using it for a while in this file. Perfect way
 			// of making a jump to an absolute location still keeping all register values!
 	}
@@ -721,7 +721,7 @@ __declspec(naked) static void display_inventory_hook(void) {
 			lea     edi, [edi+0x63CB8]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -782,7 +782,7 @@ __declspec(naked) static void display_target_inventory_hook(void) {
 			lea     edi, [edi+0x63FA4]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -874,7 +874,7 @@ __declspec(naked) static void display_table_inventories_hook1(void) {
 			lea     edi, [edi+0x68487]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -939,7 +939,7 @@ __declspec(naked) static void barter_inventory_hook(void) {
 			lea     edi, [edi+C_display_table_inventories_]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -962,7 +962,7 @@ __declspec(naked) static void barter_inventory_hook1(void) {
 			lea     edi, [edi+C_display_table_inventories_]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -1063,7 +1063,7 @@ __declspec(naked) static void inven_pickup_hook2(void) {
 		skip:
 			xor     eax, eax
 		end:
-			retn
+			ret
 	}
 }
 
@@ -1208,7 +1208,7 @@ __declspec(naked) static void display_stats_hook(void) {
 			lea     edi, [edi+0x65D55]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -1406,7 +1406,7 @@ __declspec(naked) static void make_loot_drop_button(void) {
 			pop     edi
 		end:
 			cmp     dword ptr [esp+0x4+0x4], 3
-			retn
+			ret
 	}
 }
 
@@ -1424,7 +1424,7 @@ __declspec(naked) static void loot_drop_all(void) {
 			cmp     eax, 'd'
 			je      dropKey
 			cmp     eax, 0x148
-			retn
+			ret
 
 		lootKey:
 			pushad
@@ -1756,7 +1756,7 @@ __declspec(naked) static void loot_drop_all(void) {
 			lea     edi, [edi+0x6770E]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -1795,11 +1795,11 @@ __declspec(naked) static void protinst_use_item_on_hook(void) {
 			lea     edi, [edi+0x8B38D]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 
 		end:
 			mov     ecx, ebx                             // ecx = item
-			retn
+			ret
 	}
 }
 
@@ -1849,7 +1849,7 @@ __declspec(naked) static void loot_container_hook(void) {
 		end:
 			mov     eax, esi
 			cmp     eax, 0x151
-			retn
+			ret
 	}
 }
 
@@ -1950,7 +1950,7 @@ __declspec(naked) static void barter_inventory_hook2(void) {
 			pop     edx
 			mov     eax, esi
 			cmp     eax, 0x151
-			retn
+			ret
 	}
 }
 
@@ -2173,7 +2173,7 @@ __declspec(naked) static void item_add_check(void) {
 			pop     edx
 			pop     esi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -2198,7 +2198,7 @@ __declspec(naked) static void item_add_mult(void) {
 			pop     edi
 		end:
 			pop     ecx
-			retn
+			ret
 	}
 }
 
@@ -2215,7 +2215,7 @@ __declspec(naked) static void drop_into_container_hook(void) {
 			pop     eax
 			jne     end                                  // No
 			inc     eax
-			retn
+			ret
 		end:
 			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
@@ -2223,7 +2223,7 @@ __declspec(naked) static void drop_into_container_hook(void) {
 			lea     edi, [edi+C_item_add_force_]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -2243,7 +2243,7 @@ __declspec(naked) static void item_add_force_call(void) {
 			lea     edi, [edi+C_item_add_force_]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -2267,10 +2267,10 @@ __declspec(naked) static void move_table_source(void) {
 			lea     edi, [edi+C_item_move_force_]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 		end:
 			inc     eax
-			retn
+			ret
 	}
 }
 
@@ -2299,12 +2299,12 @@ __declspec(naked) static void checkContainerSize(void) {
 			lea     edi, [edi+C_item_add_force_]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 
 		end:
 			xor     eax, eax
 			dec     eax
-			retn
+			ret
 	}
 }
 
@@ -2326,7 +2326,7 @@ __declspec(naked) static void proto_ptr_call(void) {
 			inc     eax
 			mov     [edx+0x70], eax                      // container.size = max_size/2 + 1
 		end:
-			retn
+			ret
 	}
 }
 

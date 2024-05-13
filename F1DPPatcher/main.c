@@ -398,7 +398,7 @@ __declspec(naked) static void sopen_hook(void) {
 			lea     edi, [edi+0xD5583]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 __declspec(naked) static void __close_hook(void) {
@@ -422,7 +422,7 @@ __declspec(naked) static void __close_hook(void) {
 			lea     edi, [edi+0xDF494]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 

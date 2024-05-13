@@ -52,7 +52,7 @@ __declspec(naked) static void ResetState(void) {
 			call    RestoreDudeState
 		end:
 			popad
-			retn
+			ret
 	}
 }
 
@@ -66,7 +66,7 @@ __declspec(naked) static void LoadGame_hook(void) {
 			lea     edi, [edi+C_LoadSlot_]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -80,7 +80,7 @@ __declspec(naked) static void gnw_main_hook(void) {
 			lea     edi, [edi+C_main_menu_loop_]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -94,7 +94,7 @@ __declspec(naked) static void gnw_main_hook1(void) {
 			lea     edi, [edi+C_main_game_loop_]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -152,7 +152,7 @@ __declspec(naked) static void SaveGame_hook(void) {
 			popad
 		skip:
 			dec     esi
-			retn
+			ret
 
 		restore:
 			popad
@@ -174,7 +174,7 @@ __declspec(naked) static void SaveGame_hook(void) {
 			lea     edi, [edi+0x6E966]
 			mov     [esp+4], edi
 			pop     edi
-			retn
+			ret
 	}
 }
 
@@ -187,7 +187,7 @@ __declspec(naked) static void setup_inventory_hook(void) {
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
 			or      [edi+InLoop], INVENTORY
 			pop     edi
-			retn
+			ret
 
 		notZero:
 			dec     eax
@@ -196,7 +196,7 @@ __declspec(naked) static void setup_inventory_hook(void) {
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
 			or      [edi+InLoop], INTFACEUSE
 			pop     edi
-			retn
+			ret
 
 		notOne:
 			dec     eax
@@ -205,14 +205,14 @@ __declspec(naked) static void setup_inventory_hook(void) {
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
 			or      [edi+InLoop], INTFACELOOT
 			pop     edi
-			retn
+			ret
 
 		notTwo:
 			push    edi
 			mov     edi, SN_DATA_SEC_BLOCK_ADDR
 			or      [edi+InLoop], BARTER
 			pop     edi
-			retn
+			ret
 	}
 }
 
