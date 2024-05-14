@@ -27,7 +27,6 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define F1DPPATCHER_F_OBJECTS_H
 
 
-
 #include <stdint.h>
 
 // Microsoft's RECT structure in windef.h
@@ -443,30 +442,6 @@ struct OBJNode {
 #define FLG_LadderBottom     0x00000003
 #define FLG_LadderTop        0x00000004
 #define FLG_Generic          0x00000005
-
-
-extern struct OBJStruct **lpObj_PC;
-extern struct OBJStruct **lpObj_ActiveCritter;
-extern struct OBJStruct **lpObj_Mouse2;
-extern struct OBJStruct **lpObj_Mouse;
-
-int32_t __cdecl GetProListSize(int32_t proType);
-
-uint32_t __cdecl GetProID(int32_t proType, int32_t listNum);
-int32_t __cdecl F_GetPro(uint32_t proID, struct PROTOall **proto);
-
-struct OBJStruct* FGetMapObjUnderMouse(int type, uint32_t flag, int level);
-
-int32_t __cdecl F_MapObj_Create(struct OBJStruct **lpObj, uint32_t frmID, uint32_t proID);
-int32_t __cdecl F_MapObj_Move(struct OBJStruct *obj, uint32_t hexPos, int32_t level, RECT *pRect);
-int32_t __cdecl F_MapObj_Destroy(struct OBJStruct *obj, RECT *pRect);
-
-int __cdecl F_Obj_ClearAnimation(struct OBJStruct *obj);
-
-int32_t __cdecl F_Obj_SetFrmId(struct OBJStruct *obj, uint32_t frmID, RECT *rcOut);
-
-void __cdecl F_ObjectsSetup();
-
 
 
 #endif //F1DPPATCHER_F_OBJECTS_H
