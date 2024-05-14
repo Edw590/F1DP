@@ -547,7 +547,6 @@ __declspec(naked) static void printFreeMaxWeight(void) {
 			mov     al, ds:[edi+D__RedColor]
 			pop     edi
 		noRed:
-			lea     esp, [esp-4] // [Edw590: reserve space for "PUSH EDI" on 'print']
 			push    eax
 			push    esi
 			xor     edx, edx
@@ -614,7 +613,6 @@ __declspec(naked) static void printFreeMaxWeight(void) {
 			mov     al, ds:[edi+D__RedColor]
 			pop     edi
 		skipColor:
-			lea     esp, [esp-4] // [Edw590: reserve space for "PUSH EDI" on 'print']
 			push    eax
 			mov     eax, edx
 			push    edi
@@ -638,11 +636,9 @@ __declspec(naked) static void printFreeMaxWeight(void) {
 			// I've done. Seems safer to me. If this function is ever used unmodified to something else and there's no
 			// POPA or at least POP ESI or something at the end, the program will be doomed until someone figures out
 			// why it's not working.
-			mov     [esp+8], edi // [Edw590: "PUSH EDI"]
-
-			mov     edi, SN_DATA_SEC_EXE_ADDR
-			call    ds:[edi+D__text_to_buf]
-			pop     edi
+			// EDIT: I'm now just using the ESI register which is not used in the function anymore
+			mov     esi, SN_DATA_SEC_EXE_ADDR
+			call    ds:[esi+D__text_to_buf]
 		noWeight:
 			pop     eax
 
@@ -769,10 +765,10 @@ __declspec(naked) static void display_target_inventory_hook(void) {
 			pop     edi
 			mov     ecx, 537
 			mov     edi, 324*537+426+32                  // Xpos=426, Ypos=324, max text width/2=32
-			push    edi
-			mov     edi, SN_DATA_SEC_BLOCK_ADDR
-			sub     esi, [edi+WeightOnBody]              // We take into account the weight of armor and weapons worn on the target
-			pop     edi
+			push    edx
+			mov     edx, SN_DATA_SEC_BLOCK_ADDR
+			sub     esi, [edx+WeightOnBody]              // We take into account the weight of armor and weapons worn on the target
+			pop     edx
 			call    printFreeMaxWeight
 			popad
 
