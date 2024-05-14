@@ -29,7 +29,7 @@
 #define MAX_DOS_PATH_LEN 80
 
 // 5 chars exactly or change the initial strings with the dashes (so that it's the same length as the Loader)
-#define F1DP_VER_STR "1.2.1"
+#define F1DP_VER_STR "1.2.2"
 
 // Generic function pointer type, like void* for data pointers (universal, including for casting (use no parameters in that case))
 #define funcptr_t(sym_name) void (*sym_name)(void)
