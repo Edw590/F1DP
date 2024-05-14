@@ -2214,31 +2214,31 @@ void DllMain2(void) {
 	//}
 
 	//Bodypart hit chances
-	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "BodyHit_Head", "0xFFFFFFD8", prop_value, &sfall1_ini_info_G);
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "BodyHit_Head", "-40", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	*((uint32_t *) getRealEXEAddr(0xFEE84)) = (uint32_t) temp_int;
-	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "BodyHit_Left_Arm", "0xFFFFFFE2", prop_value, &sfall1_ini_info_G);
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "BodyHit_Left_Arm", "-30", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	*((uint32_t *) getRealEXEAddr(0xFEE88)) = (uint32_t) temp_int;
-	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "BodyHit_Right_Arm", "0xFFFFFFE2", prop_value, &sfall1_ini_info_G);
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "BodyHit_Right_Arm", "-30", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	*((uint32_t *) getRealEXEAddr(0xFEE8C)) = (uint32_t) temp_int;
-	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "BodyHit_Torso", "0x00000000", prop_value, &sfall1_ini_info_G);
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "BodyHit_Torso", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	*((uint32_t *) getRealEXEAddr(0xFEE90)) = (uint32_t) temp_int;
-	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "BodyHit_Right_Leg", "0xFFFFFFEC", prop_value, &sfall1_ini_info_G);
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "BodyHit_Right_Leg", "-20", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	*((uint32_t *) getRealEXEAddr(0xFEE94)) = (uint32_t) temp_int;
-	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "BodyHit_Left_Leg", "0xFFFFFFEC", prop_value, &sfall1_ini_info_G);
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "BodyHit_Left_Leg", "-20", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	*((uint32_t *) getRealEXEAddr(0xFEE98)) = (uint32_t) temp_int;
-	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "BodyHit_Eyes", "0xFFFFFFC4", prop_value, &sfall1_ini_info_G);
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "BodyHit_Eyes", "-60", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	*((uint32_t *) getRealEXEAddr(0xFEE9C)) = (uint32_t) temp_int;
-	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "BodyHit_Groin", "0xFFFFFFE2", prop_value, &sfall1_ini_info_G);
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "BodyHit_Groin", "-30", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	*((uint32_t *) getRealEXEAddr(0xFEEA0)) = (uint32_t) temp_int;
-	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "BodyHit_Torso", "0x00000000", prop_value, &sfall1_ini_info_G);
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "BodyHit_Torso", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	*((uint32_t *) getRealEXEAddr(0xFEEA4)) = (uint32_t) temp_int;
 
