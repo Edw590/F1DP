@@ -2249,7 +2249,7 @@ void DllMain2(void) {
 		hookCallEXE(0x4398A, &obj_remove_outline_hook);
 		hookCallEXE(0x46155, &obj_remove_outline_hook);
 		getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Input", "TurnHighlightContainers", "0", prop_value, &sfall1_ini_info_G);
-		sscanf(prop_value, "%ud", &GET_BD_SYM(uint32_t, TurnHighlightContainers));
+		sscanf(prop_value, "%u", &GET_BD_SYM(uint32_t, TurnHighlightContainers));
 	}
 
 	hookCallEXE(0x72D37, &get_input_hook);       //hook the main game loop
