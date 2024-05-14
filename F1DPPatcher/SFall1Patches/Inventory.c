@@ -932,6 +932,7 @@ __declspec(naked) static void barter_inventory_hook(void) {
 			mov     ebx, ds:[edi+D__btable]
 			mov     edx, ds:[edi+D__ptable]
 			mov     eax, ds:[edi+D__barter_back_win]
+			pop     edi
 
 			lea     esp, [esp-4] // [Edw590] Reserve space for the jump address
 			push    edi
@@ -2383,12 +2384,8 @@ void InventoryInit(void) {
 		makeCallEXE(0x684C7, &display_table_inventories_hook4, false);
 		makeCallEXE(0x6867E, &display_table_inventories_hook5, false);
 
-		getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "F1DPWeightOnBarter", "1", prop_value, &sfall1_ini_info_G);
-		sscanf(prop_value, "%d", &temp_int);
-		if (0 != temp_int) {
-			hookCallEXE(0x688BB, &barter_inventory_hook);
-			hookCallEXE(0x68CB9, &barter_inventory_hook1);
-		}
+		hookCallEXE(0x688BB, &barter_inventory_hook);
+		hookCallEXE(0x68CB9, &barter_inventory_hook1);
 	}
 
 	// "Using chemistry from the inventory on the player's picture"
