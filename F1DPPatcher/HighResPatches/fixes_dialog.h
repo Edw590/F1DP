@@ -27,9 +27,7 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define F1DPPATCHER_FIXES_DIALOG_H
 
 
-
-void __cdecl DialogInventoryFixes(void);
-
+void DialogInventoryFixes(void);
 
 
 #endif //F1DPPATCHER_FIXES_DIALOG_H

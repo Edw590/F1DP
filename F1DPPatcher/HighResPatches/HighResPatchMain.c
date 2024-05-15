@@ -28,47 +28,10 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "fixes_other.h"
 #include "fixes_win_general.h"
 
-// BE CAREFUL PORTING ASSEMBLY FUNCTIONS!!!! PAY ATTENTION TO THE CALLING CONVENTION!!!
-// On MSVC it's parameters on the stack from right to left --> on Watcom it's not like that! Correct the parameters
-// when calling functions on the Patcher.
-
 void Initialize(void) {
-
-	//FArtSetup();
-	//FFileSetup();
-	//FTextSetup();
-	//FMsgSetup();
-	//FWindowsSetup();
-	//F_ObjectsSetup();
-	//FScriptsSetup();
-	//FMapperSetup();
-
-	//WinFallFixes();
-	//DirectDraw7_Fixes();
-	//DirectX9_Fixes();
-
 	WinGeneralFixes();
 
-	//GameScrnFixes();
-	//MapFixes(); // todo Fog Of War
-
-	//SplashScrnFixes();
-	//CharScrnFixes();
-	//CreditsFixes();
 	DialogInventoryFixes();
-	//OptionsFixes();
-	//EndSlidesFixes();
-	//WorldMapFixes();
-	//DeathScrnFixes();
-	//MovieFixes();
-	//LoadSaveFixes();
-	//MainMenuFixes();
-	//IfaceFixes();
-	//PipBoyFixes();
-	//HelpScrnFixes();
-	//PauseScrnFixes();
 
 	OtherFixes();
-
-	//print_mem_errors();
 }

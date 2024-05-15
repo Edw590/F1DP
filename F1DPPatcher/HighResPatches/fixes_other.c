@@ -67,7 +67,7 @@ void __declspec(naked) double_click_running(void) {
 
 
 //_______________
-void __cdecl OtherFixes(void) {
+void OtherFixes(void) {
 	int temp_int = 0;
 	char prop_value[MAX_PROP_VALUE_LEN];
 	memset(prop_value, 0, MAX_PROP_VALUE_LEN);

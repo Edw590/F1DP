@@ -27,9 +27,7 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define F1DPPATCHER_FIXES_OTHER_H
 
 
-
-void __cdecl OtherFixes(void);
-
+void OtherFixes(void);
 
 
 #endif //F1DPPATCHER_FIXES_OTHER_H
