@@ -30,6 +30,7 @@
 #include "Define.h"
 #include "PartyControl.h"
 #include "SFall1Main.h"
+#include "LoadGameHook.h"
 
 uint32_t WeightOnBody = 0;
 
@@ -397,6 +398,23 @@ __declspec(naked) static void loot_container_hook(void) {
 			xor     eax, eax
 			inc     eax
 			inc     eax
+			ret
+	}
+}
+
+static void __declspec(naked) exit_inventory_hook() {
+	__asm {
+			push    edi
+			push    esi
+			mov     edi, SN_DATA_SEC_EXE_ADDR
+			mov     esi, SN_DATA_SEC_BLOCK_ADDR
+			mov     ds:[edi+D__i_worn], eax
+			mov     [esi+WeightOnBody], eax
+			mov     ds:[edi+D__curr_stack], eax
+			mov     ds:[edi+D__target_stack], eax
+			and     [esi+InLoop], 0xFFFC6FFF //(-1^0x39000)       // INVENTORY + INTFACEUSE + INTFACELOOT + BARTER
+			pop     esi
+			pop     edi
 			ret
 	}
 }
@@ -1203,6 +1221,7 @@ void BugsInit(void) {
 
 	// Correction of the error of not taking into account the weight of dressed things
 	makeCallEXE(0x66F62, &loot_container_hook, false);
+	makeCallEXE(0x6387E, &exit_inventory_hook, false);
 
 	// Text width 64, not 80
 	writeMem8EXE(0x6855C + 1, 64, true);

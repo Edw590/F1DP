@@ -765,10 +765,10 @@ __declspec(naked) static void display_target_inventory_hook(void) {
 			pop     edi
 			mov     ecx, 537
 			mov     edi, 324*537+426+32                  // Xpos=426, Ypos=324, max text width/2=32
-			push    edx
-			mov     edx, SN_DATA_SEC_BLOCK_ADDR
-			sub     esi, [edx+WeightOnBody]              // We take into account the weight of armor and weapons worn on the target
-			pop     edx
+			push    edi
+			mov     edi, SN_DATA_SEC_BLOCK_ADDR
+			sub     esi, [edi+WeightOnBody]              // We take into account the weight of armor and weapons worn on the target
+			pop     edi
 			call    printFreeMaxWeight
 			popad
 
