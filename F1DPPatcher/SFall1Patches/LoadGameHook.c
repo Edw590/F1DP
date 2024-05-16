@@ -21,6 +21,7 @@
 // his modification of the original sFall1.
 
 #include "../CLibs/stdio.h"
+#include "../CLibs/stdlib.h"
 #include "../CLibs/string.h"
 #include "../GameAddrs/FalloutEngine.h"
 #include "../Utils/BlockAddrUtils.h"
@@ -226,7 +227,7 @@ void LoadGameHookInit(void) {
 	hookCallEXE(0x7291B, &gnw_main_hook);
 	hookCallEXE(0x7299F, &gnw_main_hook1);
 
-	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "sfall", "SaveInCombat", "Cannot save at this time.", SaveFailMsg,
+	getPropValueIni(NULL, "sfall", "SaveInCombat", "Cannot save at this time.", SaveFailMsg,
 					&translation_ini_info_G);
 	makeCallEXE(0x6DC87, &SaveGame_hook, false);
 

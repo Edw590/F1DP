@@ -2011,7 +2011,7 @@ void DllMain2(void) {
 	// Those NOPs that are replaced here and called just before this block of code is freed by free() on the Loader.
 	makeCallEXE(0xEA2DA, &_WinMain_hook, false);
 
-	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Main", "TranslationsINI", "./Translations.ini", prop_value, &sfall1_ini_info_G);
+	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Main", "TranslationsINI", "TRANSLAT.INI", prop_value, &sfall1_ini_info_G);
 	// If it fails, the struct will have 0s and the file won't be read, so the default values will be used as sFall1 does.
 	readFile(prop_value, &translation_ini_info_G);
 
@@ -2124,8 +2124,8 @@ void DllMain2(void) {
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "DisplayKarmaChanges", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if (0 != temp_int) {
-		getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "sfall", "KarmaGain", "You gained %d karma.", KarmaGainMsg, &translation_ini_info_G);
-		getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "sfall", "KarmaLoss", "You lost %d karma.", KarmaLossMsg, &translation_ini_info_G);
+		getPropValueIni(NULL, "sfall", "KarmaGain", "You gained %d karma.", KarmaGainMsg, &translation_ini_info_G);
+		getPropValueIni(NULL, "sfall", "KarmaLoss", "You lost %d karma.", KarmaLossMsg, &translation_ini_info_G);
 		hookCallEXE(0x4CED4, &op_set_global_var_hook);
 	}
 

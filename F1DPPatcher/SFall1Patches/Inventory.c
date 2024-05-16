@@ -22,6 +22,7 @@
 
 #include "../CLibs/ctype.h"
 #include "../CLibs/stdio.h"
+#include "../CLibs/stdlib.h"
 #include "../CLibs/string.h"
 #include "../GameAddrs/CStdFuncs.h"
 #include "../GameAddrs/FalloutEngine.h"
@@ -2391,9 +2392,9 @@ void InventoryInit(void) {
 	makeCallEXE(0x65D1F, &display_stats_hook, true);
 
 	// ""Take All" and "Put All" Buttons"
-	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "sfall", "OverloadedLoot", "Sorry, you cannot carry that much.",
+	getPropValueIni(NULL, "sfall", "OverloadedLoot", "Sorry, you cannot carry that much.",
 					OverloadedLoot, &translation_ini_info_G);
-	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "sfall", "OverloadedDrop", "Sorry, there is no space left.",
+	getPropValueIni(NULL, "sfall", "OverloadedDrop", "Sorry, there is no space left.",
 					OverloadedDrop, &translation_ini_info_G);
 	makeCallEXE(0x6352A, &make_loot_drop_button, false);
 	makeCallEXE(0x672C1, &loot_drop_all, false);
@@ -2401,7 +2402,7 @@ void InventoryInit(void) {
 	getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "Misc", "SuperStimExploitFix", "0", prop_value, &sfall1_ini_info_G);
 	sscanf(prop_value, "%d", &temp_int);
 	if (0 != temp_int) {
-		getPropValueIni(MAIN_INI_SPEC_SEC_SFALL1, "sfall", "SuperStimExploitMsg",
+		getPropValueIni(NULL, "sfall", "SuperStimExploitMsg",
 						"You cannot use a super stim on someone who is not injured!", SuperStimMsg, &translation_ini_info_G);
 		makeCallEXE(0x8B34F, &protinst_use_item_on_hook, false);
 	}
