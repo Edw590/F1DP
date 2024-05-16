@@ -17,19 +17,38 @@
 // specific language governing permissions and limitations
 // under the License.
 
+#include "../CLibs/stdlib.h"
 #include "../CLibs/string.h"
 #include "../Utils/EXEPatchUtils.h"
 #include "FixtPatches.h"
+#include "../Utils/IniUtils.h"
+#include "../Utils/GlobalVars.h"
 
 void initFixtPatches(void) {
+	char prop_value[MAX_PROP_VALUE_LEN];
+	struct FileInfo translation_ini_info_G;
+	memset(prop_value, 0, MAX_PROP_VALUE_LEN);
+	memset(&translation_ini_info_G, 0, sizeof(struct FileInfo));
+
+	getPropValueIni(MAIN_INI_SPEC_SEC_FIXT, "Main", "TranslationsINI", "TRANSLAT.INI", prop_value, &f1dpatch_ini_info_G);
+	// If it fails, the struct will have 0s and the file won't be read, so the default values will be used as Fixt does.
+	readFile(prop_value, &translation_ini_info_G);
+
+	char string1[100];
+	char string2[50];
+	char string3[50];
+
+	getPropValueIni(NULL, "Fixt", "String1", "not played because being", string1, &translation_ini_info_G);
+	getPropValueIni(NULL, "Fixt", "String2", "NOT", string2, &translation_ini_info_G);
+	getPropValueIni(NULL, "Fixt", "String3", "IS", string3, &translation_ini_info_G);
+
 	// strnpy() is being used instead of strcpy() because we don't want to copy the NULL character, so the number of
 	// characters to copy must be equal to the number of characters inside the quotation marks (which don't include the
 	// NULL one).
+	strncpy(getRealEXEAddr(0xF32FC), string1, strlen(string1));
 
-	strncpy(getRealEXEAddr(0xF32FC), "not played because being", 24);
-
-	strncpy(getRealEXEAddr(0xFC0CD), "NOT", 3);
-	strncpy(getRealEXEAddr(0xFC0F5), "IS", 2);
+	strncpy(getRealEXEAddr(0xFC0CD), string2, strlen(string2));
+	strncpy(getRealEXEAddr(0xFC0F5), string3, strlen(string3));
 
 	// No idea what this patch does
 	writeMem32EXE(0x22050, 0xC003C003u, true);
