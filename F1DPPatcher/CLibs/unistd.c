@@ -17,7 +17,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-#include <sys/types.h>
 #include "../Utils/BlockAddrUtils.h"
 #include "../GameAddrs/CStdFuncs.h"
 #include "../Utils/GlobalEXEAddrs.h"
@@ -61,4 +60,27 @@ ssize_t read(int fildes, void *buf, size_t nbyte) {
 	}
 
 	return ret_var;
+}
+
+ssize_t write(int fildes, const void *buf, size_t nbyte) {
+    int ret_var = 0;
+
+    // Pointer correction
+    buf = getRealBlockAddrData(buf);
+
+    __asm {
+            pusha
+
+            mov     eax, [fildes]
+            mov     edx, [buf]
+            mov     ebx, [nbyte]
+            mov     edi, SN_CODE_SEC_EXE_ADDR
+            lea     edi, [edi+F_write_]
+            call    edi
+            mov     [ret_var], eax
+
+            popa
+    }
+
+    return ret_var;
 }

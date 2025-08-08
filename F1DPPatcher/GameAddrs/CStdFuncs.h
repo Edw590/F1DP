@@ -112,6 +112,8 @@
 #define F_close_ 0xD57CC
 // read(EAX = fildes, EDX = buf, EBX = nbyte) EAX
 #define F_read_ 0xD545F
+// write(EAX = fildes, EDX = buf, EBX = nbyte) EAX
+#define F_write_ 0xD528A
 
 
 

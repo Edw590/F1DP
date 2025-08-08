@@ -21,15 +21,17 @@
 #define F1DPPATCHER_FCNTL_H
 
 
-
+#define O_CREAT 0x0020
+#define O_WRONLY 0x0001
+#define O_APPEND 0x0010
 #define O_RDONLY 0x0000
 #define O_BINARY 0x0200
 #define O_EXCL 0x0400
 
 #define S_IRUSR 000400
+#define S_IWUSR 000200
 
 int open(char const * path, int oflag, int mode);
-
 
 
 #endif //F1DPPATCHER_FCNTL_H

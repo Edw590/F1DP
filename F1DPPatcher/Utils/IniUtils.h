@@ -21,7 +21,6 @@
 #define F1DPPATCHER_INIUTILS_H
 
 
-
 #include <stdbool.h>
 
 #define MAX_LINE_LEN 1000
@@ -54,6 +53,16 @@ struct FileInfo {
 bool readFile(char const *file_path, struct FileInfo *file);
 
 /**
+ * @brief Appends data to a file, creating the file if it does not exist.
+ *
+ * @param file_path the path to the file to append the data to
+ * @param data the data to append to the file
+ *
+ * @return true if the data was appended successfully, false otherwise
+ */
+bool appendToFile(char const *file_path, char const *data);
+
+/**
  * @brief Looks for a property value in an INI file given a key, possibly a given section name, and possible a given
  * Special Section name (which are sections specifically for Fallout 1 DOS Patcher, which can contain normal INI
  * sections).
@@ -84,7 +93,6 @@ bool readFile(char const *file_path, struct FileInfo *file);
  */
 bool getPropValueIni(char const *prop_spec_section_name, char const *prop_section_name, char const *prop_key,
 					 char const *def_value, char *prop_value, struct FileInfo const *ini_info);
-
 
 
 #endif //F1DPPATCHER_INIUTILS_H

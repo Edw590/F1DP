@@ -23,14 +23,13 @@
 #include "../CLibs/stdlib.h"
 #include "../CLibs/string.h"
 #include "../CLibs/unistd.h"
-#include "General.h"
 #include "BlockAddrUtils.h"
 #include "IniUtils.h"
 
 bool readFile(char const *file_path, struct FileInfo *file) {
 	char *file_contents = NULL;
 	unsigned long file_size = 0;
-	unsigned file_descriptor = 0;
+	unsigned int file_descriptor = 0;
 	long temp = 0;
 
 	// Pointer correction
@@ -69,6 +68,31 @@ bool readFile(char const *file_path, struct FileInfo *file) {
 	file->size = file_size;
 
 	return true;
+}
+
+bool appendToFile(const char *file_path, const char *data) {
+    // Pointer correction
+    file_path = getRealBlockAddrData(file_path);
+    data = getRealBlockAddrData(data);
+
+    if (NULL == file_path || NULL == data) {
+        return false;
+    }
+
+    int temp = open(file_path, O_WRONLY | O_BINARY | O_APPEND | O_CREAT, S_IRUSR | S_IWUSR);
+    if (temp < 0) {
+        return false;
+    }
+    unsigned int file_descriptor = (unsigned long) temp; // temp is >= 0 here
+
+    if (write((int) file_descriptor, data, strlen(data)) < 0) {
+        close((int) file_descriptor);
+
+        return false;
+    }
+    close((int) file_descriptor);
+
+    return true;
 }
 
 bool getPropValueIni(char const *prop_spec_section_name, char const *prop_section_name, char const *prop_key,

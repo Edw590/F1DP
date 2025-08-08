@@ -21,13 +21,12 @@
 #define F1DPPATCHER_UNISTD_H
 
 
-
 // ssize_t is in sys/types.h for Watcom
 #include <sys/types.h>
 
 int close(int fildes);
 ssize_t read(int fildes, void * buf, size_t nbyte);
-
+ssize_t write(int fildes, const void *buf, size_t nbyte);
 
 
 #endif //F1DPPATCHER_UNISTD_H
