@@ -93,7 +93,7 @@ uint8_t readMem8EXE(void *addr, bool corrct_addr) {
 
 
 void hookCallEXE(uint32_t addr, funcptr_t (func_ptr)) {
-	// Pointer correction below on `func`.
+	// Pointer correction below on `func_ptr`.
 	writeMem32EXE(addr + 1, (uint32_t) getRealBlockAddrCode(func_ptr) - ((uint32_t) getRealEXEAddr(addr) + 5), true);
 }
 
@@ -117,5 +117,6 @@ void *getRealEXEAddr(volatile uint32_t addr) {
 	if (addr >= DATA_SEC_EXE_IDA_BEGIN_ADDR) {
 		return (void *) (addr + SN_DATA_SEC_EXE_ADDR);
 	}
+
 	return (void *) (addr + SN_CODE_SEC_EXE_ADDR);
 }

@@ -59,7 +59,6 @@ static char version_str[] = "F1DP v"F1DP_VER_STR" by Edw590      ";
 bool realMain(void);
 static void patchVerStr(void);
 bool applyPatches(void);
-void fixPSPNotSaving(void);
 
 __declspec(naked) int main(void) {
 	// The special number declaration below is for the loader to look for it and start the execution right there.
@@ -112,7 +111,7 @@ bool realMain(void) {
 
 	GET_BD_SYM(struct FileInfo, f1dpatch_ini_info_G).is_main_ini = true;
 
-	printlnStr("  /--- F1DP v"F1DP_VER_STR" Patcher ---\\");
+	printlnStr("  /---- F1DP v"F1DP_VER_STR" Patcher ----\\");
 
 	// Open the main INI file
 	if (!readFile(F1DP_MAIN_INI, &f1dpatch_ini_info_G)) {
@@ -158,12 +157,12 @@ bool realMain(void) {
 
 	free(GET_BD_SYM(struct FileInfo, f1dpatch_ini_info_G).contents);
 
-	printlnStr("  \\--- F1DP v"F1DP_VER_STR" Patcher ---/");
+	printlnStr("  \\---- F1DP v"F1DP_VER_STR" Patcher ----/");
 
 	return ret_var;
 }
 
-__declspec(naked) static void getverstr_hook(void) {
+static __declspec(naked) void getverstr_hook(void) {
 	__asm {
 			push    edx
 			push    edi
