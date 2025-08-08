@@ -1,7 +1,7 @@
 /*
 The MIT License (MIT)
 Copyright © 2022 Matt Wells
-Copyright © 2022 Edw590
+Copyright © 2025 Edw590
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this
 software and associated documentation files (the “Software”), to deal in the
@@ -23,18 +23,32 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 // Original code modified by me, Edw590, to adapt it to this project, starting on 2022-08-28.
 
-#include "HighResPatchMain.h"
-#include "fixes_dialog.h"
-#include "fixes_other.h"
-#include "fixes_win_general.h"
-#include "fixes_maps.h"
+#include "../GameAddrs/FalloutEngine.h"
+#include "../Utils/GlobalEXEAddrs.h"
 
-void Initialize(void) {
-	WinGeneralFixes();
-
-    MapFixes();
-
-	DialogInventoryFixes();
-
-	OtherFixes();
+//____________________________________________________________________________
+void __declspec(naked) F_GetFrmID() {
+    __asm {
+            push    ebp
+            mov     ebp, esp
+            push    ecx
+            push    ebx
+            lea     esp, [esp-4] // [Edw590: reserve space to "PUSH EDI"]
+            push    [ebp+0x18]
+            mov     ecx, [ebp+0x14]
+            mov     ebx, [ebp+0x10]
+            mov     edx, [ebp+0xC]
+            mov     eax, [ebp+0x8]
+            mov     [esp+1*4], edi // [Edw590: "PUSH EDI"]
+            mov     edi, SN_CODE_SEC_EXE_ADDR
+            lea     edi, [edi+C_art_id_]
+            call    edi
+            pop     edi
+            mov     [ebp-0x4], eax
+            mov     eax, [ebp-0x4]
+            pop     ebx
+            mov     esp, ebp
+            pop     ebp
+            ret
+    }
 }

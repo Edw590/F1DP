@@ -22,7 +22,6 @@
 #define F1DPPATCHER_FALLOUTENGINE_H
 
 
-
 #include <stdint.h>
 
 // The Xs are so that if a macro that doesn't have an address on it yet is used, an error will be thrown instantly.
@@ -98,7 +97,7 @@
 #define C_db_fclose_                         0xB27E0 // Args: non-stack / No prototype
 #define C_db_fopen_                          0xAFAC4 // Args: non-stack / int __usercall db_fopen_@<eax>(char *fullname@<eax>, char *mode@<edx>)
 #define C_db_freadInt_                       0xB099C // Args: non-stack / No prototype
-#define C_db_freadIntCount_                  x
+#define C_db_freadIntCount_                  0xB0C2C // Args: non-stack / No prototype
 #define C_db_fwriteInt_                      0xB0A68 // Args: non-stack / No prototype
 #define C_db_fwriteIntCount_                 x
 #define C_db_init_database_                  x
@@ -430,5 +429,6 @@
 #define D__title_color             0x16AA80
 #define D__title_font              0x16AA78
 #define D__tile_refresh            0x1084C8
+
 
 #endif //F1DPPATCHER_FALLOUTENGINE_H

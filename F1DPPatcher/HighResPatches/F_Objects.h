@@ -141,5 +141,13 @@ struct OBJStruct {
 	uint32_t scriptID2;//0x80  //objScriptID?
 };
 
+struct OBJNode {
+    struct OBJStruct *obj;
+    struct OBJNode *next;
+};
+
+
+void __declspec(naked) F_GetPro();
+
 
 #endif //F1DPPATCHER_F_OBJECTS_H

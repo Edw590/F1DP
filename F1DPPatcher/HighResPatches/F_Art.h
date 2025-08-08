@@ -1,7 +1,7 @@
 /*
 The MIT License (MIT)
 Copyright © 2022 Matt Wells
-Copyright © 2022 Edw590
+Copyright © 2025 Edw590
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this
 software and associated documentation files (the “Software”), to deal in the
@@ -23,18 +23,23 @@ OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 // Original code modified by me, Edw590, to adapt it to this project, starting on 2022-08-28.
 
-#include "HighResPatchMain.h"
-#include "fixes_dialog.h"
-#include "fixes_other.h"
-#include "fixes_win_general.h"
-#include "fixes_maps.h"
+#ifndef F1DPPATCHER_F_ART_H
+#define F1DPPATCHER_F_ART_H
 
-void Initialize(void) {
-	WinGeneralFixes();
 
-    MapFixes();
+#define ART_ITEMS 0
+#define ART_CRITTERS 1
+#define ART_SCENERY 2
+#define ART_WALLS 3
+#define ART_TILES 4
+#define ART_MISC 5
+#define ART_INTRFACE 6
+#define ART_INVEN 7
+#define ART_HEADS 8
+#define ART_BACKGRND 9
+#define ART_SKILLDEX 10
 
-	DialogInventoryFixes();
+void __declspec(naked) F_GetFrmID();
 
-	OtherFixes();
-}
+
+#endif //F1DPPATCHER_F_ART_H

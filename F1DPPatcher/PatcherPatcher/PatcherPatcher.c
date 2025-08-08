@@ -39,7 +39,7 @@ enum SNO_consts {
 #define CODE_SEC_BLOCK_ADDR_OFFSET 0x10
 // The data segment begins some pages (each of 0x1000 bytes) after the code segment. This number can change and must be
 // updated manually each time the code needs one more page in the EXE.
-#define DATA_SEC_BLOCK_ADDR_OFFSET (0x10000 + CODE_SEC_BLOCK_ADDR_OFFSET)
+#define DATA_SEC_BLOCK_ADDR_OFFSET (0x13000 + CODE_SEC_BLOCK_ADDR_OFFSET)
 
 // Explanation of this file and all the SN_ constants thing around the project files
 //
