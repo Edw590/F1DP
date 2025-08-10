@@ -105,7 +105,7 @@ Command I'm using to assemble: `C:\MASM615\BIN\ml_9.00.21022.08_x86.EXE /omf /Fl
 ### - Contributing
 Anyone is free to contribute to the repository with new patch ports, new patches entirely, port fixes, whatever that is useful.
 
-2 good examples are High-Res patch's Fog Of War (my most wanted feature) from Mash's source, and what's missing from sFall v1.8 (I have a IDA database with that analysed on a folder inside the Patcher sub-project). Too much time needed to port the sFall part, and I've got other projects. Will take me time to do it (or I just won't, I don't know).
+A good example is what's missing from sFall v1.8 (I have an IDA database with that analysed on a folder inside the Patcher sub-project). Too much time needed to port the sFall part, and I've got other projects. Will take me time to do it (or I just won't, I don't know).
 
 ### - Licensing
 - This project and all included sFall1 source code is licensed under GNU GPL-3.0-or-later - https://www.gnu.org/licenses/.
