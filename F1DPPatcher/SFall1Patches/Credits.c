@@ -130,15 +130,15 @@ static uint32_t __stdcall CreditsNextLine(char *buf, uint32_t *font, uint32_t *c
 	if (0 != strlen(line)) {
 		if ('#' == line[0]) {
 			++line;
-			*font = *(uint32_t *) getRealEXEAddr(D__name_font);
-			*colour = *(uint8_t *) getRealEXEAddr(0x2A6041);
+			*font = GET_EXE_SYM(uint32_t, D__name_font);
+			*colour = GET_EXE_SYM(uint8_t, 0x2A6041);
 		} else if ('@' == line[0]) {
 			++line;
-			*font = *(uint32_t *) getRealEXEAddr(D__title_font);
-			*colour = *(uint32_t *) getRealEXEAddr(D__title_color);
+			*font = GET_EXE_SYM(uint32_t, D__title_font);
+			*colour = GET_EXE_SYM(uint32_t, D__title_color);
 		} else {
-			*font = *(uint32_t *) getRealEXEAddr(D__name_font);
-			*colour = *(uint32_t *) getRealEXEAddr(D__name_color);
+			*font = GET_EXE_SYM(uint32_t, D__name_font);
+			*colour = GET_EXE_SYM(uint32_t, D__name_color);
 		}
 	}
 

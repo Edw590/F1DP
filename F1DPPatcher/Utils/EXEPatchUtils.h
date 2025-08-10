@@ -21,10 +21,11 @@
 #define F1DPPATCHER_EXEPATCHUTILS_H
 
 
-
 #include <stdint.h>
 #include <stdbool.h>
 #include "General.h"
+
+#define GET_EXE_SYM(type, symbol) (*(type *) getRealEXEAddr(symbol))
 
 /**
  * @brief Calculates the real address of a game address got from IDA.
@@ -56,7 +57,6 @@ void makeCallEXE(uint32_t addr, funcptr_t (func_ptr), bool jump);
 //void makeCallEXE(uint32_t addr, const funcptr_t (func_ptr), bool jump); - throws an error, no idea why
 
 void blockCallEXE(uint32_t addr);
-
 
 
 #endif //F1DPPATCHER_EXEPATCHUTILS_H

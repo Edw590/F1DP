@@ -27,14 +27,13 @@
 #define SN_DATA_SEC_BLOCK_ADDR 0x75563412 // 12 34 56 74 in little endian
 #define SN_BLOCK_ADDR 0x74563412 // 12 34 56 74 in little endian
 
-funcptr_t (getRealBlockAddrCode(volatile const funcptr_t(func_ptr)));
-void *getRealBlockAddrData(volatile void const *data_ptr);
-
 #define GET_BD_SYM(type, symbol) (*(type *) getRealBlockAddrData(&symbol))
 // For when the symbol is an array THAT IS DEREFERENCED. Example: GET_BD_ARR(uint32_t, array)[index]
 #define GET_BD_ARR(type, array) ((type) getRealBlockAddrData(&array))
 #define GET_BC_SYM(symbol) ((uint32_t) getRealBlockAddrCode(&symbol))
 
+funcptr_t (getRealBlockAddrCode(volatile const funcptr_t(func_ptr)));
+void *getRealBlockAddrData(volatile void const *data_ptr);
 
 
 #endif //F1DPPATCHER_BLOCKADDRUTILS_H
